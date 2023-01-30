@@ -11,8 +11,15 @@ app = Flask(__name__)
 CORS(app)
 
 import openai
-openai.organization = os.environ.get('OPENAI_ORG')
-openai.api_key = os.environ.get('OPENAI_KEY')
+
+# ========[ PRODUCTION ]=========
+# openai.organization = os.environ.get('OPENAI_ORG')
+# openai.api_key = os.environ.get('OPENAI_KEY')
+
+# ========[ LOCAL ]=========
+import json
+openai.organization = json.load(open('zappa_settings.json'))['production']['environment_variables']['OPENAI_ORG']
+openai.api_key = json.load(open('zappa_settings.json'))['production']['environment_variables']['OPENAI_KEY']
 
 @app.route('/')
 def hello_world():
