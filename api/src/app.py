@@ -51,7 +51,7 @@ def create_lesson_plan():
     if request.method == 'GET':
         data = {}
     if request.method == 'POST':
-        data = request.data
+        data = request.get_json()
 
     prompt = LESSON_PLAN_PROMPT.format(num_minutes=data.get('num_minutes', 60), grade=data.get('grade', '4th'), learning_objective=data.get('learning_objective','Understand the concept of a ratio and use ratio language to describe a ratio relationship between two quantities.')) + LESSON_PLAN_EXAMPLE
     
