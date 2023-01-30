@@ -70,7 +70,7 @@ export default function MUIProgressPage() {
   return (
     <>
       <Head>
-        <title> MUI Components: Progress | Minimal UI</title>
+        <title> MUI Components: Progress </title>
       </Head>
 
       <Box

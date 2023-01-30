@@ -80,7 +80,7 @@ export default function MUISliderPage() {
   return (
     <>
       <Head>
-        <title> MUI Components: Slider | Minimal UI</title>
+        <title> MUI Components: Slider </title>
       </Head>
 
       <Box

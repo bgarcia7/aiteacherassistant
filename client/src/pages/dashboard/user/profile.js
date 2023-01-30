@@ -81,7 +81,7 @@ export default function UserProfilePage() {
   return (
     <>
       <Head>
-        <title> User: Profile | Minimal UI</title>
+        <title> User: Profile </title>
       </Head>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

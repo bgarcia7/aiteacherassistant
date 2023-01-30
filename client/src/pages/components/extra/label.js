@@ -27,7 +27,7 @@ export default function DemoLabelPage() {
   return (
     <>
       <Head>
-        <title> Extra Components: Label | Minimal UI</title>
+        <title> Extra Components: Label </title>
       </Head>
 
       <Box

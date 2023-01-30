@@ -52,7 +52,7 @@ export default function FoundationShadowsPage() {
   return (
     <>
       <Head>
-        <title> Foundations: Shadows | Minimal UI</title>
+        <title> Foundations: Shadows </title>
       </Head>
 
       <Box

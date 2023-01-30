@@ -40,7 +40,7 @@ export default function MUIDataGridPage() {
   return (
     <>
       <Head>
-        <title> MUI Components: DataGrid | Minimal UI</title>
+        <title> MUI Components: DataGrid </title>
       </Head>
 
       <Box

@@ -79,7 +79,7 @@ export default function MUITabsPage() {
   return (
     <>
       <Head>
-        <title> MUI Components: Tabs | Minimal UI</title>
+        <title> MUI Components: Tabs </title>
       </Head>
 
       <Box

@@ -129,7 +129,7 @@ export default function DemoMarkdownPage() {
   return (
     <>
       <Head>
-        <title> Extra Components: Markdown | Minimal UI</title>
+        <title> Extra Components: Markdown </title>
       </Head>
 
       <Box

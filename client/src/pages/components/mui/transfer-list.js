@@ -32,7 +32,7 @@ export default function MUITransferListPage() {
   return (
     <>
       <Head>
-        <title> MUI Components: Transfer List | Minimal UI</title>
+        <title> MUI Components: Transfer List </title>
       </Head>
 
       <Box

@@ -35,7 +35,7 @@ export default function DemoEditorPage() {
   return (
     <>
       <Head>
-        <title> Extra Components: Editor | Minimal UI</title>
+        <title> Extra Components: Editor </title>
       </Head>
 
       <Box

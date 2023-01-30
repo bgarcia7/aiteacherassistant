@@ -37,7 +37,7 @@ export default function MUIDialogPage() {
   return (
     <>
       <Head>
-        <title> MUI Components: Dialog | Minimal UI</title>
+        <title> MUI Components: Dialog </title>
       </Head>
 
       <Box
