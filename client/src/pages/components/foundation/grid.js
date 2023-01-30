@@ -59,7 +59,7 @@ export default function FoundationGridPage() {
   return (
     <>
       <Head>
-        <title> Foundations: Grid | Minimal UI</title>
+        <title> Foundations: Grid </title>
       </Head>
 
       <Box

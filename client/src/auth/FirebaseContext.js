@@ -108,8 +108,8 @@ export function AuthProvider({ children }) {
   }, [initialize]);
 
   // LOGIN
-  const login = useCallback((email, password) => {
-    signInWithEmailAndPassword(AUTH, email, password);
+  const login = useCallback(async (email, password) => {
+    await signInWithEmailAndPassword(AUTH, email, password);
   }, []);
 
   const loginWithGoogle = useCallback(() => {
@@ -125,8 +125,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   // REGISTER
-  const register = useCallback((email, password, firstName, lastName) => {
-    createUserWithEmailAndPassword(AUTH, email, password).then(async (res) => {
+  const register = useCallback(async (email, password, firstName, lastName) => {
+    await createUserWithEmailAndPassword(AUTH, email, password).then(async (res) => {
       const userRef = doc(collection(DB, 'users'), res.user?.uid);
 
       await setDoc(userRef, {

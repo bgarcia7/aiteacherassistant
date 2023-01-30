@@ -12,7 +12,7 @@ export default function LoginPage() {
   return (
     <>
       <Head>
-        <title> Login | Minimal UI</title>
+        <title> Login </title>
       </Head>
 
       <GuestGuard>

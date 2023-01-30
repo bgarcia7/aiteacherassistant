@@ -40,7 +40,7 @@ export default function MUIAvatarPage() {
   return (
     <>
       <Head>
-        <title> MUI Components: Avatar | Minimal UI</title>
+        <title> MUI Components: Avatar </title>
       </Head>
 
       <Box

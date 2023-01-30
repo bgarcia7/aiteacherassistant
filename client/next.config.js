@@ -28,7 +28,7 @@ module.exports = withTM({
     AWS_COGNITO_USER_POOL_ID: '',
     AWS_COGNITO_CLIENT_ID: '',
     // AUTH0
-    AUTH0_DOMAIN: '',
-    AUTH0_CLIENT_ID: '',
+    AUTH0_DOMAIN: 'dev-lng23s6cjze2c0fq.us.auth0.com',
+    AUTH0_CLIENT_ID: 'VsCl7COCCoKazUJzF0ESVxoHbFQnX20q',
   },
 });

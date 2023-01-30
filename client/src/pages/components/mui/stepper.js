@@ -25,7 +25,7 @@ export default function MUIStepperPage() {
   return (
     <>
       <Head>
-        <title> MUI Components: Stepper | Minimal UI</title>
+        <title> MUI Components: Stepper </title>
       </Head>
 
       <Box

@@ -49,7 +49,7 @@ export default function GeneralAppPage() {
   return (
     <>
       <Head>
-        <title> General: App | Minimal UI</title>
+        <title> Teacher Assistant - Dashboard</title>
       </Head>
 
       <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -57,7 +57,7 @@ export default function GeneralAppPage() {
           <Grid item xs={12} md={8}>
             <AppWelcome
               title={`Welcome back! \n ${user?.displayName}`}
-              description="If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything."
+              description="Inspirational quote of the day lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
               img={
                 <SeoIllustration
                   sx={{
@@ -67,7 +67,7 @@ export default function GeneralAppPage() {
                   }}
                 />
               }
-              action={<Button variant="contained">Go Now</Button>}
+              action={<Button variant="contained">Generate New Lesson Plan</Button>}
             />
           </Grid>
 
@@ -75,7 +75,7 @@ export default function GeneralAppPage() {
             <AppFeatured list={_appFeatured} />
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          {/* <Grid item xs={12} md={4}>
             <AppWidgetSummary
               title="Total Active Users"
               percent={2.6}
@@ -109,9 +109,9 @@ export default function GeneralAppPage() {
                 series: [8, 9, 31, 8, 16, 37, 8, 33, 46, 31],
               }}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <AppCurrentDownload
               title="Current Download"
               chart={{
@@ -155,9 +155,9 @@ export default function GeneralAppPage() {
                 ],
               }}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} lg={8}>
+          {/* <Grid item xs={12} lg={8}>
             <AppNewInvoice
               title="New Invoice"
               tableData={_appInvoices}
@@ -204,7 +204,7 @@ export default function GeneralAppPage() {
                 }}
               />
             </Stack>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </>
