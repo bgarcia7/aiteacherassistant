@@ -129,7 +129,7 @@ export function AuthProvider({ children }) {
             ...user,
             displayName: user?.name,
             photoURL: user?.picture,
-            role: 'admin',
+            role: 'user',
           },
         },
       });
