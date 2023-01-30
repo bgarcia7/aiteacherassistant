@@ -11,9 +11,10 @@ import uuid
 # ========[ LOCAL ]=========
 import json
 db_url = json.load(open('zappa_settings.json'))['production']['environment_variables']['DATABASE_URL']
-
 db = create_engine(db_url)
 base = declarative_base()
+Session = sessionmaker(db)  
+session = Session()
 
 class LessonPlan(base):  
     __tablename__ = 'lesson_plan'
@@ -22,31 +23,35 @@ class LessonPlan(base):
     title = Column(String)
     description = Column(String)
 
-Session = sessionmaker(db)  
-session = Session()
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+class Module(base):  
+    __tablename__ = 'module'
+
+    id = Column(String, primary_key=True, default=str(uuid.uuid1()))
+    module_type = Column(String)
+    title = Column(String)
+    body = Column(String)
+    # lesson_plan_id = Column()
+
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+def insert_lesson_plan(title, description):
+    # Create 
+    lesson_plan = LessonPlan(title=title, description=description)  
+    session.add(lesson_plan)  
+    session.commit()
+    return lesson_plan.as_dict()
+
+def get_lesson_plan(lesson_plan_id):
+    lesson_plan = session.query(LessonPlan).filter_by(id=lesson_plan_id).first()
+    return lesson_plan.as_dict()
+
+def insert_modules(modules):
+    modules=[Module(module_type=module['module_type'], title=module['title'], body=module['body']) for module in modules]
+    session.add(modules)
+    session.commit()
 
 base.metadata.create_all(db)
-
-# Create 
-test_lesson = LessonPlan(title="Intro to Algebra", description="students will learn ")  
-session.add(test_lesson)  
-session.commit()
-
-# Read
-lessons = session.query(LessonPlan)  
-for l in lessons:  
-    print(l.title)
-
-# Update
-test_lesson.title = "Intro to Geometry"  
-session.commit()
-
-# Delete
-session.delete(test_lesson)  
-session.commit()  
-print(db)
-
-
-# Drop table
-LessonPlan.__table__.drop(db)
-session.commit() 
