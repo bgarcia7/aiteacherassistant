@@ -25,8 +25,9 @@ import { MotionContainer, varFade } from '../../components/animate';
 const StyledRoot = styled('div')(({ theme }) => ({
   position: 'relative',
   ...bgGradient({
-    color: alpha(theme.palette.background.default, theme.palette.mode === 'light' ? 0.9 : 0.94),
-    imgUrl: '/assets/background/overlay_2.jpg',
+    color: alpha(theme.palette.background.default, theme.palette.mode === 'light' ? 0.3 : 0.94),
+    imgUrl: '/assets/background/ta_hero.png',
+    backgroundImage: `url('/assets/background/ta_hero.png')`,
   }),
   [theme.breakpoints.up('md')]: {
     top: 0,
@@ -123,12 +124,6 @@ export default function HomeHero() {
             <Grid item xs={12} md={6} sx={{ height: 1 }}>
               <Description />
             </Grid>
-
-            {isDesktop && (
-              <Grid item xs={12} md={6}>
-                <Content />
-              </Grid>
-            )}
           </Grid>
         </Container>
 
@@ -193,50 +188,11 @@ function Description() {
                 },
               }}
             >
-              Live Preview
+              Get Started
             </Button>
-
-            <Link
-              color="inherit"
-              variant="caption"
-              target="_blank"
-              rel="noopener"
-              href={PATH_FREE_VERSION}
-              sx={{ textDecoration: 'underline', display: 'inline-flex', alignItems: 'center' }}
-            >
-              <Iconify icon="eva:external-link-fill" width={16} sx={{ mr: 0.5 }} />
-              Get Free Version
-            </Link>
           </Stack>
-
-          <Button
-            color="inherit"
-            size="large"
-            variant="outlined"
-            startIcon={<Iconify icon="eva:external-link-fill" width={24} />}
-            target="_blank"
-            rel="noopener"
-            href={PATH_FIGMA_PREVIEW}
-            sx={{ borderColor: 'text.primary' }}
-          >
-            Design Preview
-          </Button>
         </Stack>
       </m.div>
-
-      <Stack spacing={3} sx={{ textAlign: 'center', opacity: 0.4 }}>
-        <m.div variants={varFade().in}>
-          <Typography variant="overline">Available For</Typography>
-        </m.div>
-
-        <Stack spacing={2} direction="row" justifyContent="center">
-          {['sketch', 'figma', 'js', 'ts', 'nextjs'].map((platform) => (
-            <m.div key={platform} variants={varFade().in}>
-              <SvgColor src={`/assets/icons/platforms/ic_${platform}.svg`} />
-            </m.div>
-          ))}
-        </Stack>
-      </Stack>
     </StyledDescription>
   );
 }
@@ -273,37 +229,6 @@ function Content() {
           transition={transition}
           alt={`hero_${isLight ? 'light' : 'dark'}_1`}
           src={`/assets/images/home/hero_${isLight ? 'light' : 'dark'}_1.png`}
-          sx={{ position: 'absolute' }}
-        />
-        <Box
-          component={m.img}
-          animate={{ y: ['-100%', '0%'] }}
-          transition={transition}
-          alt={`hero_${isLight ? 'light' : 'dark'}_1`}
-          src={`/assets/images/home/hero_${isLight ? 'light' : 'dark'}_1.png`}
-          sx={{ position: 'absolute' }}
-        />
-      </Stack>
-
-      <Stack
-        component={m.div}
-        variants={varFade().in}
-        sx={{ width: 720, position: 'relative', ml: -2 }}
-      >
-        <Box
-          component={m.img}
-          animate={{ y: ['100%', '0%'] }}
-          transition={transition}
-          alt={`hero_${isLight ? 'light' : 'dark'}_2`}
-          src={`/assets/images/home/hero_${isLight ? 'light' : 'dark'}_2.png`}
-          sx={{ position: 'absolute' }}
-        />
-        <Box
-          component={m.img}
-          animate={{ y: ['0%', '-100%'] }}
-          transition={transition}
-          alt={`hero_${isLight ? 'light' : 'dark'}_2`}
-          src={`/assets/images/home/hero_${isLight ? 'light' : 'dark'}_2.png`}
           sx={{ position: 'absolute' }}
         />
       </Stack>

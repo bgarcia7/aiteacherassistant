@@ -67,7 +67,7 @@ export default function Header() {
 
           {isDesktop && <NavDesktop isOffset={isOffset} data={navConfig} />}
 
-          <Button variant="contained" target="_blank" rel="noopener" href={PATH_AFTER_LOGIN}>
+          <Button variant="contained" href={PATH_AFTER_LOGIN}>
             Get Started
           </Button>
 
