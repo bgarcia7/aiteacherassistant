@@ -51,7 +51,7 @@ const StyledDescription = styled('div')(({ theme }) => ({
 
 const StyledGradientText = styled(m.h1)(({ theme }) => ({
   ...textGradient(
-    `300deg, ${theme.palette.primary.main} 0%, ${theme.palette.warning.main} 25%, ${theme.palette.primary.main} 50%, ${theme.palette.warning.main} 75%, ${theme.palette.primary.main} 100%`
+    `300deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 25%, ${theme.palette.primary.main} 50%, ${theme.palette.primary.light} 75%, ${theme.palette.primary.main} 100%`
   ),
   backgroundSize: '400%',
   fontFamily: secondaryFont.style.fontFamily,
@@ -143,13 +143,6 @@ function Description() {
   return (
     <StyledDescription>
       <m.div variants={varFade().in}>
-        <Typography variant="h2" sx={{ textAlign: 'center' }}>
-          Start a <br />
-          new project with
-        </Typography>
-      </m.div>
-
-      <m.div variants={varFade().in}>
         <StyledGradientText
           animate={{ backgroundPosition: '200% center' }}
           transition={{
@@ -159,14 +152,14 @@ function Description() {
             repeat: Infinity,
           }}
         >
-          Minimal
+          Teacher Assistant
         </StyledGradientText>
       </m.div>
 
       <m.div variants={varFade().in}>
         <Typography variant="body2" sx={{ textAlign: 'center' }}>
-          The starting point for your next project is based on MUI.Easy customization Helps you
-          build apps faster and better.
+          Generate your next lesson plan, quiz, or assignment in minutes with our easy-to-use AI
+          generation application.
         </Typography>
       </m.div>
 
@@ -176,17 +169,9 @@ function Description() {
             <Button
               component={NextLink}
               href={PATH_DASHBOARD.root}
-              color="inherit"
               size="large"
               variant="contained"
               startIcon={<Iconify icon="eva:flash-fill" width={24} />}
-              sx={{
-                bgcolor: 'text.primary',
-                color: (theme) => (theme.palette.mode === 'light' ? 'common.white' : 'grey.800'),
-                '&:hover': {
-                  bgcolor: 'text.primary',
-                },
-              }}
             >
               Get Started
             </Button>

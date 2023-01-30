@@ -18,27 +18,27 @@ const GREY = {
 };
 
 const PRIMARY = {
-  lighter: '#C8FACD',
-  light: '#5BE584',
-  main: '#00AB55',
-  dark: '#007B55',
-  darker: '#005249',
+  lighter: '#F2AB83',
+  light: '#F5CAC3',
+  main: '#F28482',
+  dark: '#EF6D6A',
+  darker: '#ED5552',
   contrastText: '#fff',
 };
 
 const SECONDARY = {
-  lighter: '#D6E4FF',
-  light: '#84A9FF',
-  main: '#3366FF',
-  dark: '#1939B7',
-  darker: '#091A7A',
+  lighter: '#95B1AA',
+  light: '#8DAAA3',
+  main: '#84A59D',
+  dark: '#789B92',
+  darker: '#6C9288',
   contrastText: '#fff',
 };
 
 const INFO = {
-  lighter: '#CAFDF5',
-  light: '#61F3F3',
-  main: '#00B8D9',
+  lighter: '#82F2CF',
+  light: '#82F2CF',
+  main: '#82CBF2',
   dark: '#006C9C',
   darker: '#003768',
   contrastText: '#fff',
@@ -54,11 +54,11 @@ const SUCCESS = {
 };
 
 const WARNING = {
-  lighter: '#FFF5CC',
-  light: '#FFD666',
-  main: '#FFAB00',
-  dark: '#B76E00',
-  darker: '#7A4100',
+  lighter: '#F7C677',
+  light: '#F6C16B',
+  main: '#F6BD60',
+  dark: '#F4B349',
+  darker: '#F3A932',
   contrastText: GREY[800],
 };
 

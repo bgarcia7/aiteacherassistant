@@ -68,7 +68,7 @@ export default function Header() {
           {isDesktop && <NavDesktop isOffset={isOffset} data={navConfig} />}
 
           <Button variant="contained" href={PATH_AFTER_LOGIN}>
-            Get Started
+            Create Account
           </Button>
 
           {!isDesktop && <NavMobile isOffset={isOffset} data={navConfig} />}
