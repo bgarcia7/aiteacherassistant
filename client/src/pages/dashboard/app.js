@@ -75,7 +75,7 @@ export default function GeneralAppPage() {
             <AppFeatured list={_appFeatured} />
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          {/* <Grid item xs={12} md={4}>
             <AppWidgetSummary
               title="Total Active Users"
               percent={2.6}
@@ -109,9 +109,9 @@ export default function GeneralAppPage() {
                 series: [8, 9, 31, 8, 16, 37, 8, 33, 46, 31],
               }}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <AppCurrentDownload
               title="Current Download"
               chart={{
@@ -155,9 +155,9 @@ export default function GeneralAppPage() {
                 ],
               }}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} lg={8}>
+          {/* <Grid item xs={12} lg={8}>
             <AppNewInvoice
               title="New Invoice"
               tableData={_appInvoices}
@@ -204,7 +204,7 @@ export default function GeneralAppPage() {
                 }}
               />
             </Stack>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </>
