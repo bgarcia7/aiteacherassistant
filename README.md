@@ -30,6 +30,6 @@ Start the server
     - Each component will be draggable.
     - You can re-generate responses for each module. 
     - You can hard edit the text in each module. 
-- Add calendar functionlaity
+- Add calendar functionality
 - Add export to Google slides
 
