@@ -193,7 +193,7 @@ export default function UserListPage() {
   return (
     <>
       <Head>
-        <title> User: List | Minimal UI</title>
+        <title> User: List </title>
       </Head>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

@@ -43,7 +43,7 @@ export default function MUIRadioButtonsPage() {
   return (
     <>
       <Head>
-        <title> MUI Components: Radio Buttons | Minimal UI</title>
+        <title> MUI Components: Radio Buttons </title>
       </Head>
 
       <Box

@@ -65,7 +65,7 @@ export default function DemoCopyToClipboardPage() {
   return (
     <>
       <Head>
-        <title> Extra Components: Copy To Clipboard | Minimal UI</title>
+        <title> Extra Components: Copy To Clipboard </title>
       </Head>
 
       <Box

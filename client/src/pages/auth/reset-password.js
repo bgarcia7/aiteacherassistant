@@ -24,7 +24,7 @@ export default function ResetPasswordPage() {
   return (
     <>
       <Head>
-        <title> Reset Password | Minimal UI</title>
+        <title> Reset Password </title>
       </Head>
 
       <PasswordIcon sx={{ mb: 5, height: 96 }} />

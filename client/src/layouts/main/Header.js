@@ -10,7 +10,7 @@ import { bgBlur } from '../../utils/cssStyles';
 // config
 import { HEADER } from '../../config-global';
 // routes
-import { PATH_DOCS, PATH_MINIMAL_ON_STORE } from '../../routes/paths';
+import { PATH_DOCS } from '../../routes/paths';
 import { PATH_AFTER_LOGIN } from '../../config-global';
 // components
 import Logo from '../../components/logo';
@@ -68,7 +68,7 @@ export default function Header() {
           {isDesktop && <NavDesktop isOffset={isOffset} data={navConfig} />}
 
           <Button variant="contained" href={PATH_AFTER_LOGIN}>
-            Create Account
+            Login
           </Button>
 
           {!isDesktop && <NavMobile isOffset={isOffset} data={navConfig} />}

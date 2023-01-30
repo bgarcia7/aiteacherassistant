@@ -40,7 +40,7 @@ export default function DemoAnimatePage() {
   return (
     <>
       <Head>
-        <title> Extra Components: Animate | Minimal UI</title>
+        <title> Extra Components: Animate </title>
       </Head>
 
       <Box

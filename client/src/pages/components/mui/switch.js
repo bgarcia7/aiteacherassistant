@@ -36,7 +36,7 @@ export default function MUISwitchPage() {
   return (
     <>
       <Head>
-        <title> MUI Components: Switch | Minimal UI</title>
+        <title> MUI Components: Switch </title>
       </Head>
 
       <Box

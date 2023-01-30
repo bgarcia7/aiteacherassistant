@@ -59,7 +59,7 @@ export default function DemoMultiLanguagePage() {
   return (
     <>
       <Head>
-        <title> Extra Components: Multi Language | Minimal UI</title>
+        <title> Extra Components: Multi Language </title>
       </Head>
 
       <Box

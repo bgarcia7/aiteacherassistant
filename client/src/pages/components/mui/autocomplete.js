@@ -49,7 +49,7 @@ export default function MUIAutocompletePage() {
   return (
     <>
       <Head>
-        <title> MUI Components: Autocomplete | Minimal UI</title>
+        <title> MUI Components: Autocomplete </title>
       </Head>
 
       <Box
