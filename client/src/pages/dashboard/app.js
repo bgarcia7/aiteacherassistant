@@ -49,7 +49,7 @@ export default function GeneralAppPage() {
   return (
     <>
       <Head>
-        <title> General: App | Minimal UI</title>
+        <title> Teacher Assistant - Dashboard</title>
       </Head>
 
       <Container maxWidth={themeStretch ? false : 'xl'}>
