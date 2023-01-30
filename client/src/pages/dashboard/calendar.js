@@ -229,13 +229,13 @@ export default function CalendarPage() {
     }
   };
 
-  const handleFilterEventColor = (eventColor) => {
-    const checked = filterEventColor.includes(eventColor)
-      ? filterEventColor.filter((value) => value !== eventColor)
-      : [...filterEventColor, eventColor];
+  // const handleFilterEventColor = (eventColor) => {
+  //   const checked = filterEventColor.includes(eventColor)
+  //     ? filterEventColor.filter((value) => value !== eventColor)
+  //     : [...filterEventColor, eventColor];
 
-    setFilterEventColor(checked);
-  };
+  //   setFilterEventColor(checked);
+  // };
 
   const dataFiltered = applyFilter({
     inputData: events,
@@ -331,7 +331,7 @@ export default function CalendarPage() {
         />
       </Dialog>
 
-      <CalendarFilterDrawer
+      {/* <CalendarFilterDrawer
         events={events}
         picker={picker}
         open={openFilter}
@@ -353,7 +353,7 @@ export default function CalendarPage() {
             dispatch(selectEvent(eventId));
           }
         }}
-      />
+      /> */}
     </>
   );
 }
