@@ -90,8 +90,6 @@ export default function CalendarPage() {
 
   const [view, setView] = useState(isDesktop ? 'dayGridMonth' : 'listWeek');
 
-  const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     dispatch(getEvents());
     dispatch(getAllModules());
