@@ -1,96 +1,227 @@
-import { Box } from '@mui/system';
-import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { useState, useRef, useEffect } from 'react';
+import * as Yup from 'yup';
+import merge from 'lodash/merge';
+import { isBefore } from 'date-fns';
+// form
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+// @mui
+import { Box, Stack, Button, Tooltip, TextField, IconButton, DialogActions } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { MobileDateTimePicker } from '@mui/x-date-pickers';
+// components
+import Iconify from '../../../components/iconify';
+import { ColorSinglePicker } from '../../../components/color-utils';
+import FormProvider, { RHFTextField, RHFSwitch } from '../../../components/hook-form';
+
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-// fake data generator
-const getItems = (count) =>
-  Array.from({ length: count }, (v, k) => k).map((k) => ({
-    id: `item-${k}`,
-    content: `item ${k}`,
-  }));
+// ----------------------------------------------------------------------
 
-// a little function to help us with reordering the result
-const reorder = (list, startIndex, endIndex) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
+const getInitialValues = (event, range) => {
+  const initialEvent = {
+    title: '',
+    description: '',
+    textColor: '#1890FF',
+    allDay: false,
+    start: range ? new Date(range.start).toISOString() : new Date().toISOString(),
+    end: range ? new Date(range.end).toISOString() : new Date().toISOString(),
+  };
 
-  return result;
+  if (event || range) {
+    return merge({}, initialEvent, event);
+  }
+
+  return initialEvent;
 };
 
-const grid = 8;
+// ----------------------------------------------------------------------
 
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
-  userSelect: 'none',
-  padding: grid * 2,
-  margin: `0 0 ${grid}px 0`,
+CalendarForm.propTypes = {
+  event: PropTypes.object,
+  range: PropTypes.object,
+  onCancel: PropTypes.func,
+  onDeleteEvent: PropTypes.func,
+  onCreateUpdateEvent: PropTypes.func,
+  colorOptions: PropTypes.arrayOf(PropTypes.string),
+};
 
-  // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'grey',
+export default function CalendarForm({
+  event,
+  range,
+  colorOptions,
+  onCreateUpdateEvent,
+  onDeleteEvent,
+  onCancel,
+}) {
+  const hasEventData = !!event;
 
-  // styles we need to apply on draggables
-  ...draggableStyle,
-});
+  const EventSchema = Yup.object().shape({
+    title: Yup.string().max(255).required('Title is required'),
+    description: Yup.string().max(5000),
+  });
 
-const getListStyle = (isDraggingOver) => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
-});
+  const methods = useForm({
+    resolver: yupResolver(EventSchema),
+    defaultValues: getInitialValues(event, range),
+  });
 
-class CalendarForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      items: getItems(10),
-    };
-    this.onDragEnd = this.onDragEnd.bind(this);
-  }
+  const {
+    reset,
+    watch,
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
 
-  onDragEnd(result) {
-    // dropped outside the list
-    if (!result.destination) {
-      return;
+  const values = watch();
+
+  const onSubmit = async (data) => {
+    try {
+      const newEvent = {
+        title: data.title,
+        description: data.description,
+        textColor: data.textColor,
+        allDay: data.allDay,
+        start: data.start,
+        end: data.end,
+      };
+      onCreateUpdateEvent(newEvent);
+      onCancel();
+      reset();
+    } catch (error) {
+      console.error(error);
     }
+  };
 
-    const items = reorder(this.state.items, result.source.index, result.destination.index);
+  const isDateError =
+    !values.allDay && values.start && values.end
+      ? isBefore(new Date(values.end), new Date(values.start))
+      : false;
 
-    this.setState({
-      items,
-    });
-  }
+  // drag and drop
 
-  // Normally you would want to split things out into separate components.
-  // But in this example everything is just done in one place for simplicity
-  render() {
-    return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <Droppable droppableId="droppable">
-          {(provided, snapshot) => (
-            <Box
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              style={getListStyle(snapshot.isDraggingOver)}
-            >
-              {this.state.items.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
-                    <Box
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      {item.content}
-                    </Box>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </Box>
+  const draggableComponents = [
+    {
+      id: 'draggable-1',
+      content: <RHFTextField name="title" label="Title" fullWidth />,
+    },
+    {
+      id: 'draggable-2',
+      content: <RHFTextField name="description" label="Description" multiline rows={3} />,
+    },
+    {
+      id: 'draggable-3',
+      content: <RHFSwitch name="allDay" label="All day" />,
+    },
+  ];
+
+  const [components, setComponents] = useState(draggableComponents);
+
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(components);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setComponents(items);
+  };
+
+  return (
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <Stack spacing={3} sx={{ px: 3 }}>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="droppable">
+            {(provided) => (
+              <Box ref={provided.innerRef} {...provided.droppableProps}>
+                {components.map((component, index) => (
+                  <Draggable key={component.id} draggableId={component.id} index={index}>
+                    {(provided) => (
+                      <Box
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        {component.content}
+                      </Box>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </Box>
+            )}
+          </Droppable>
+        </DragDropContext>
+
+        <Controller
+          name="start"
+          control={control}
+          render={({ field }) => (
+            <MobileDateTimePicker
+              {...field}
+              onChange={(newValue) => field.onChange(newValue)}
+              label="Start date"
+              inputFormat="dd/MM/yyyy hh:mm a"
+              renderInput={(params) => <TextField {...params} fullWidth />}
+            />
           )}
-        </Droppable>
-      </DragDropContext>
-    );
-  }
-}
+        />
 
-export default CalendarForm;
+        <Controller
+          name="end"
+          control={control}
+          render={({ field }) => (
+            <MobileDateTimePicker
+              {...field}
+              onChange={(newValue) => field.onChange(newValue)}
+              label="End date"
+              inputFormat="dd/MM/yyyy hh:mm a"
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  error={!!isDateError}
+                  helperText={isDateError && 'End date must be later than start date'}
+                />
+              )}
+            />
+          )}
+        />
+
+        <Controller
+          name="textColor"
+          control={control}
+          render={({ field }) => (
+            <ColorSinglePicker
+              value={field.value}
+              onChange={field.onChange}
+              colors={colorOptions}
+            />
+          )}
+        />
+      </Stack>
+
+      <DialogActions>
+        {hasEventData && (
+          <Tooltip title="Delete Event">
+            <IconButton onClick={onDeleteEvent}>
+              <Iconify icon="eva:trash-2-outline" />
+            </IconButton>
+          </Tooltip>
+        )}
+
+        <Box sx={{ flexGrow: 1 }} />
+
+        <Button variant="outlined" color="inherit" onClick={onCancel}>
+          Cancel
+        </Button>
+
+        <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+          {hasEventData ? 'Update' : 'Add'}
+        </LoadingButton>
+      </DialogActions>
+    </FormProvider>
+  );
+}
