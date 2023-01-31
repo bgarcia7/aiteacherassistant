@@ -21,7 +21,7 @@ import { getModule, getModules } from '../../../pages/api/getModule';
 
 // ----------------------------------------------------------------------
 
-const getInitialValues = (event, range) => {
+const getInitialValues = (event, range, defaultModules) => {
   const initialEvent = {
     title: '',
     description: '',
@@ -56,6 +56,7 @@ export default function CalendarForm({
   onCreateUpdateEvent,
   onDeleteEvent,
   onCancel,
+  defaultModules,
 }) {
   const hasEventData = !!event;
 
@@ -104,6 +105,10 @@ export default function CalendarForm({
 
   // drag and drop
 
+  console.log(defaultModules);
+
+  const [modules, setModules] = useState(defaultModules.modules);
+
   const draggableComponents = [
     {
       id: 'draggable-1',
@@ -131,41 +136,10 @@ export default function CalendarForm({
     setComponents(items);
   };
 
-  // axios
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [modules, setModules] = useState([]);
-
-  const getModules = async () => {
-    try {
-      setLoading(true);
-      const response = await getModules();
-      setModules(response.data);
-      console.log(modules);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getModules();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>에러가 발생했습니다.</div>;
-  }
-
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3} sx={{ px: 3 }}>
-        <RHFTextField name="title" label="Title" fullWidth />
+        <RHFTextField name="title" label="Title" placeholder={defaultModules.title} fullWidth />
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable">
             {(provided) => (

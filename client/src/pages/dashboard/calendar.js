@@ -21,6 +21,7 @@ import {
   selectRange,
   onOpenModal,
   onCloseModal,
+  getAllModules,
 } from '../../redux/slices/calendar';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
@@ -38,8 +39,6 @@ import { useSettingsContext } from '../../components/settings';
 import { useDateRangePicker } from '../../components/date-range-picker';
 // sections
 import { CalendarForm, StyledCalendar, CalendarToolbar } from '../../sections/@dashboard/calendar';
-// api
-import { getModules } from 'src/pages/api/getModule';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
@@ -69,7 +68,7 @@ export default function CalendarPage() {
 
   const calendarRef = useRef(null);
 
-  const { events, openModal, selectedRange, selectedEventId } = useSelector(
+  const { events, openModal, selectedRange, selectedEventId, modules } = useSelector(
     (state) => state.calendar
   );
 
@@ -91,18 +90,12 @@ export default function CalendarPage() {
 
   const [view, setView] = useState(isDesktop ? 'dayGridMonth' : 'listWeek');
 
-  const [modules, setModules] = useState([]);
-
-  const fetchModules = async () => {
-    const response = await getModules();
-    setModules(response);
-    console.log(modules);
-  };
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     dispatch(getEvents());
-    fetchModules();
-  }, [dispatch]);
+    dispatch(getAllModules());
+  }, []);
 
   useEffect(() => {
     const calendarEl = calendarRef.current;
@@ -321,6 +314,7 @@ export default function CalendarPage() {
         <CalendarForm
           event={selectedEvent}
           range={selectedRange}
+          defaultModules={modules}
           onCancel={handleCloseModal}
           onCreateUpdateEvent={handleCreateUpdateEvent}
           onDeleteEvent={handleDeleteEvent}
