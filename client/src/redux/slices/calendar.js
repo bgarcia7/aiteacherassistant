@@ -47,6 +47,7 @@ const slice = createSlice({
       const newEvent = action.payload;
       state.isLoading = false;
       state.events = [...state.events, newEvent];
+      state.selectedEventId = newEvent.id;
     },
 
     // UPDATE EVENT
