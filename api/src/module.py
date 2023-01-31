@@ -19,22 +19,19 @@ SAMPLE_MODULE = {'title': 'sample module title 1', 'body': 'sample module conten
 
 @module_blueprint.route('/<module_id>', methods=['GET'])
 def get_module(module_id):
-  # return db.get_module(module_id)
-  return SAMPLE_MODULE
+  return db.get_module(module_id)
 
 @module_blueprint.route('/<module_id>/edit', methods=['POST'])
 def update_module(module_id):
     data = request.get_json()
-    # return db.update_module(module_id, data)
-    return SAMPLE_MODULE
+    return db.update_module(module_id, data)
 
 @module_blueprint.route('/<module_id>', methods=['DELETE'])
 def delete_module(module_id):
-    # return db.delete_module(module_id)
+  db.delete_module(module_id)
   return jsonify({"success": True}) 
 
 @module_blueprint.route('/<module_id>/regenerate', methods=['POST'])
 def regenerate_module(module_id):
-  #TODO: Regenerate module
-  # return db.get_module(module_id)
-  return SAMPLE_MODULE
+  #TODO: Regenerate module and update in db
+  return db.get_module(module_id)

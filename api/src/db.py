@@ -67,7 +67,17 @@ def insert_lesson_plan(title, description, modules = []):
 def get_lesson_plan(lesson_plan_id):
     with Session() as session:
         lesson_plan = session.query(LessonPlan).filter_by(id=lesson_plan_id).first()
-        return lesson_plan.as_dict()
+        modules = session.query(Module).filter_by(lesson_plan_id=lesson_plan_id).all()
+        expanded_lesson_plan = lesson_plan.as_dict()
+        print("Modules", lesson_plan.modules)
+        expanded_lesson_plan['modules'] = [module.as_dict() for module in modules]
+        print("Exapnded", expanded_lesson_plan)
+        return expanded_lesson_plan
+
+def get_module(module_id):
+    with Session() as session:
+        module = session.query(Module).filter_by(id=module_id).first()
+        return module.as_dict()
 
 def insert_modules(modules):
     with Session() as session:
@@ -89,7 +99,7 @@ def delete_module(module_id):
         module = session.query(Module).filter_by(id=module_id).first()
         session.delete(module)
         session.commit()
-        return module.as_dict()
+        return
 
 if __name__ == "__main__":
     print("Adding tables")
