@@ -1,4 +1,3 @@
-
 # Setup
 
 ```
@@ -11,11 +10,12 @@ python3 -m flask run
 
 open http://127.0.0.1:5000
 
-# deployment
+# Deployment
 
 Get zappa_settings.json from Brandon
 
 ```
 cd api/src
+source venv/bin/activate
 zappa update production
 ```
