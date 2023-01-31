@@ -277,7 +277,7 @@ export default function CalendarPage() {
               onOpenFilter={handleOpenFilter}
             />
             <FullCalendar
-              weekends
+              weekends={false}
               editable
               droppable
               selectable
