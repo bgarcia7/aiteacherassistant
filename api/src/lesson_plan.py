@@ -20,9 +20,9 @@ def create_lesson_plan():
   title = data.get('title', 'Default Title')
   learning_objective = data.get('learning_objective', 'Understand the concept of a ratio and use ratio language to describe a ratio relationship between two quantities.')
   num_minutes = data.get('num_minutes', 60)
-  grade = data.get('grade', '4th')
+  # grade = data.get('grade', '4th')
 
-  modules = ai.generate_modules(num_minutes, grade, learning_objective)
+  modules = ai.generate_modules(title, learning_objective, num_minutes)
   print("Generated modules:", modules)
   lesson_plan = db.insert_lesson_plan(title, learning_objective, modules)
 
