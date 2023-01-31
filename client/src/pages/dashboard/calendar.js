@@ -9,7 +9,7 @@ import { useState, useRef, useEffect } from 'react';
 // next
 import Head from 'next/head';
 // @mui
-import { Card, Button, Container, DialogTitle, Dialog } from '@mui/material';
+import { Card, Button, Container, DialogTitle, Dialog, Grid } from '@mui/material';
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
 import {
@@ -263,50 +263,73 @@ export default function CalendarPage() {
           }
         />
 
-        <Card>
-          <StyledCalendar>
-            <CalendarToolbar
-              date={date}
-              view={view}
-              onNextDate={handleClickDateNext}
-              onPrevDate={handleClickDatePrev}
-              onToday={handleClickToday}
-              onChangeView={handleChangeView}
-              onOpenFilter={handleOpenFilter}
-            />
-            <FullCalendar
-              weekends={false}
-              editable
-              droppable
-              selectable
-              allDayMaintainDuration
-              eventResizableFromStart
-              events={dataFiltered}
-              initialEvents={events}
-              ref={calendarRef}
-              initialDate={date}
-              initialView={view}
-              dayMaxEventRows={3}
-              eventDisplay="block"
-              headerToolbar={false}
-              select={handleSelectRange}
-              eventDrop={handleDropEvent}
-              eventClick={handleSelectEvent}
-              eventResize={handleResizeEvent}
-              height={isDesktop ? 720 : 'auto'}
-              plugins={[
-                listPlugin,
-                dayGridPlugin,
-                timelinePlugin,
-                timeGridPlugin,
-                interactionPlugin,
-              ]}
-            />
-          </StyledCalendar>
-        </Card>
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            marginTop: 3,
+          }}
+        >
+          <Grid item xs={12} md={6} lg={7}>
+            <Card>
+              <StyledCalendar>
+                <CalendarToolbar
+                  date={date}
+                  view={view}
+                  onNextDate={handleClickDateNext}
+                  onPrevDate={handleClickDatePrev}
+                  onToday={handleClickToday}
+                  onChangeView={handleChangeView}
+                  onOpenFilter={handleOpenFilter}
+                />
+                <FullCalendar
+                  weekends={false}
+                  editable
+                  droppable
+                  selectable
+                  allDayMaintainDuration
+                  eventResizableFromStart
+                  events={dataFiltered}
+                  initialEvents={events}
+                  ref={calendarRef}
+                  initialDate={date}
+                  initialView={view}
+                  dayMaxEventRows={3}
+                  eventDisplay="block"
+                  headerToolbar={false}
+                  select={handleSelectRange}
+                  eventDrop={handleDropEvent}
+                  eventClick={handleSelectEvent}
+                  eventResize={handleResizeEvent}
+                  height={isDesktop ? 720 : 'auto'}
+                  plugins={[
+                    listPlugin,
+                    dayGridPlugin,
+                    timelinePlugin,
+                    timeGridPlugin,
+                    interactionPlugin,
+                  ]}
+                />
+              </StyledCalendar>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6} lg={5}>
+            <Card>
+              <CalendarForm
+                event={selectedEvent}
+                range={selectedRange}
+                defaultModules={modules}
+                onCancel={handleCloseModal}
+                onCreateUpdateEvent={handleCreateUpdateEvent}
+                onDeleteEvent={handleDeleteEvent}
+                colorOptions={COLOR_OPTIONS}
+              />
+            </Card>
+          </Grid>
+        </Grid>
       </Container>
 
-      <Dialog fullWidth maxWidth="xs" open={openModal} onClose={handleCloseModal}>
+      {/* <Dialog fullWidth maxWidth="xs" open={openModal} onClose={handleCloseModal}>
         <DialogTitle>{selectedEvent ? 'Edit Module' : 'Add Module'}</DialogTitle>
 
         <CalendarForm
@@ -318,7 +341,7 @@ export default function CalendarPage() {
           onDeleteEvent={handleDeleteEvent}
           colorOptions={COLOR_OPTIONS}
         />
-      </Dialog>
+      </Dialog> */}
     </>
   );
 }

@@ -77,18 +77,18 @@ const slice = createSlice({
     // SELECT RANGE
     selectRange(state, action) {
       const { start, end } = action.payload;
-      state.openModal = true;
+      state.openDrawer = true;
       state.selectedRange = { start, end };
     },
 
-    // OPEN MODAL
-    onOpenModal(state) {
-      state.openModal = true;
+    // OPEN Drawer
+    onOpenDrawer(state) {
+      state.openDrawer = true;
     },
 
-    // CLOSE MODAL
-    onCloseModal(state) {
-      state.openModal = false;
+    // CLOSE Drawer
+    onCloseDrawer(state) {
+      state.openDrawer = false;
       state.selectedEventId = null;
       state.selectedRange = null;
     },
