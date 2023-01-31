@@ -38,7 +38,6 @@ import { useSettingsContext } from '../../components/settings';
 import { useDateRangePicker } from '../../components/date-range-picker';
 // sections
 import { CalendarForm, StyledCalendar, CalendarToolbar } from '../../sections/@dashboard/calendar';
-import KanbanColumn from '../../sections/@dashboard/kanban/column/KanbanColumn';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
@@ -265,7 +264,7 @@ export default function CalendarPage() {
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={handleOpenModal}
             >
-              New Event
+              Generate Lesson Plan
             </Button>
           }
         />
@@ -325,30 +324,6 @@ export default function CalendarPage() {
           colorOptions={COLOR_OPTIONS}
         />
       </Dialog>
-
-      {/* <CalendarFilterDrawer
-        events={events}
-        picker={picker}
-        open={openFilter}
-        onClose={handleCloseFilter}
-        colorOptions={COLOR_OPTIONS}
-        filterEventColor={filterEventColor}
-        onFilterEventColor={handleFilterEventColor}
-        onResetFilter={() => {
-          const { setStartDate, setEndDate } = picker;
-          setFilterEventColor([]);
-          if (setStartDate && setEndDate) {
-            setStartDate(null);
-            setEndDate(null);
-          }
-        }}
-        onSelectEvent={(eventId) => {
-          if (eventId) {
-            handleOpenModal();
-            dispatch(selectEvent(eventId));
-          }
-        }}
-      /> */}
     </>
   );
 }
