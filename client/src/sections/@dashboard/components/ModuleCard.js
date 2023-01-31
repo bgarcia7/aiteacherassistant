@@ -13,6 +13,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SyncIcon from '@mui/icons-material/Sync';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
+import { Box } from '@mui/system';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -28,6 +29,9 @@ const ExpandMore = styled((props) => {
 export default function ModuleCard() {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [objectiveText, setObjectiveText] = useState(
+    'Objective: Students will understand the basic concepts of chemistry and its role in our daily lives.'
+  );
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -41,23 +45,48 @@ export default function ModuleCard() {
     setExpanded(!expanded);
   };
 
+  const handleTextEdit = (e) => {
+    setObjectiveText(e.target.value);
+  };
+
   return (
     <Card
-      sx={{
-        marginY: 3,
-      }}
+      
     >
       <CardHeader
         action={
-          <IconButton aria-label="settings">{isEditing ? <SaveIcon onClick={handleSaveClick} /> : <EditIcon onClick={handleEditClick} />}</IconButton>
+          <IconButton aria-label="settings">
+            {isEditing ? (
+              <SaveIcon onClick={handleSaveClick} />
+            ) : (
+              <EditIcon onClick={handleEditClick} />
+            )}
+          </IconButton>
         }
         title="Introduction to Chemistry"
         subheader="Core Objective"
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          Objective: Students will understand the basic concepts of chemistry and its role in our
-          daily lives.
+          {isEditing ? (
+            <Box>
+              <textarea
+                rows="4"
+                cols="50"
+                value={objectiveText}
+                onChange={handleTextEdit}
+                style={{
+                  width: '100%',
+                  resize: 'none',
+                  border: 'none',
+                  outline: 'none',
+                  fontSize: 'inherit',
+                }}
+              ></textarea>
+            </Box>
+          ) : (
+            objectiveText
+          )}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>

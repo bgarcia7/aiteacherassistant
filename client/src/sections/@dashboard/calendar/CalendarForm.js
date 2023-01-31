@@ -109,11 +109,11 @@ export default function CalendarForm({
     },
     {
       id: 'draggable-2',
-      content: <RHFTextField name="description" label="Description" multiline rows={3} />,
+      content: <ModuleCard />,
     },
     {
       id: 'draggable-3',
-      content: <RHFSwitch name="allDay" label="All day" />,
+      content: <ModuleCard />,
     },
   ];
 
@@ -143,6 +143,9 @@ export default function CalendarForm({
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
+                        sx={{
+                          marginBottom: 3,
+                        }}
                       >
                         {component.content}
                       </Box>
@@ -154,6 +157,8 @@ export default function CalendarForm({
             )}
           </Droppable>
         </DragDropContext>
+
+        <RHFSwitch name="allDay" label="All day" />
 
         <Controller
           name="start"
