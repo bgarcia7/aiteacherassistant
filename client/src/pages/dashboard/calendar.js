@@ -22,6 +22,7 @@ import {
   onOpenDrawer,
   onCloseDrawer,
   getAllModules,
+  onNewLesson,
 } from '../../redux/slices/calendar';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
@@ -73,7 +74,7 @@ export default function CalendarPage() {
 
   const calendarRef = useRef(null);
 
-  const { events, selectedRange, selectedEventId, modules } = useSelector(
+  const { events, selectedRange, selectedEventId, modules, newLesson } = useSelector(
     (state) => state.calendar
   );
 
@@ -94,6 +95,8 @@ export default function CalendarPage() {
   const [filterEventColor, setFilterEventColor] = useState([]);
 
   const [view, setView] = useState(isDesktop ? 'dayGridMonth' : 'listWeek');
+
+  const [openNewEvent, setOpenNewEvent] = useState(false);
 
   useEffect(() => {
     dispatch(getEvents());
@@ -206,6 +209,7 @@ export default function CalendarPage() {
 
   const handleCloseDrawer = () => {
     dispatch(onCloseDrawer());
+    setOpenNewEvent(false);
   };
 
   const handleCreateUpdateEvent = (newEvent) => {
@@ -269,7 +273,7 @@ export default function CalendarPage() {
             <Button
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={handleOpenDrawer}
+              onClick={() => setOpenNewEvent(true)}
             >
               Generate Lesson Plan
             </Button>
@@ -328,7 +332,7 @@ export default function CalendarPage() {
             </Card>
           </Grid>
           <Grid item xs={12} md={6} lg={5} maxHeight={isDesktop ? 720 : 'auto'}>
-            {selectedEventId ? (
+            {selectedEventId || openNewEvent ? (
               <CalendarForm
                 event={selectedEvent}
                 range={selectedRange}

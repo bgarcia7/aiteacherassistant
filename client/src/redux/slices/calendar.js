@@ -10,6 +10,7 @@ const initialState = {
   error: null,
   events: [],
   openDrawer: false,
+  newLesson: false,
   selectedEventId: null,
   selectedRange: null,
   modules: [],
@@ -72,7 +73,6 @@ const slice = createSlice({
       state.selectedEventId = null;
       const eventId = action.payload;
       state.selectedEventId = eventId;
-      state.openDrawer = true;
     },
 
     // SELECT RANGE
@@ -83,13 +83,13 @@ const slice = createSlice({
     },
 
     // OPEN Drawer
-    onOpenDrawer(state) {
-      state.openDrawer = true;
+    onNewLesson(state) {
+      state.newLesson = true;
     },
 
     // CLOSE Drawer
     onCloseDrawer(state) {
-      state.openDrawer = false;
+      state.newLesson = false;
       state.selectedEventId = null;
       state.selectedRange = null;
     },
