@@ -81,7 +81,7 @@ export default function CalendarForm({
     try {
       const newEvent = {
         title: data.title,
-        description: data.description,
+        description: '',
         textColor: data.textColor,
         allDay: data.allDay,
         start: data.start,
@@ -132,6 +132,7 @@ export default function CalendarForm({
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3} sx={{ px: 3 }}>
+        <RHFTextField name="title" label="Title" fullWidth />
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable">
             {(provided) => (
