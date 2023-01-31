@@ -49,14 +49,7 @@ import SnackbarProvider from '../components/snackbar';
 import { MotionLazyContainer } from '../components/animate';
 import { ThemeSettings, SettingsProvider } from '../components/settings';
 
-// Check our docs
-// https://docs.minimals.cc/authentication/js-version
-
-// import { AuthProvider } from '../auth/JwtContext';
 import { AuthProvider } from '../auth/Auth0Context';
-// import { AuthProvider } from '../auth/FirebaseContext';
-// import { AuthProvider } from '../auth/AwsCognitoContext';
-import { UserProvider } from '@auth0/nextjs-auth0/client';
 
 // ----------------------------------------------------------------------
 
@@ -80,25 +73,25 @@ export default function MyApp(props) {
       </Head>
 
       <AuthProvider>
-          <ReduxProvider store={store}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <SettingsProvider>
-                <MotionLazyContainer>
-                  <ThemeProvider>
-                    <ThemeSettings>
-                      <ThemeLocalization>
-                        <SnackbarProvider>
-                          <StyledChart />
-                          <ProgressBar />
-                          {getLayout(<Component {...pageProps} />)}
-                        </SnackbarProvider>
-                      </ThemeLocalization>
-                    </ThemeSettings>
-                  </ThemeProvider>
-                </MotionLazyContainer>
-              </SettingsProvider>
-            </LocalizationProvider>
-          </ReduxProvider>
+        <ReduxProvider store={store}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <SettingsProvider>
+              <MotionLazyContainer>
+                <ThemeProvider>
+                  <ThemeSettings>
+                    <ThemeLocalization>
+                      <SnackbarProvider>
+                        <StyledChart />
+                        <ProgressBar />
+                        {getLayout(<Component {...pageProps} />)}
+                      </SnackbarProvider>
+                    </ThemeLocalization>
+                  </ThemeSettings>
+                </ThemeProvider>
+              </MotionLazyContainer>
+            </SettingsProvider>
+          </LocalizationProvider>
+        </ReduxProvider>
       </AuthProvider>
     </CacheProvider>
   );

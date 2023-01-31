@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
+import { useState, useRef, useEffect } from 'react';
 import * as Yup from 'yup';
 import merge from 'lodash/merge';
 import { isBefore } from 'date-fns';
 // form
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 // @mui
 import { Box, Stack, Button, Tooltip, TextField, IconButton, DialogActions } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -13,6 +15,7 @@ import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import Iconify from '../../../components/iconify';
 import { ColorSinglePicker } from '../../../components/color-utils';
 import FormProvider, { RHFTextField, RHFSwitch } from '../../../components/hook-form';
+import { ModuleCard } from '../components';
 
 // ----------------------------------------------------------------------
 
@@ -78,7 +81,7 @@ export default function CalendarForm({
     try {
       const newEvent = {
         title: data.title,
-        description: data.description,
+        description: '',
         textColor: data.textColor,
         allDay: data.allDay,
         start: data.start,
@@ -97,12 +100,64 @@ export default function CalendarForm({
       ? isBefore(new Date(values.end), new Date(values.start))
       : false;
 
+  // drag and drop
+
+  const draggableComponents = [
+    {
+      id: 'draggable-1',
+      content: <ModuleCard />,
+    },
+    {
+      id: 'draggable-2',
+      content: <ModuleCard />,
+    },
+    {
+      id: 'draggable-3',
+      content: <ModuleCard />,
+    },
+  ];
+
+  const [components, setComponents] = useState(draggableComponents);
+
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(components);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setComponents(items);
+  };
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3} sx={{ px: 3 }}>
-        <RHFTextField name="title" label="Title" />
-
-        <RHFTextField name="description" label="Description" multiline rows={3} />
+        <RHFTextField name="title" label="Title" fullWidth />
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="droppable">
+            {(provided) => (
+              <Box ref={provided.innerRef} {...provided.droppableProps}>
+                {components.map((component, index) => (
+                  <Draggable key={component.id} draggableId={component.id} index={index}>
+                    {(provided) => (
+                      <Box
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        sx={{
+                          marginBottom: 3,
+                        }}
+                      >
+                        {component.content}
+                      </Box>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </Box>
+            )}
+          </Droppable>
+        </DragDropContext>
 
         <RHFSwitch name="allDay" label="All day" />
 
@@ -114,7 +169,7 @@ export default function CalendarForm({
               {...field}
               onChange={(newValue) => field.onChange(newValue)}
               label="Start date"
-              inputFormat="dd/MM/yyyy hh:mm a"
+              inputFormat="MM/dd/yyyy hh:mm a"
               renderInput={(params) => <TextField {...params} fullWidth />}
             />
           )}
@@ -128,7 +183,7 @@ export default function CalendarForm({
               {...field}
               onChange={(newValue) => field.onChange(newValue)}
               label="End date"
-              inputFormat="dd/MM/yyyy hh:mm a"
+              inputFormat="MM/dd/yyyy hh:mm a"
               renderInput={(params) => (
                 <TextField
                   {...params}

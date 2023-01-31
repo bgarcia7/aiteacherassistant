@@ -26,7 +26,7 @@ export default function DashboardLayout({ children }) {
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const isNavHorizontal = themeLayout === 'horizontal';
 

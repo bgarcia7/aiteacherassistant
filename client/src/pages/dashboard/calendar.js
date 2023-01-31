@@ -37,13 +37,7 @@ import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 import { useDateRangePicker } from '../../components/date-range-picker';
 // sections
-import {
-  CalendarForm,
-  StyledCalendar,
-  CalendarToolbar,
-  CalendarFilterDrawer,
-} from '../../sections/@dashboard/calendar';
-
+import { CalendarForm, StyledCalendar, CalendarToolbar } from '../../sections/@dashboard/calendar';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
@@ -229,13 +223,13 @@ export default function CalendarPage() {
     }
   };
 
-  const handleFilterEventColor = (eventColor) => {
-    const checked = filterEventColor.includes(eventColor)
-      ? filterEventColor.filter((value) => value !== eventColor)
-      : [...filterEventColor, eventColor];
+  // const handleFilterEventColor = (eventColor) => {
+  //   const checked = filterEventColor.includes(eventColor)
+  //     ? filterEventColor.filter((value) => value !== eventColor)
+  //     : [...filterEventColor, eventColor];
 
-    setFilterEventColor(checked);
-  };
+  //   setFilterEventColor(checked);
+  // };
 
   const dataFiltered = applyFilter({
     inputData: events,
@@ -270,7 +264,7 @@ export default function CalendarPage() {
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={handleOpenModal}
             >
-              New Event
+              Generate Lesson Plan
             </Button>
           }
         />
@@ -330,30 +324,6 @@ export default function CalendarPage() {
           colorOptions={COLOR_OPTIONS}
         />
       </Dialog>
-
-      <CalendarFilterDrawer
-        events={events}
-        picker={picker}
-        open={openFilter}
-        onClose={handleCloseFilter}
-        colorOptions={COLOR_OPTIONS}
-        filterEventColor={filterEventColor}
-        onFilterEventColor={handleFilterEventColor}
-        onResetFilter={() => {
-          const { setStartDate, setEndDate } = picker;
-          setFilterEventColor([]);
-          if (setStartDate && setEndDate) {
-            setStartDate(null);
-            setEndDate(null);
-          }
-        }}
-        onSelectEvent={(eventId) => {
-          if (eventId) {
-            handleOpenModal();
-            dispatch(selectEvent(eventId));
-          }
-        }}
-      />
     </>
   );
 }
