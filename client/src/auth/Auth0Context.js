@@ -4,14 +4,6 @@ import { Auth0Client } from '@auth0/auth0-spa-js';
 // config
 import { AUTH0_API } from '../config-global';
 
-// ----------------------------------------------------------------------
-
-// NOTE:
-// We only build demo at basic level.
-// Customer will need to do some extra handling yourself if you want to extend the logic and other features...
-
-// ----------------------------------------------------------------------
-
 const initialState = {
   isInitialized: false,
   isAuthenticated: false,
@@ -129,7 +121,7 @@ export function AuthProvider({ children }) {
             ...user,
             displayName: user?.name,
             photoURL: user?.picture,
-            role: 'admin',
+            role: 'user',
           },
         },
       });

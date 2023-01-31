@@ -21,6 +21,7 @@ import {
   selectRange,
   onOpenModal,
   onCloseModal,
+  getAllModules,
 } from '../../redux/slices/calendar';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
@@ -37,13 +38,7 @@ import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 import { useDateRangePicker } from '../../components/date-range-picker';
 // sections
-import {
-  CalendarForm,
-  StyledCalendar,
-  CalendarToolbar,
-  CalendarFilterDrawer,
-} from '../../sections/@dashboard/calendar';
-
+import { CalendarForm, StyledCalendar, CalendarToolbar } from '../../sections/@dashboard/calendar';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
@@ -73,7 +68,7 @@ export default function CalendarPage() {
 
   const calendarRef = useRef(null);
 
-  const { events, openModal, selectedRange, selectedEventId } = useSelector(
+  const { events, openModal, selectedRange, selectedEventId, modules } = useSelector(
     (state) => state.calendar
   );
 
@@ -95,9 +90,12 @@ export default function CalendarPage() {
 
   const [view, setView] = useState(isDesktop ? 'dayGridMonth' : 'listWeek');
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     dispatch(getEvents());
-  }, [dispatch]);
+    dispatch(getAllModules());
+  }, []);
 
   useEffect(() => {
     const calendarEl = calendarRef.current;
@@ -229,14 +227,6 @@ export default function CalendarPage() {
     }
   };
 
-  const handleFilterEventColor = (eventColor) => {
-    const checked = filterEventColor.includes(eventColor)
-      ? filterEventColor.filter((value) => value !== eventColor)
-      : [...filterEventColor, eventColor];
-
-    setFilterEventColor(checked);
-  };
-
   const dataFiltered = applyFilter({
     inputData: events,
     filterEventColor,
@@ -270,7 +260,7 @@ export default function CalendarPage() {
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={handleOpenModal}
             >
-              New Event
+              Generate Lesson Plan
             </Button>
           }
         />
@@ -319,41 +309,18 @@ export default function CalendarPage() {
       </Container>
 
       <Dialog fullWidth maxWidth="xs" open={openModal} onClose={handleCloseModal}>
-        <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
+        <DialogTitle>{selectedEvent ? 'Edit Module' : 'Add Module'}</DialogTitle>
 
         <CalendarForm
           event={selectedEvent}
           range={selectedRange}
+          defaultModules={modules}
           onCancel={handleCloseModal}
           onCreateUpdateEvent={handleCreateUpdateEvent}
           onDeleteEvent={handleDeleteEvent}
           colorOptions={COLOR_OPTIONS}
         />
       </Dialog>
-
-      <CalendarFilterDrawer
-        events={events}
-        picker={picker}
-        open={openFilter}
-        onClose={handleCloseFilter}
-        colorOptions={COLOR_OPTIONS}
-        filterEventColor={filterEventColor}
-        onFilterEventColor={handleFilterEventColor}
-        onResetFilter={() => {
-          const { setStartDate, setEndDate } = picker;
-          setFilterEventColor([]);
-          if (setStartDate && setEndDate) {
-            setStartDate(null);
-            setEndDate(null);
-          }
-        }}
-        onSelectEvent={(eventId) => {
-          if (eventId) {
-            handleOpenModal();
-            dispatch(selectEvent(eventId));
-          }
-        }}
-      />
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 // utils
 import axios from '../../utils/axios';
+import { getModules } from 'src/pages/api/getModule';
 
 // ----------------------------------------------------------------------
 
@@ -11,6 +12,7 @@ const initialState = {
   openModal: false,
   selectedEventId: null,
   selectedRange: null,
+  modules: [],
 };
 
 const slice = createSlice({
@@ -32,6 +34,13 @@ const slice = createSlice({
     getEventsSuccess(state, action) {
       state.isLoading = false;
       state.events = action.payload;
+    },
+
+    // GET MODULES
+    getModulesSuccess(state, action) {
+      state.isLoading = false;
+      state.modules = action.payload;
+      console.log('modules', state.modules);
     },
 
     // CREATE EVENT
@@ -91,6 +100,21 @@ export default slice.reducer;
 
 // Actions
 export const { onOpenModal, onCloseModal, selectEvent, selectRange } = slice.actions;
+
+// ----------------------------------------------------------------------
+
+export function getAllModules() {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await getModules();
+      console.log('response', response);
+      dispatch(slice.actions.getModulesSuccess(response));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
 
 // ----------------------------------------------------------------------
 
