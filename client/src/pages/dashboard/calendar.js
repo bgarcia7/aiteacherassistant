@@ -38,6 +38,8 @@ import { useSettingsContext } from '../../components/settings';
 import { useDateRangePicker } from '../../components/date-range-picker';
 // sections
 import { CalendarForm, StyledCalendar, CalendarToolbar } from '../../sections/@dashboard/calendar';
+// api
+import { getModules } from 'src/pages/api/getModule';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
@@ -89,8 +91,17 @@ export default function CalendarPage() {
 
   const [view, setView] = useState(isDesktop ? 'dayGridMonth' : 'listWeek');
 
+  const [modules, setModules] = useState([]);
+
+  const fetchModules = async () => {
+    const response = await getModules();
+    setModules(response);
+    console.log(modules);
+  };
+
   useEffect(() => {
     dispatch(getEvents());
+    fetchModules();
   }, [dispatch]);
 
   useEffect(() => {

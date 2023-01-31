@@ -16,6 +16,8 @@ import Iconify from '../../../components/iconify';
 import { ColorSinglePicker } from '../../../components/color-utils';
 import FormProvider, { RHFTextField, RHFSwitch } from '../../../components/hook-form';
 import { ModuleCard } from '../components';
+// api
+import { getModule, getModules } from '../../../pages/api/getModule';
 
 // ----------------------------------------------------------------------
 
@@ -133,12 +135,14 @@ export default function CalendarForm({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [modules, setModules] = useState([]);
 
-  const fetchEvent = async () => {
+  const getModules = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/calendar/event');
-      console.log(response);
+      const response = await getModules();
+      setModules(response.data);
+      console.log(modules);
     } catch (error) {
       setError(error);
     } finally {
@@ -147,17 +151,15 @@ export default function CalendarForm({
   };
 
   useEffect(() => {
-    if (hasEventData) {
-      fetchEvent();
-    }
-  }, [hasEventData]);
+    getModules();
+  }, []);
 
   if (loading) {
-    return <LoadingScreen />;
+    return <div>Loading...</div>;
   }
 
   if (error) {
-    return <NotFoundScreen />;
+    return <div>에러가 발생했습니다.</div>;
   }
 
   return (

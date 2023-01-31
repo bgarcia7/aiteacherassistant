@@ -94,6 +94,20 @@ export const { onOpenModal, onCloseModal, selectEvent, selectRange } = slice.act
 
 // ----------------------------------------------------------------------
 
+export function getModuleTemplates() {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await getModules();
+      dispatch(slice.actions.getEventsSuccess(response.data.events));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
 export function getEvents() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
