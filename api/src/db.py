@@ -54,4 +54,21 @@ def insert_modules(modules):
     session.add(modules)
     session.commit()
 
+def update_module(module_id, new_module):
+    module = session.query(Module).filter_by(id=module_id).first()
+    module.module_type = new_module['module_type']
+    module.title = new_module['title']
+    module.body = new_module['body']
+    session.commit()
+    return module.as_dict()
+
+def delete_module(module_id):
+    module = session.query(Module).filter_by(id=module_id).first()
+    session.delete(module)
+    session.commit()
+    return module.as_dict()
+
+
+
+
 base.metadata.create_all(db)

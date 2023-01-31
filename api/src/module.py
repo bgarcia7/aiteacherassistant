@@ -13,13 +13,20 @@ LESSON_PLAN_PROMPT = """create a {num_minutes} minute lesson plan for {grade} gr
 
 The response should be formatted as JSON modules each with a title and body, like so: """
 
-LESSON_PLAN_EXAMPLE = """\n[{'title': 'sample module title 1', 'body': 'sample module content 1'}, {'title': 'sample module title 2', 'body': 'sample module body content 2'}}]"""
-    
+LESSON_PLAN_EXAMPLE = """\n[{'title': 'sample module title 1', 'body': 'sample module content 1'}, {'title': 'sample module title 2', 'body': 'sample module body content 2'}}]"""    
 
-@module_blueprint.route('/<module_id>')
+@module_blueprint.route('/<module_id>', methods=['GET'])
 def get_module(module_id):
   return db.get_module(module_id)
 
+@module_blueprint.route('/<module_id>/edit', methods=['POST'])
+def update_module(module_id):
+    data = request.get_json()
+    return db.update_module(module_id, data)
+
+@module_blueprint.route('/<module_id>', methods=['DELETE'])
+def delete_module(module_id):
+    return db.delete_module(module_id)
 
 @module_blueprint.route('/<module_id>', methods=['POST'])
 def regenerate_module(module_id):

@@ -23,27 +23,29 @@ def get_lesson_plan(plan_id):
 
 @lesson_plan_blueprint.route('/', methods=['POST'])
 def create_lesson_plan():
-  print("HI")
   data = request.get_json()
 
+  print("1")
   # Step 1: Create lesson plan object
-  lesson_plan = db.insert_lesson_plan(data.get('title', 'Lesson Plan Sample title'), data.get('learning_objective', 'Lesson Plan Sample Description'))
+  lesson_plan = db.insert_lesson_plan(data.get('title', 'Default Title'), data.get('learning_objective', 'Default Description'))
 
+  print("2")
   # Step 2: Generate lesson plan modules
   prompt = LESSON_PLAN_PROMPT.format(num_minutes=data.get('num_minutes', 60), grade=data.get('grade', '4th'), learning_objective=data.get('learning_objective','Understand the concept of a ratio and use ratio language to describe a ratio relationship between two quantities.')) + LESSON_PLAN_EXAMPLE
   print(f"prompt: {prompt}\ndata: {data}")
 
-  response = openai.Completion.create(
-      model="text-davinci-003",
-      prompt=prompt,
-      temperature=0.5,
-      max_tokens=3900,
-      top_p=1,
-      frequency_penalty=1,
-      presence_penalty=1
-  )
+  #TODO: Properly generate and return response
+  # response = openai.Completion.create(
+  #     model="text-davinci-003",
+  #     prompt=prompt,
+  #     temperature=0.5,
+  #     max_tokens=3900,
+  #     top_p=1,
+  #     frequency_penalty=1,
+  #     presence_penalty=1
+  # )
 
-  print(f"response:\n{response}")
+  # print(f"response:\n{response}")
 
   # TODO - requires prompt engineering to ensure modules are consistently well-formatted
   # modules = ast.literal_eval(response.choices[0].text.strip())

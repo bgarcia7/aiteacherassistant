@@ -28,12 +28,8 @@ openai.api_key = json.load(open('zappa_settings.json'))['production']['environme
 def hello_world():
  return '<h1>SHE LIVES</h1>'
 
-@app.route('/love', methods=['GET'])
-def love():
-    return "HI"
-
 app.register_blueprint(lesson_plan_blueprint, url_prefix='/lesson_plan')
-# app.register_blueprint(module_blueprint, url_prefix='/module')
+app.register_blueprint(module_blueprint, url_prefix='/module')
 
 # We only need this for local development.
 if __name__ == '__main__':
