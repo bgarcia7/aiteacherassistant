@@ -1,5 +1,3 @@
-const ItemTypes = {
-  TASK: 'task',
+export const ItemTypes = {
+  CARD: 'card',
 };
-
-export default ItemTypes;

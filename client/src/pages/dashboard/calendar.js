@@ -37,13 +37,8 @@ import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 import { useDateRangePicker } from '../../components/date-range-picker';
 // sections
-import {
-  CalendarForm,
-  StyledCalendar,
-  CalendarToolbar,
-  CalendarFilterDrawer,
-} from '../../sections/@dashboard/calendar';
-
+import { CalendarForm, StyledCalendar, CalendarToolbar } from '../../sections/@dashboard/calendar';
+import KanbanColumn from '../../sections/@dashboard/kanban/column/KanbanColumn';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
