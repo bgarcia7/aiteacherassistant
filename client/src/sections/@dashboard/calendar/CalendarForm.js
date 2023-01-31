@@ -163,7 +163,7 @@ export default function CalendarForm({
               {...field}
               onChange={(newValue) => field.onChange(newValue)}
               label="Start date"
-              inputFormat="dd/MM/yyyy hh:mm a"
+              inputFormat="MM/dd/yyyy hh:mm a"
               renderInput={(params) => <TextField {...params} fullWidth />}
             />
           )}
@@ -177,7 +177,7 @@ export default function CalendarForm({
               {...field}
               onChange={(newValue) => field.onChange(newValue)}
               label="End date"
-              inputFormat="dd/MM/yyyy hh:mm a"
+              inputFormat="MM/dd/yyyy hh:mm a"
               renderInput={(params) => (
                 <TextField
                   {...params}
