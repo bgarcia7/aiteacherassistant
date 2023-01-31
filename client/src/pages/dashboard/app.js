@@ -19,16 +19,8 @@ import {
 import { useSettingsContext } from '../../components/settings';
 // sections
 import {
-  AppWidget,
   AppWelcome,
   AppFeatured,
-  AppNewInvoice,
-  AppTopAuthors,
-  AppTopRelated,
-  AppAreaInstalled,
-  AppWidgetSummary,
-  AppCurrentDownload,
-  AppTopInstalledCountries,
 } from '../../sections/@dashboard/general/app';
 // assets
 import { SeoIllustration } from '../../assets/illustrations';
