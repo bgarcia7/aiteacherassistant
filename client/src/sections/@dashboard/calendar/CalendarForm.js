@@ -6,6 +6,7 @@ import { isBefore } from 'date-fns';
 // form
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 // @mui
 import { Box, Stack, Button, Tooltip, TextField, IconButton, DialogActions } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -14,8 +15,7 @@ import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import Iconify from '../../../components/iconify';
 import { ColorSinglePicker } from '../../../components/color-utils';
 import FormProvider, { RHFTextField, RHFSwitch } from '../../../components/hook-form';
-
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { ModuleCard } from '../components';
 
 // ----------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ export default function CalendarForm({
   const draggableComponents = [
     {
       id: 'draggable-1',
-      content: <RHFTextField name="title" label="Title" fullWidth />,
+      content: <ModuleCard />,
     },
     {
       id: 'draggable-2',
