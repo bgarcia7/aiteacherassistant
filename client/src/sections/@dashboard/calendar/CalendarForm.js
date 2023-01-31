@@ -129,6 +129,37 @@ export default function CalendarForm({
     setComponents(items);
   };
 
+  // axios
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchEvent = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/calendar/event');
+      console.log(response);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (hasEventData) {
+      fetchEvent();
+    }
+  }, [hasEventData]);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  if (error) {
+    return <NotFoundScreen />;
+  }
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3} sx={{ px: 3 }}>

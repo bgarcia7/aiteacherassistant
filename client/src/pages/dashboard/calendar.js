@@ -223,14 +223,6 @@ export default function CalendarPage() {
     }
   };
 
-  // const handleFilterEventColor = (eventColor) => {
-  //   const checked = filterEventColor.includes(eventColor)
-  //     ? filterEventColor.filter((value) => value !== eventColor)
-  //     : [...filterEventColor, eventColor];
-
-  //   setFilterEventColor(checked);
-  // };
-
   const dataFiltered = applyFilter({
     inputData: events,
     filterEventColor,
@@ -313,7 +305,7 @@ export default function CalendarPage() {
       </Container>
 
       <Dialog fullWidth maxWidth="xs" open={openModal} onClose={handleCloseModal}>
-        <DialogTitle>{selectedEvent ? 'Edit Event' : 'Add Event'}</DialogTitle>
+        <DialogTitle>{selectedEvent ? 'Edit Module' : 'Add Module'}</DialogTitle>
 
         <CalendarForm
           event={selectedEvent}
