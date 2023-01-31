@@ -69,9 +69,9 @@ def get_lesson_plan(lesson_plan_id):
         lesson_plan = session.query(LessonPlan).filter_by(id=lesson_plan_id).first()
         modules = session.query(Module).filter_by(lesson_plan_id=lesson_plan_id).all()
         expanded_lesson_plan = lesson_plan.as_dict()
-        print("Modules", lesson_plan.modules)
+        # print("Modules", lesson_plan.modules)
         expanded_lesson_plan['modules'] = [module.as_dict() for module in modules]
-        print("Exapnded", expanded_lesson_plan)
+        # print("Exapnded", expanded_lesson_plan)
         return expanded_lesson_plan
 
 def get_module(module_id):

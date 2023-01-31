@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 import openai
 
 import db
+import ai
 
 module_blueprint = Blueprint(
   "module_blueprint", __name__
@@ -34,4 +35,6 @@ def delete_module(module_id):
 @module_blueprint.route('/<module_id>/regenerate', methods=['POST'])
 def regenerate_module(module_id):
   #TODO: Regenerate module and update in db
-  return db.get_module(module_id)
+  module = db.get_module(module_id)
+  new_module = ai.regenerate_module(module)
+  return db.update_module(module_id, new_module)
