@@ -35,7 +35,7 @@ class Module(base):
     __tablename__ = 'modules'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    module_type = Column(String)
+    module_type = Column(String, nullable=True)
     title = Column(String)
     body = Column(String)
     duration = Column(Integer)
@@ -57,7 +57,7 @@ def insert_lesson_plan(title, description, modules = []):
         print("Base lesson", lesson_plan.as_dict())
 
         for module in modules:
-            new_module = Module(module_type=module['module_type'], title=module['title'], body=module['body'], lesson_plan_id=lesson_plan.id)
+            new_module = Module(module_type=module.get('module_type'), title=module.get('title'), body=module.get('body'), lesson_plan_id=lesson_plan.id) 
             print("New module", new_module.as_dict())
             session.add(new_module)
             session.commit()
@@ -82,7 +82,7 @@ def get_module(module_id):
 
 def insert_modules(modules):
     with Session() as session:
-        modules=[Module(module_type=module['module_type'], title=module['title'], body=module['body']) for module in modules]
+        modules=[Module(module_type=module.get('module_type'), title=module.get('title'), body=module.get('body')) for module in modules]
         session.add(modules)
         session.commit()
 

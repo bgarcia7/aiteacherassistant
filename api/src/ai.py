@@ -49,8 +49,25 @@ Learning Objective: {learning_objective}
 Lesson Plan:
 """
 
+EXPAND_MODULE_PROMPT = """Given the lesson plan below, provide more detail and specific content regarding section {title}
+###
+{lesson_plan}
+###
+ """
+
+REGENERATE_MODULE_PROMPT = """Given the lesson plan below, please create a completely different and more detailed version of section {title}
+###
+{lesson_plan}
+"""
+
 SECTION_SENTINELS = ['I', 'II', 'III', 'IV', 'V']
 SUBSECTION_SENTINELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+
+#===============[ INTERNAL FUNCTIONS ]=================
+
+def clean_text(string):
+    return string.strip()
+    return re.sub("\.\.", "\.", re.sub("\.\.\.", "\.", re.sub(" \. ", ". ", string.strip())))
 
 def parse_string_on_sent(string, c):
     regex = r'([\. \(\n]({c})[ \.\)]|({c})[\.\)\n])'.format(c=c)
@@ -59,11 +76,11 @@ def parse_string_on_sent(string, c):
     return parsed
 
 
-def get_response(prompt):
+def get_response(prompt, temperature=0.6):
     response = openai.Completion.create(
             model="text-davinci-003",
             prompt=prompt,
-            temperature=0.6,
+            temperature=temperature,
             max_tokens=3500 - len(prompt.split()),
             top_p=1,
             frequency_penalty=1,
@@ -71,37 +88,52 @@ def get_response(prompt):
     )
     return response.choices[0].text.strip()
 
+def structure_module(module):
+    s = {}
+    subsections = parse_string_on_sent(module, '|'.join(SUBSECTION_SENTINELS))
+    section_info = subsections[0]
 
-def clean_text(string):
-    return string.strip()
-    return re.sub("\.\.", "\.", re.sub("\.\.\.", "\.", re.sub(" \. ", ". ", string.strip())))
-
+    # Format module 
+    s['title'] = clean_text(section_info.split('(')[0])
+    s['duration'] = clean_text(section_info.split('(')[1].split(')')[0])
+    s['body'] = [clean_text(subsection) for subsection in subsections[1:]]
+    return s
+    
 def structure_response(string):
-    module_list = []
-
     # Parse modules
     modules = parse_string_on_sent(string, '|'.join(SECTION_SENTINELS))
-    for module in modules:
-        s = {}
+    return [structure_module(m) for m in modules]
 
-        # Parse module subsections
-        subsections = parse_string_on_sent(module, '|'.join(SUBSECTION_SENTINELS))
-        section_info = subsections[0]
-        
-        # Format section 
-        s['title'] = clean_text(section_info.split('(')[0])
-        s['duration'] = clean_text(section_info.split('(')[1].split(')')[0])
-        s['body'] = [clean_text(subsection) for subsection in subsections[1:]]
-        module_list.append(s)
-    return module_list
+def prettify_lesson_plan(lesson_plan):
+    modules = lesson_plan['modules']
+    string = 'Learning Objective: ' + lesson_plan['title'] + '\n'
+    string += 'Lesson Plan:\n'
+    for ix, m in enumerate(modules):
+        string += SECTION_SENTINELS[ix] + '. ' + m['title'] + ' (' + m['duration'] + ') \n'
+        string += '\n'.join([SUBSECTION_SENTINELS[ix2] + '. ' + s for ix2, s in enumerate(m['body'])])
+    return string
+
+
+
+
     
 def generate_modules(title, learning_objective, num_minutes=60):
+    print("GENERATING MODULES")
     prompt = PROMPT_TEMPLATE.format(learning_objective=learning_objective, num_minutes=num_minutes)
     response = get_response(prompt)
-    
+    print("RAW Response: ", response)
+
     modules = structure_response(response)
+    print("PARSED modules: ", modules)
     return modules
 
-def regenerate_module(module):
-    print("TODO: Regenerate module")
-    return module
+def expand_on_module(lesson_plan, module):
+    prompt = EXPAND_MODULE_PROMPT.format(title=module['title'], lesson_plan=prettify_lesson_plan(lesson_plan))
+    response = get_response(prompt)
+    return structure_module(response)
+    
+
+def regenerate_module(lesson_plan, module):
+    prompt = REGENERATE_MODULE_PROMPT.format(title=module['title'], lesson_plan=prettify_lesson_plan(lesson_plan))
+    response = get_response(prompt, temperature=0.75)
+    return structure_module(response)
