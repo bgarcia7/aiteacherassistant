@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 import openai
 
 import db
@@ -15,20 +15,26 @@ The response should be formatted as JSON modules each with a title and body, lik
 
 LESSON_PLAN_EXAMPLE = """\n[{'title': 'sample module title 1', 'body': 'sample module content 1'}, {'title': 'sample module title 2', 'body': 'sample module body content 2'}}]"""    
 
+SAMPLE_MODULE = {'title': 'sample module title 1', 'body': 'sample module content 1'}
+
 @module_blueprint.route('/<module_id>', methods=['GET'])
 def get_module(module_id):
-  return db.get_module(module_id)
+  # return db.get_module(module_id)
+  return SAMPLE_MODULE
 
 @module_blueprint.route('/<module_id>/edit', methods=['POST'])
 def update_module(module_id):
     data = request.get_json()
-    return db.update_module(module_id, data)
+    # return db.update_module(module_id, data)
+    return SAMPLE_MODULE
 
 @module_blueprint.route('/<module_id>', methods=['DELETE'])
 def delete_module(module_id):
-    return db.delete_module(module_id)
+    # return db.delete_module(module_id)
+  return jsonify({"success": True}) 
 
-@module_blueprint.route('/<module_id>', methods=['POST'])
+@module_blueprint.route('/<module_id>/regenerate', methods=['POST'])
 def regenerate_module(module_id):
   #TODO: Regenerate module
-  return db.get_module(module_id)
+  # return db.get_module(module_id)
+  return SAMPLE_MODULE
