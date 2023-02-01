@@ -43,8 +43,8 @@ const StyledDescription = styled('div')(({ theme }) => ({
   margin: 'auto',
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
+  alignItems: 'start',
+  justifyContent: 'flex-start',
   padding: theme.spacing(15, 0),
   height: '100%',
 }));
@@ -56,7 +56,7 @@ const StyledGradientText = styled(m.h1)(({ theme }) => ({
   backgroundSize: '400%',
   fontFamily: secondaryFont.style.fontFamily,
   fontSize: `${64 / 16}rem`,
-  textAlign: 'center',
+  textAlign: 'left',
   lineHeight: 1,
   padding: 0,
   marginTop: 8,
@@ -143,6 +143,11 @@ function Description() {
   return (
     <StyledDescription>
       <m.div variants={varFade().in}>
+        <Typography variant="h2">
+          Meet Your New
+        </Typography>
+      </m.div>
+      <m.div variants={varFade().in}>
         <StyledGradientText
           animate={{ backgroundPosition: '200% center' }}
           transition={{
@@ -152,14 +157,14 @@ function Description() {
             repeat: Infinity,
           }}
         >
-          Teacher Assistant
+          Teaching Assistant
         </StyledGradientText>
       </m.div>
 
       <m.div variants={varFade().in}>
-        <Typography variant="body2" sx={{ textAlign: 'center' }}>
-          Generate your next lesson plan, quiz, or assignment in minutes with our easy-to-use AI
-          generation application.
+        <Typography variant="body2">
+          Choose your curriculum and generate your next few weeks’ worth of lesson plans in less
+          than 5 minutes.
         </Typography>
       </m.div>
 
