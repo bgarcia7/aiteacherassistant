@@ -45,9 +45,9 @@ export default function Header({ isOffset }) {
       >
         <Logo />
 
-        <Link component={NextLink} href={PATH_PAGE.faqs} variant="subtitle2" color="inherit">
+        {/* <Link component={NextLink} href={PATH_PAGE.faqs} variant="subtitle2" color="inherit">
           Need Help?
-        </Link>
+        </Link> */}
       </Toolbar>
 
       {isOffset && <Shadow />}
