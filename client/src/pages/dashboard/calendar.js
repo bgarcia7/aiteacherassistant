@@ -100,7 +100,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     dispatch(getEvents());
-    dispatch(getAllModules());
+    // dispatch(getAllModules());
   }, [dispatch]);
 
   useEffect(() => {

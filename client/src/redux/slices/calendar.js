@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 // utils
 import axios from '../../utils/axios';
-import { getModules, createModule } from 'src/pages/api/Modules';
+import { createLessonPlan } from 'src/pages/api/Modules';
 
 // ----------------------------------------------------------------------
 
@@ -111,31 +111,33 @@ export const { onOpenDrawer, onCloseDrawer, selectEvent, selectRange } = slice.a
 
 // ----------------------------------------------------------------------
 
-export function getAllModules() {
-  return async (dispatch) => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const response = await getModules();
-      dispatch(slice.actions.getModulesSuccess(response));
-    } catch (error) {
-      dispatch(slice.actions.hasError(error));
-    }
-  };
-}
+// export function createLessonPlan() {
+//   return async (dispatch) => {
+//     dispatch(slice.actions.startLoading());
+//     try {
+//       const response = await getModules();
+//       dispatch(slice.actions.getModulesSuccess(response));
+//     } catch (error) {
+//       dispatch(slice.actions.hasError(error));
+//     }
+//   };
+// }
+
+// createLessonPlan();
 
 // ----------------------------------------------------------------------
 
-export function createNewModule(newModule) {
-  return async (dispatch) => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const response = await createModule(newModule);
-      dispatch(slice.actions.createModuleSuccess(response));
-    } catch (error) {
-      dispatch(slice.actions.hasError(error));
-    }
-  };
-}
+// export function createNewModule(newModule) {
+//   return async (dispatch) => {
+//     dispatch(slice.actions.startLoading());
+//     try {
+//       const response = await createModule(newModule);
+//       dispatch(slice.actions.createModuleSuccess(response));
+//     } catch (error) {
+//       dispatch(slice.actions.hasError(error));
+//     }
+//   };
+// }
 
 export function getEvents() {
   return async (dispatch) => {
