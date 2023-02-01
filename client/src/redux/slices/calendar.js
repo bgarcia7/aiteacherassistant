@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 // utils
 import axios from '../../utils/axios';
-import { getModules } from 'src/pages/api/getModule';
+import { getModules } from 'src/pages/api/Modules';
 
 // ----------------------------------------------------------------------
 

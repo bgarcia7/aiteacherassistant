@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const API_URL =
-  'https://puoytuho08.execute-api.us-west-2.amazonaws.com/production/lessonplan/sjdkfl';
+const API_URL = 'https://vjj6xrqlv1.execute-api.us-west-2.amazonaws.com/production/';
 
 export const getModule = async (moduleId) => {
   try {
