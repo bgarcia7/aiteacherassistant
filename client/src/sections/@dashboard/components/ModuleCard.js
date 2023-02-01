@@ -44,7 +44,14 @@ export default function ModuleCard({ module }) {
 
   const handleTextEdit = (e) => {};
 
-  console.log(module);
+  // create function that cuts off the text after 100 characters and adds ellipses
+  const handleTextCut = (text) => {
+    if (text.length > 100) {
+      return text.slice(0, 100) + '...';
+    } else {
+      return text;
+    }
+  };
 
   return (
     <Card>
@@ -79,8 +86,12 @@ export default function ModuleCard({ module }) {
                 }}
               ></textarea>
             </Box>
+          ) : expanded ? (
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+              <Typography paragraph>{module.body}</Typography>
+            </Collapse>
           ) : (
-            module.body
+            <Typography paragraph>{handleTextCut(module.body)}</Typography>
           )}
         </Typography>
       </CardContent>
@@ -91,28 +102,18 @@ export default function ModuleCard({ module }) {
         <IconButton aria-label="share">
           <DeleteIcon />
         </IconButton>
-        {/* <ExpandMore
+        <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show more"
         >
           <ExpandMoreIcon />
-        </ExpandMore> */}
+        </ExpandMore>
       </CardActions>
       {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>Introduction (10 minutes):</Typography>
-          <Typography paragraph>
-            Show pictures of everyday items (e.g. food, cleaning products) and ask students if they
-            know what they have in common.
-          </Typography>
-          <Typography paragraph>
-            Write their responses on the board and discuss the presence of chemicals in the items.
-          </Typography>
-          <Typography paragraph>
-            Introduce the topic of chemistry as the study of chemicals and their properties.
-          </Typography>
+          <Typography paragraph>{module.body}</Typography>
         </CardContent>
       </Collapse> */}
     </Card>
