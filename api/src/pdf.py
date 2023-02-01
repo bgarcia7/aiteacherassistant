@@ -6,7 +6,7 @@ def encode_text(text):
 
 def upload_pdf_to_s3(pdf_file_name):
     # local directoy prepends string to pdf_file_name depending on env
-    local_dir = ''
+    local_dir = '/tmp/'
     
     s3 = boto3.resource('s3')
     BUCKET = "aiteacherassistant"
