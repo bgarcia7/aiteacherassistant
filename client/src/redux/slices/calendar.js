@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 // utils
 import axios from '../../utils/axios';
-import { getModules } from 'src/pages/api/getModule';
+import { getModules, createModule } from 'src/pages/api/Modules';
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +41,13 @@ const slice = createSlice({
     getModulesSuccess(state, action) {
       state.isLoading = false;
       state.modules = action.payload;
+    },
+
+    // CREATE MODULE
+    createModuleSuccess(state, action) {
+      const newModule = action.payload;
+      state.isLoading = false;
+      state.modules = [...state.modules, newModule];
     },
 
     // CREATE EVENT
@@ -117,6 +124,18 @@ export function getAllModules() {
 }
 
 // ----------------------------------------------------------------------
+
+export function createNewModule(newModule) {
+  return async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await createModule(newModule);
+      dispatch(slice.actions.createModuleSuccess(response));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+    }
+  };
+}
 
 export function getEvents() {
   return async (dispatch) => {
