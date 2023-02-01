@@ -234,7 +234,7 @@ export default function CalendarForm({
         </Button>
 
         <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-          {hasEventData ? 'Submit' : 'Generate'}
+          {hasEventData ? 'Save' : 'Generate'}
         </LoadingButton>
       </DialogActions>
     </FormProvider>

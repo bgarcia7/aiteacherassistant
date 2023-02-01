@@ -26,12 +26,9 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function ModuleCard() {
+export default function ModuleCard({ module }) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [objectiveText, setObjectiveText] = useState(
-    'Objective: Students will understand the basic concepts of chemistry and its role in our daily lives.'
-  );
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -45,14 +42,12 @@ export default function ModuleCard() {
     setExpanded(!expanded);
   };
 
-  const handleTextEdit = (e) => {
-    setObjectiveText(e.target.value);
-  };
+  const handleTextEdit = (e) => {};
+
+  console.log(module);
 
   return (
-    <Card
-      
-    >
+    <Card>
       <CardHeader
         action={
           <IconButton aria-label="settings">
@@ -63,8 +58,8 @@ export default function ModuleCard() {
             )}
           </IconButton>
         }
-        title="Introduction to Chemistry"
-        subheader="Core Objective"
+        title={module.title}
+        subheader={module.description}
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
@@ -73,7 +68,7 @@ export default function ModuleCard() {
               <textarea
                 rows="4"
                 cols="50"
-                value={objectiveText}
+                value={module.body}
                 onChange={handleTextEdit}
                 style={{
                   width: '100%',
@@ -85,7 +80,7 @@ export default function ModuleCard() {
               ></textarea>
             </Box>
           ) : (
-            objectiveText
+            module.body
           )}
         </Typography>
       </CardContent>
@@ -96,16 +91,16 @@ export default function ModuleCard() {
         <IconButton aria-label="share">
           <DeleteIcon />
         </IconButton>
-        <ExpandMore
+        {/* <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show more"
         >
           <ExpandMoreIcon />
-        </ExpandMore>
+        </ExpandMore> */}
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>Introduction (10 minutes):</Typography>
           <Typography paragraph>
@@ -119,7 +114,7 @@ export default function ModuleCard() {
             Introduce the topic of chemistry as the study of chemicals and their properties.
           </Typography>
         </CardContent>
-      </Collapse>
+      </Collapse> */}
     </Card>
   );
 }
