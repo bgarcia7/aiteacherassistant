@@ -77,6 +77,7 @@ def parse_string_on_sent(string, c):
 
 
 def get_response(prompt, temperature=0.6):
+    print("PROMPT:", prompt)
     response = openai.Completion.create(
             model="text-davinci-003",
             prompt=prompt,
@@ -88,35 +89,47 @@ def get_response(prompt, temperature=0.6):
     )
     return response.choices[0].text.strip()
 
-def structure_module(module):
-    s = {}
-    subsections = parse_string_on_sent(module, '|'.join(SUBSECTION_SENTINELS))
-    section_info = subsections[0]
-
-    # Format module 
-    s['title'] = clean_text(section_info.split('(')[0])
-    s['duration'] = clean_text(section_info.split('(')[1].split(')')[0])
-    s['body'] = [clean_text(subsection) for subsection in subsections[1:]]
-    print("structure_module:", s)
-    return s
-    
-def structure_response(string):
-    # Parse modules
-    print("structure_response:", string)
-    modules = parse_string_on_sent(string, '|'.join(SECTION_SENTINELS))
-    print("Parsed_structured_response: ", string)
-    return [structure_module(m) for m in modules]
+# Accepts a string with different subsections seperated by \n
+def prettify_module(module_body):
+    print("MODULE BODY:", module_body)
+    print([(ix2, s) for ix2, s in enumerate(module_body.split("\n"))])
+    return '\n'.join([SUBSECTION_SENTINELS[ix2] + '. ' + s for ix2, s in enumerate(module_body.split("\n"))])
 
 def prettify_lesson_plan(lesson_plan):
     modules = lesson_plan['modules']
     string = 'Learning Objective: ' + lesson_plan['title'] + '\n'
     string += 'Lesson Plan:\n'
     for ix, m in enumerate(modules):
-        print(ix, m)
+        # print(ix, m)
         string += SECTION_SENTINELS[ix] + '. ' + m['title'] + ' (' + (m.get('duration') or 'N/A') + ') \n'
-        print([ix2 for ix2, s in enumerate(m["body"])])
-        string += '\n'.join([SUBSECTION_SENTINELS[ix2] + '. ' + s for ix2, s in enumerate(m['body'])])
+        string += m['body']
     return string
+
+def structure_module(module):
+    print("Module: ", module)
+    s = {}
+    subsections = parse_string_on_sent(module, '|'.join(SUBSECTION_SENTINELS))
+    section_info = subsections[0]
+    # print("subsections:", subsections)
+
+
+    split_section_info = section_info.split('(')
+    s['title'] = split_section_info[0].strip()
+    # Handle case when there is no duration
+    if len(split_section_info) > 1:
+        s['duration'] = split_section_info[1].replace(')', '')
+    # Format module 
+    cleaned_subsections = [clean_text(subsection) for subsection in subsections[1:]]
+    s['body'] = '\n'.join([SUBSECTION_SENTINELS[ix2] + '. ' + s for ix2, s in enumerate(cleaned_subsections)])
+    print("structure_module:-=================\n", s)
+    return s
+    
+def structure_response(string):
+    # Parse modules
+    # print("structure_response:", string)
+    modules = parse_string_on_sent(string, '|'.join(SECTION_SENTINELS))
+    # print("Parsed_structured_response: ", string)
+    return [structure_module(m) for m in modules]
 
     
 def generate_modules(title, learning_objective, num_minutes=60):
@@ -126,16 +139,23 @@ def generate_modules(title, learning_objective, num_minutes=60):
     print("RAW Response: ", response)
 
     modules = structure_response(response)
-    print("PARSED modules: ", modules)
+    # print("PARSED modules: ", modules)
     return modules
 
-def expand_on_module(lesson_plan, module):
+def expand_module(lesson_plan, module):
     prompt = EXPAND_MODULE_PROMPT.format(title=module['title'], lesson_plan=prettify_lesson_plan(lesson_plan))
     response = get_response(prompt)
-    return structure_module(response)
+    print("RAW Response: ", response)
+    new_module = structure_module(response)
+    print("OLDDDDD\n", module, "\nNEWWWW\n", new_module)
+    return new_module
     
 
 def regenerate_module(lesson_plan, module):
+    print("REGENERATING MODULES")
     prompt = REGENERATE_MODULE_PROMPT.format(title=module['title'], lesson_plan=prettify_lesson_plan(lesson_plan))
     response = get_response(prompt, temperature=0.75)
-    return structure_module(response)
+    print("RAW Response: ", response)
+    new_module = structure_module(response)
+    print("OLDDDDD\n", module, "\nNEWWWW\n", new_module)
+    return new_module

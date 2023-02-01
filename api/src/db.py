@@ -89,16 +89,16 @@ def insert_modules(modules):
 def update_module(module_id, new_module):
     with Session() as session:
         module = session.query(Module).filter_by(id=module_id).first()
-        if new_module['module_type']:
+        if new_module.get('module_type'):
             module.module_type = new_module['module_type']
 
-        if new_module['title']:
+        if new_module.get('title'):
             module.title = new_module['title']
     
-        if new_module['body']:
+        if new_module.get('body'):
             module.body = new_module['body']
 
-        if new_module['duration']:
+        if new_module.get('duration'):
             module.duration = new_module['duration']
 
         session.commit()
