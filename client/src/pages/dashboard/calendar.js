@@ -288,7 +288,7 @@ export default function CalendarPage() {
           }}
           flexGrow={1}
         >
-          <Grid item xs={12} md={6} lg={7}>
+          <Grid item xs={12} md={selectedEventId || openNewEvent ? 7 : 12}>
             <Card>
               <StyledCalendar>
                 <CalendarToolbar
@@ -331,7 +331,7 @@ export default function CalendarPage() {
               </StyledCalendar>
             </Card>
           </Grid>
-          <Grid item xs={12} md={6} lg={5} maxHeight={isDesktop ? 720 : 'auto'}>
+          <Grid item xs={12} md={5} maxHeight={isDesktop ? 720 : 'auto'}>
             {selectedEventId || openNewEvent ? (
               <CalendarForm
                 event={selectedEvent}
