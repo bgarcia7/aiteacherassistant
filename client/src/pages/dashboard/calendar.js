@@ -266,7 +266,6 @@ export default function CalendarPage() {
               name: 'Calendar',
             },
           ]}
-          moreLink={['https://fullcalendar.io/docs/react']}
           action={
             <Button
               variant="contained"
