@@ -16,11 +16,10 @@ import Iconify from '../../../components/iconify';
 import { ColorSinglePicker } from '../../../components/color-utils';
 import FormProvider, { RHFTextField, RHFSwitch } from '../../../components/hook-form';
 import { ModuleCard } from '../components';
-import Typography from 'src/theme/overrides/Typography';
 
 // ----------------------------------------------------------------------
 
-const getInitialValues = (event, range, defaultModules) => {
+const getInitialValues = (event, range) => {
   const initialEvent = {
     title: '',
     description: '',
@@ -55,11 +54,9 @@ export default function CalendarForm({
   onCreateUpdateEvent,
   onDeleteEvent,
   onCancel,
-  defaultModules,
+  modules,
 }) {
   const hasEventData = !!event;
-
-  console.log(event);
 
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Title is required'),
@@ -81,7 +78,7 @@ export default function CalendarForm({
 
   useEffect(() => {
     reset(getInitialValues(event, range));
-  }, [event, range, reset]);
+  }, [event, range, reset, modules]);
 
   const values = watch();
 
@@ -96,8 +93,8 @@ export default function CalendarForm({
         end: data.end,
       };
       onCreateUpdateEvent(newEvent);
-      onCancel();
-      reset();
+      // onCancel();
+      // reset();
     } catch (error) {
       console.error(error);
     }
@@ -110,24 +107,20 @@ export default function CalendarForm({
 
   // drag and drop
 
-  const [modules, setModules] = useState(defaultModules.modules);
+  const [components, setComponents] = useState([]);
+  console.log(modules);
+  useEffect(() => {
+    const draggableComponents =
+      modules.length > 0 &&
+      modules[0].map((module, index) => ({
+        id: module.id,
+        content: <ModuleCard key={index} module={module} />,
+      }));
+    setComponents(draggableComponents);
+    console.log('components:', components);
+  }, [modules]);
 
-  const draggableComponents = [
-    {
-      id: 'draggable-1',
-      content: <ModuleCard />,
-    },
-    {
-      id: 'draggable-2',
-      content: <ModuleCard />,
-    },
-    {
-      id: 'draggable-3',
-      content: <ModuleCard />,
-    },
-  ];
-
-  const [components, setComponents] = useState(draggableComponents);
+  // create a draggable component for each module in generatedModules
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -154,22 +147,23 @@ export default function CalendarForm({
           <Droppable droppableId="droppable">
             {(provided) => (
               <Box ref={provided.innerRef} {...provided.droppableProps}>
-                {components.map((component, index) => (
-                  <Draggable key={component.id} draggableId={component.id} index={index}>
-                    {(provided) => (
-                      <Box
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        sx={{
-                          marginBottom: 3,
-                        }}
-                      >
-                        {component.content}
-                      </Box>
-                    )}
-                  </Draggable>
-                ))}
+                {components.length > 0 &&
+                  components.map((component, index) => (
+                    <Draggable key={component.id} draggableId={component.id} index={index}>
+                      {(provided) => (
+                        <Box
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          sx={{
+                            marginBottom: 3,
+                          }}
+                        >
+                          {component.content}
+                        </Box>
+                      )}
+                    </Draggable>
+                  ))}
                 {provided.placeholder}
               </Box>
             )}
@@ -240,7 +234,7 @@ export default function CalendarForm({
         </Button>
 
         <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-          {hasEventData ? 'Update' : 'Add'}
+          {hasEventData ? 'Submit' : 'Generate'}
         </LoadingButton>
       </DialogActions>
     </FormProvider>

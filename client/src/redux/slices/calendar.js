@@ -10,6 +10,7 @@ const initialState = {
   isLoading: false,
   error: null,
   events: [],
+  modules: [],
   openDrawer: false,
   newLesson: false,
   selectedEventId: null,
@@ -38,13 +39,17 @@ const slice = createSlice({
       state.events = action.payload;
     },
 
-    // CREATE EVENT
+    // CREATE LESSON
     createEventSuccess(state, action) {
-      const newEvent = action.payload;
-      console.log('payload: ', newEvent);
+      const newLesson = action.payload.lesson_plan;
+      console.log('hi');
+      console.log(newLesson);
+      const lessonModules = newLesson.modules;
+      console.log('lessonmodules: ', lessonModules);
       state.isLoading = false;
-      state.events = [...state.events, newEvent];
-      state.selectedEventId = newEvent.id;
+      state.events = [...state.events, newLesson];
+      state.modules = [...state.modules, lessonModules];
+      state.selectedEventId = newLesson.id;
     },
 
     // UPDATE EVENT
@@ -125,7 +130,7 @@ export function createEvent(event) {
         return response;
       });
       console.log('create event response: ', response);
-      dispatch(slice.actions.createEventSuccess(response.data.event));
+      dispatch(slice.actions.createEventSuccess(response));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

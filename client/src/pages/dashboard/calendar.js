@@ -44,7 +44,6 @@ import {
   CalendarFilterDrawer,
 } from '../../sections/@dashboard/calendar';
 // ----------------------------------------------------------------------
-import { createLessonPlan, getLessonPlan } from 'src/pages/api/Modules';
 
 const COLOR_OPTIONS = [
   '#00AB55', // theme.palette.primary.main,
@@ -99,7 +98,6 @@ export default function CalendarPage() {
 
   useEffect(() => {
     dispatch(getEvents());
-    // dispatch(getAllModules());
   }, [dispatch]);
 
   useEffect(() => {
@@ -336,7 +334,7 @@ export default function CalendarPage() {
               <CalendarForm
                 event={selectedEvent}
                 range={selectedRange}
-                defaultModules={modules}
+                modules={modules}
                 onCancel={handleCloseDrawer}
                 onCreateUpdateEvent={handleCreateUpdateEvent}
                 onDeleteEvent={handleDeleteEvent}

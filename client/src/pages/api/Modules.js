@@ -18,13 +18,6 @@ export const createLessonPlan = async (lessonPlan) => {
   return response.data;
 };
 
-// const lessonData = {
-//   title: 'something',
-//   learning_objective: 'here',
-// };
-
-// createLessonPlan(lessonData);
-
 const getLessonPlan = async (req, res) => {
   const lessonplanId = '7bd368d3-7a0a-4f3f-992b-6c4dfeea37b4';
   const response = await axios.get(`${API_URL}lesson_plan/${lessonplanId}`);
