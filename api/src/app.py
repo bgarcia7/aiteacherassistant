@@ -2,7 +2,7 @@
 
 from flask import Flask, request
 import yaml
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from ast import literal_eval
 import os
 import ast
@@ -13,7 +13,7 @@ import json
 from lesson_plan import lesson_plan_blueprint
 from module import module_blueprint
 app = Flask(__name__)
-CORS(app)
+app = CORS(app)
 
 # ========[ PRODUCTION ]=========
 # openai.organization = os.environ.get('OPENAI_ORG')

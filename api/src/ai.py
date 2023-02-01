@@ -97,11 +97,14 @@ def structure_module(module):
     s['title'] = clean_text(section_info.split('(')[0])
     s['duration'] = clean_text(section_info.split('(')[1].split(')')[0])
     s['body'] = [clean_text(subsection) for subsection in subsections[1:]]
+    print("structure_module:", s)
     return s
     
 def structure_response(string):
     # Parse modules
+    print("structure_response:", string)
     modules = parse_string_on_sent(string, '|'.join(SECTION_SENTINELS))
+    print("Parsed_structured_response: ", string)
     return [structure_module(m) for m in modules]
 
 def prettify_lesson_plan(lesson_plan):
@@ -109,12 +112,11 @@ def prettify_lesson_plan(lesson_plan):
     string = 'Learning Objective: ' + lesson_plan['title'] + '\n'
     string += 'Lesson Plan:\n'
     for ix, m in enumerate(modules):
-        string += SECTION_SENTINELS[ix] + '. ' + m['title'] + ' (' + m['duration'] + ') \n'
+        print(ix, m)
+        string += SECTION_SENTINELS[ix] + '. ' + m['title'] + ' (' + (m.get('duration') or 'N/A') + ') \n'
+        print([ix2 for ix2, s in enumerate(m["body"])])
         string += '\n'.join([SUBSECTION_SENTINELS[ix2] + '. ' + s for ix2, s in enumerate(m['body'])])
     return string
-
-
-
 
     
 def generate_modules(title, learning_objective, num_minutes=60):
