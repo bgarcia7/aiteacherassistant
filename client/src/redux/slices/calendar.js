@@ -9,7 +9,8 @@ const initialState = {
   isLoading: false,
   error: null,
   events: [],
-  openModal: false,
+  openDrawer: false,
+  newLesson: false,
   selectedEventId: null,
   selectedRange: null,
   modules: [],
@@ -40,7 +41,6 @@ const slice = createSlice({
     getModulesSuccess(state, action) {
       state.isLoading = false;
       state.modules = action.payload;
-      console.log('modules', state.modules);
     },
 
     // CREATE EVENT
@@ -48,6 +48,7 @@ const slice = createSlice({
       const newEvent = action.payload;
       state.isLoading = false;
       state.events = [...state.events, newEvent];
+      state.selectedEventId = newEvent.id;
     },
 
     // UPDATE EVENT
@@ -69,26 +70,26 @@ const slice = createSlice({
 
     // SELECT EVENT
     selectEvent(state, action) {
+      state.selectedEventId = null;
       const eventId = action.payload;
-      state.openModal = true;
       state.selectedEventId = eventId;
     },
 
     // SELECT RANGE
     selectRange(state, action) {
       const { start, end } = action.payload;
-      state.openModal = true;
+      state.openDrawer = true;
       state.selectedRange = { start, end };
     },
 
-    // OPEN MODAL
-    onOpenModal(state) {
-      state.openModal = true;
+    // OPEN Drawer
+    onNewLesson(state) {
+      state.newLesson = true;
     },
 
-    // CLOSE MODAL
-    onCloseModal(state) {
-      state.openModal = false;
+    // CLOSE Drawer
+    onCloseDrawer(state) {
+      state.newLesson = false;
       state.selectedEventId = null;
       state.selectedRange = null;
     },
@@ -99,7 +100,7 @@ const slice = createSlice({
 export default slice.reducer;
 
 // Actions
-export const { onOpenModal, onCloseModal, selectEvent, selectRange } = slice.actions;
+export const { onOpenDrawer, onCloseDrawer, selectEvent, selectRange } = slice.actions;
 
 // ----------------------------------------------------------------------
 
@@ -108,7 +109,6 @@ export function getAllModules() {
     dispatch(slice.actions.startLoading());
     try {
       const response = await getModules();
-      console.log('response', response);
       dispatch(slice.actions.getModulesSuccess(response));
     } catch (error) {
       dispatch(slice.actions.hasError(error));

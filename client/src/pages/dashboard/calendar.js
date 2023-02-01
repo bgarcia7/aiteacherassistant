@@ -9,7 +9,7 @@ import { useState, useRef, useEffect } from 'react';
 // next
 import Head from 'next/head';
 // @mui
-import { Card, Button, Container, DialogTitle, Dialog } from '@mui/material';
+import { Card, Button, Container, Grid, Drawer, Dialog, DialogTitle } from '@mui/material';
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
 import {
@@ -19,9 +19,10 @@ import {
   deleteEvent,
   selectEvent,
   selectRange,
-  onOpenModal,
-  onCloseModal,
+  onOpenDrawer,
+  onCloseDrawer,
   getAllModules,
+  onNewLesson,
 } from '../../redux/slices/calendar';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
@@ -38,7 +39,12 @@ import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import { useSettingsContext } from '../../components/settings';
 import { useDateRangePicker } from '../../components/date-range-picker';
 // sections
-import { CalendarForm, StyledCalendar, CalendarToolbar } from '../../sections/@dashboard/calendar';
+import {
+  CalendarForm,
+  StyledCalendar,
+  CalendarToolbar,
+  CalendarFilterDrawer,
+} from '../../sections/@dashboard/calendar';
 // ----------------------------------------------------------------------
 
 const COLOR_OPTIONS = [
@@ -68,7 +74,7 @@ export default function CalendarPage() {
 
   const calendarRef = useRef(null);
 
-  const { events, openModal, selectedRange, selectedEventId, modules } = useSelector(
+  const { events, selectedRange, selectedEventId, modules, newLesson } = useSelector(
     (state) => state.calendar
   );
 
@@ -90,12 +96,12 @@ export default function CalendarPage() {
 
   const [view, setView] = useState(isDesktop ? 'dayGridMonth' : 'listWeek');
 
-  const [loading, setLoading] = useState(false);
+  const [openNewEvent, setOpenNewEvent] = useState(false);
 
   useEffect(() => {
     dispatch(getEvents());
     dispatch(getAllModules());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const calendarEl = calendarRef.current;
@@ -197,12 +203,13 @@ export default function CalendarPage() {
     }
   };
 
-  const handleOpenModal = () => {
-    dispatch(onOpenModal());
+  const handleOpenDrawer = () => {
+    dispatch(onOpenDrawer());
   };
 
-  const handleCloseModal = () => {
-    dispatch(onCloseModal());
+  const handleCloseDrawer = () => {
+    dispatch(onCloseDrawer());
+    setOpenNewEvent(false);
   };
 
   const handleCreateUpdateEvent = (newEvent) => {
@@ -219,12 +226,20 @@ export default function CalendarPage() {
     try {
       if (selectedEventId) {
         dispatch(deleteEvent(selectedEventId));
-        handleCloseModal();
+        handleCloseDrawer();
         enqueueSnackbar('Delete success!');
       }
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleFilterEventColor = (eventColor) => {
+    const checked = filterEventColor.includes(eventColor)
+      ? filterEventColor.filter((value) => value !== eventColor)
+      : [...filterEventColor, eventColor];
+
+    setFilterEventColor(checked);
   };
 
   const dataFiltered = applyFilter({
@@ -258,69 +273,103 @@ export default function CalendarPage() {
             <Button
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={handleOpenModal}
+              onClick={() => setOpenNewEvent(true)}
             >
               Generate Lesson Plan
             </Button>
           }
         />
 
-        <Card>
-          <StyledCalendar>
-            <CalendarToolbar
-              date={date}
-              view={view}
-              onNextDate={handleClickDateNext}
-              onPrevDate={handleClickDatePrev}
-              onToday={handleClickToday}
-              onChangeView={handleChangeView}
-              onOpenFilter={handleOpenFilter}
-            />
-            <FullCalendar
-              weekends
-              editable
-              droppable
-              selectable
-              allDayMaintainDuration
-              eventResizableFromStart
-              events={dataFiltered}
-              initialEvents={events}
-              ref={calendarRef}
-              initialDate={date}
-              initialView={view}
-              dayMaxEventRows={3}
-              eventDisplay="block"
-              headerToolbar={false}
-              select={handleSelectRange}
-              eventDrop={handleDropEvent}
-              eventClick={handleSelectEvent}
-              eventResize={handleResizeEvent}
-              height={isDesktop ? 720 : 'auto'}
-              plugins={[
-                listPlugin,
-                dayGridPlugin,
-                timelinePlugin,
-                timeGridPlugin,
-                interactionPlugin,
-              ]}
-            />
-          </StyledCalendar>
-        </Card>
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            marginTop: 3,
+          }}
+          flexGrow={1}
+        >
+          <Grid item xs={12} md={selectedEventId || openNewEvent ? 7 : 12}>
+            <Card>
+              <StyledCalendar>
+                <CalendarToolbar
+                  date={date}
+                  view={view}
+                  onNextDate={handleClickDateNext}
+                  onPrevDate={handleClickDatePrev}
+                  onToday={handleClickToday}
+                  onChangeView={handleChangeView}
+                  onOpenFilter={handleOpenFilter}
+                />
+                <FullCalendar
+                  weekends={false}
+                  editable
+                  droppable
+                  selectable
+                  allDayMaintainDuration
+                  eventResizableFromStart
+                  events={dataFiltered}
+                  initialEvents={events}
+                  ref={calendarRef}
+                  initialDate={date}
+                  initialView={view}
+                  dayMaxEventRows={3}
+                  eventDisplay="block"
+                  headerToolbar={false}
+                  select={handleSelectRange}
+                  eventDrop={handleDropEvent}
+                  eventClick={handleSelectEvent}
+                  eventResize={handleResizeEvent}
+                  height={isDesktop ? 720 : 'auto'}
+                  plugins={[
+                    listPlugin,
+                    dayGridPlugin,
+                    timelinePlugin,
+                    timeGridPlugin,
+                    interactionPlugin,
+                  ]}
+                />
+              </StyledCalendar>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={5} maxHeight={isDesktop ? 720 : 'auto'}>
+            {selectedEventId || openNewEvent ? (
+              <CalendarForm
+                event={selectedEvent}
+                range={selectedRange}
+                defaultModules={modules}
+                onCancel={handleCloseDrawer}
+                onCreateUpdateEvent={handleCreateUpdateEvent}
+                onDeleteEvent={handleDeleteEvent}
+                colorOptions={COLOR_OPTIONS}
+              />
+            ) : null}
+          </Grid>
+        </Grid>
       </Container>
 
-      <Dialog fullWidth maxWidth="xs" open={openModal} onClose={handleCloseModal}>
-        <DialogTitle>{selectedEvent ? 'Edit Module' : 'Add Module'}</DialogTitle>
-
-        <CalendarForm
-          event={selectedEvent}
-          range={selectedRange}
-          defaultModules={modules}
-          onCancel={handleCloseModal}
-          onCreateUpdateEvent={handleCreateUpdateEvent}
-          onDeleteEvent={handleDeleteEvent}
-          colorOptions={COLOR_OPTIONS}
-        />
-      </Dialog>
+      <CalendarFilterDrawer
+        events={events}
+        picker={picker}
+        open={openFilter}
+        onClose={handleCloseFilter}
+        colorOptions={COLOR_OPTIONS}
+        filterEventColor={filterEventColor}
+        onFilterEventColor={handleFilterEventColor}
+        onResetFilter={() => {
+          const { setStartDate, setEndDate } = picker;
+          setFilterEventColor([]);
+          if (setStartDate && setEndDate) {
+            setStartDate(null);
+            setEndDate(null);
+          }
+        }}
+        onSelectEvent={(eventId) => {
+          if (eventId) {
+            handleOpenModal();
+            dispatch(selectEvent(eventId));
+          }
+        }}
+      />
     </>
   );
 }
