@@ -31,6 +31,8 @@ const ExpandMore = styled((props) => {
 export default function ModuleCard({ module }) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [text, setText] = useState(module.body);
+  const [title, setTitle] = useState(module.title);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -60,6 +62,8 @@ export default function ModuleCard({ module }) {
     console.log(response);
   };
 
+
+
   return (
     <Card>
       <CardHeader
@@ -72,7 +76,7 @@ export default function ModuleCard({ module }) {
             )}
           </IconButton>
         }
-        title={module.title}
+        title={title}
         subheader={module.description}
       />
       <CardContent>
@@ -82,7 +86,7 @@ export default function ModuleCard({ module }) {
               <textarea
                 rows="4"
                 cols="50"
-                value={module.body}
+                value={text}
                 onChange={handleTextEdit}
                 style={{
                   width: '100%',
@@ -95,10 +99,10 @@ export default function ModuleCard({ module }) {
             </Box>
           ) : expanded ? (
             <Collapse in={expanded} timeout="auto" unmountOnExit>
-              <Typography paragraph>{module.body}</Typography>
+              <Typography paragraph>{text}</Typography>
             </Collapse>
           ) : (
-            <Typography paragraph>{handleTextCut(module.body)}</Typography>
+            <Typography paragraph>{handleTextCut(text)}</Typography>
           )}
         </Typography>
       </CardContent>
