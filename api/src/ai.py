@@ -16,9 +16,6 @@ def clean_text(string):
     return string
 
 
-<< << << < HEAD
-
-
 def parse_string_on_sent(string, s, regex_format=REGEX_BASE):
     regex = regex_format.format(s=s)
     parsed = [x for x in re.split(
@@ -29,9 +26,6 @@ def parse_string_on_sent(string, s, regex_format=REGEX_BASE):
 #### QUIZ STRING FORMATTING ####
 def parse_options(q):
     return parse_string_on_sent(q, '|'.join(QUIZ_OPTION_SENTINELS), regex_format=REGEX_QUIZ)
-
-
-== == == =
 
 
 def parse_string_on_sent(string, c):
@@ -54,9 +48,6 @@ def get_response(prompt, temperature=0.6):
         presence_penalty=1
     )
     return response.choices[0].text.strip()
-
-
->>>>>> > 67aac4a(Add gslides creator)
 
 
 def structure_quiz_response(string):
