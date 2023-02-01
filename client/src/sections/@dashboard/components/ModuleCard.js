@@ -14,6 +14,8 @@ import SyncIcon from '@mui/icons-material/Sync';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import { Box } from '@mui/system';
+// API calls
+import { regenerateModuleBody } from 'src/pages/api/Modules';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -44,13 +46,18 @@ export default function ModuleCard({ module }) {
 
   const handleTextEdit = (e) => {};
 
-  // create function that cuts off the text after 100 characters and adds ellipses
   const handleTextCut = (text) => {
     if (text.length > 100) {
       return text.slice(0, 100) + '...';
     } else {
       return text;
     }
+  };
+
+  const handleRegenerateClick = async () => {
+    console.log('I was clicked');
+    const response = await regenerateModuleBody(module.id);
+    console.log(response);
   };
 
   return (
@@ -96,8 +103,8 @@ export default function ModuleCard({ module }) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <SyncIcon />
+        <IconButton aria-label="regenerate">
+          <SyncIcon onClick={handleRegenerateClick} />
         </IconButton>
         <IconButton aria-label="share">
           <DeleteIcon />
@@ -111,11 +118,6 @@ export default function ModuleCard({ module }) {
           <ExpandMoreIcon />
         </ExpandMore>
       </CardActions>
-      {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>{module.body}</Typography>
-        </CardContent>
-      </Collapse> */}
     </Card>
   );
 }

@@ -38,6 +38,5 @@ export const regenerateModuleBody = async (moduleId) => {
   if (response.status !== 200) {
     throw new Error(response.data.message);
   }
-  console.log(response.data);
   return response.data;
 };
