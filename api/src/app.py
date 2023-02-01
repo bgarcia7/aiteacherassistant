@@ -13,7 +13,7 @@ import json
 from lesson_plan import lesson_plan_blueprint
 from module import module_blueprint
 app = Flask(__name__)
-app = CORS(app)
+CORS(app)
 
 # ========[ PRODUCTION ]=========
 # openai.organization = os.environ.get('OPENAI_ORG')
