@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy import Column, String, Integer, Sequence, ForeignKey
+from sqlalchemy import Column, String, Integer, Sequence, ForeignKey, JSON
 from sqlalchemy.ext.declarative import declarative_base  
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -18,7 +18,7 @@ engine = create_engine(db_url)
 base = declarative_base()
 Session = sessionmaker(engine)  
 
-## MODELS
+#===============[ MODELS ]=================
 class LessonPlan(base):  
     __tablename__ = 'lesson_plans'
 
@@ -26,7 +26,7 @@ class LessonPlan(base):
     title = Column(String)
     description = Column(String)
     modules = relationship("Module", back_populates="lesson_plan")
-    # modules = relationship("Module", back_populates="lesson_plan")
+    quizzes = relationship("Quiz", back_populates="lesson_plan")
 
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -45,7 +45,20 @@ class Module(base):
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-## DB FUNCTIONS
+class Quiz(base):
+    __tablename__ = 'quizzes'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    pdf_url = Column(String)
+    content = Column(JSON)
+    lesson_plan_id = Column(UUID, ForeignKey("lesson_plans.id"))
+    lesson_plan = relationship("LessonPlan", back_populates="quizzes")
+
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+# base.metadata.create_all(engine)
+
+#===============[ LESSON PLAN FUNCTIONS ]=================
 def insert_lesson_plan(title, description, modules = []):
     # Create 
     with Session() as session:
@@ -57,7 +70,7 @@ def insert_lesson_plan(title, description, modules = []):
         print("Base lesson", lesson_plan.as_dict())
 
         for module in modules:
-            new_module = Module(module_type=module.get('module_type'), title=module.get('title'), body=module.get('body'), lesson_plan_id=lesson_plan.id) 
+            new_module = Module(module_type=module.get('module_type'), title=module.get('title'), body=module.get('body'), duration=module.get('duration'), lesson_plan_id=lesson_plan.id)
             print("New module", new_module.as_dict())
             session.add(new_module)
             session.commit()
@@ -75,6 +88,7 @@ def get_lesson_plan(lesson_plan_id):
         # print("Exapnded", expanded_lesson_plan)
         return expanded_lesson_plan
 
+#===============[ MODULE FUNCTIONS ]=================
 def get_module(module_id):
     with Session() as session:
         module = session.query(Module).filter_by(id=module_id).first()
@@ -110,6 +124,20 @@ def delete_module(module_id):
         session.delete(module)
         session.commit()
         return
+
+#===============[ QUIZ FUNCTIONS ]=================
+
+def get_quiz(quiz_id):
+    with Session() as session:
+        quiz = session.query(Quiz).filter_by(id=quiz_id).first()
+        return quiz.as_dict()
+
+def insert_quiz(lesson_plan_id, pdf_url, content):
+    with Session() as session:
+        quiz = Quiz(pdf_url=pdf_url, content=content, lesson_plan_id=lesson_plan_id)
+        session.add(quiz)
+        session.commit()
+        return quiz.as_dict()
 
 if __name__ == "__main__":
     print("Adding tables")
