@@ -2,7 +2,7 @@
 
 from flask import Flask, request
 import yaml
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from ast import literal_eval
 import os
 import ast
@@ -12,6 +12,7 @@ import json
 
 from lesson_plan import lesson_plan_blueprint
 from module import module_blueprint
+from quiz import quiz_blueprint
 app = Flask(__name__)
 CORS(app)
 
@@ -30,6 +31,7 @@ def hello_world():
 
 app.register_blueprint(lesson_plan_blueprint, url_prefix='/lesson_plan')
 app.register_blueprint(module_blueprint, url_prefix='/module')
+app.register_blueprint(quiz_blueprint, url_prefix='/quiz')
 
 # We only need this for local development.
 if __name__ == '__main__':

@@ -34,7 +34,14 @@ def delete_module(module_id):
 
 @module_blueprint.route('/<module_id>/regenerate', methods=['POST'])
 def regenerate_module(module_id):
-  #TODO: Regenerate module and update in db
   module = db.get_module(module_id)
-  new_module = ai.regenerate_module(module)
+  lesson_plan = db.get_lesson_plan(module.get("lesson_plan_id"))
+  new_module = ai.regenerate_module(lesson_plan, module)
+  return db.update_module(module_id, new_module)
+
+@module_blueprint.route('/<module_id>/expand', methods=['POST'])
+def expand_module(module_id):
+  module = db.get_module(module_id)
+  lesson_plan = db.get_lesson_plan(module.get("lesson_plan_id"))
+  new_module = ai.expand_module(lesson_plan, module)
   return db.update_module(module_id, new_module)
