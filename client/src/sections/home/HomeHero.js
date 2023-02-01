@@ -143,7 +143,7 @@ function Description() {
   return (
     <StyledDescription>
       <m.div variants={varFade().in}>
-        <Typography variant="h2">
+        <Typography variant="h2" color={'#EFEEE9'}>
           Meet Your New
         </Typography>
       </m.div>
@@ -162,7 +162,7 @@ function Description() {
       </m.div>
 
       <m.div variants={varFade().in}>
-        <Typography variant="body2">
+        <Typography variant="body2" color={'#EFEEE9'}>
           Choose your curriculum and generate your next few weeks’ worth of lesson plans in less
           than 5 minutes.
         </Typography>
@@ -209,6 +209,7 @@ function Content() {
         height: 1,
         overflow: 'hidden',
         position: 'absolute',
+
         mt: `${HEADER.H_MAIN_DESKTOP}px`,
       }}
     >
