@@ -59,10 +59,13 @@ export default function ModuleCard({ module }) {
   const handleRegenerateClick = async () => {
     console.log('I was clicked');
     const response = await regenerateModuleBody(module.id);
+    setText(response.body);
     console.log(response);
   };
 
-
+  useEffect(() => {
+    console.log('I was called');
+  }, [text]);
 
   return (
     <Card>
