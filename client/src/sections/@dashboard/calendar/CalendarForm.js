@@ -63,7 +63,7 @@ export default function CalendarForm({
 
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Title is required'),
-    description: Yup.string().max(5000),
+    learning_objective: Yup.string().max(5000).required('Learning objective is required'),
   });
 
   const methods = useForm({
@@ -89,7 +89,7 @@ export default function CalendarForm({
     try {
       const newEvent = {
         title: data.title,
-        description: '',
+        learning_objective: data.learning_objective,
         textColor: data.textColor,
         allDay: data.allDay,
         start: data.start,
@@ -143,7 +143,13 @@ export default function CalendarForm({
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3} sx={{ px: 3 }}>
         <RHFTextField name="title" label="Title" fullWidth />
-
+        <RHFTextField
+          name="learning_objective"
+          label="Learning objective"
+          fullWidth
+          multiline
+          rows={4}
+        />
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable">
             {(provided) => (
@@ -169,8 +175,6 @@ export default function CalendarForm({
             )}
           </Droppable>
         </DragDropContext>
-
-        <RHFSwitch name="allDay" label="All day" />
 
         <Controller
           name="start"

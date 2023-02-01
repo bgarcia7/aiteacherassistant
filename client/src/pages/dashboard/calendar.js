@@ -21,8 +21,6 @@ import {
   selectRange,
   onOpenDrawer,
   onCloseDrawer,
-  getAllModules,
-  onNewLesson,
 } from '../../redux/slices/calendar';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
@@ -46,6 +44,7 @@ import {
   CalendarFilterDrawer,
 } from '../../sections/@dashboard/calendar';
 // ----------------------------------------------------------------------
+import { createLessonPlan, getLessonPlan } from 'src/pages/api/Modules';
 
 const COLOR_OPTIONS = [
   '#00AB55', // theme.palette.primary.main,
@@ -74,7 +73,7 @@ export default function CalendarPage() {
 
   const calendarRef = useRef(null);
 
-  const { events, selectedRange, selectedEventId, modules, newLesson } = useSelector(
+  const { events, selectedRange, selectedEventId, modules } = useSelector(
     (state) => state.calendar
   );
 
@@ -218,6 +217,7 @@ export default function CalendarPage() {
       enqueueSnackbar('Update success!');
     } else {
       dispatch(createEvent(newEvent));
+
       enqueueSnackbar('Create success!');
     }
   };
