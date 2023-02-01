@@ -16,8 +16,7 @@ import Iconify from '../../../components/iconify';
 import { ColorSinglePicker } from '../../../components/color-utils';
 import FormProvider, { RHFTextField, RHFSwitch } from '../../../components/hook-form';
 import { ModuleCard } from '../components';
-// api
-import { getModule, getModules } from '../../../pages/api/getModule';
+import Typography from 'src/theme/overrides/Typography';
 
 // ----------------------------------------------------------------------
 
@@ -60,6 +59,8 @@ export default function CalendarForm({
 }) {
   const hasEventData = !!event;
 
+  console.log(event);
+
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Title is required'),
     description: Yup.string().max(5000),
@@ -77,6 +78,10 @@ export default function CalendarForm({
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
+
+  useEffect(() => {
+    reset(getInitialValues(event, range));
+  }, [event, range, reset]);
 
   const values = watch();
 
@@ -104,8 +109,6 @@ export default function CalendarForm({
       : false;
 
   // drag and drop
-
-  console.log(defaultModules);
 
   const [modules, setModules] = useState(defaultModules.modules);
 
@@ -139,7 +142,8 @@ export default function CalendarForm({
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3} sx={{ px: 3 }}>
-        <RHFTextField name="title" label="Title" placeholder={defaultModules.title} fullWidth />
+        <RHFTextField name="title" label="Title" fullWidth />
+
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable">
             {(provided) => (

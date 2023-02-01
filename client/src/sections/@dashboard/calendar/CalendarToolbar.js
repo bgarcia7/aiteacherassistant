@@ -83,9 +83,9 @@ export default function CalendarToolbar({
           </Button>
         )}
 
-        {/* <IconButton onClick={onOpenFilter}>
+        <IconButton onClick={onOpenFilter}>
           <Iconify icon="ic:round-filter-list" />
-        </IconButton> */}
+        </IconButton>
       </Stack>
     </Stack>
   );
