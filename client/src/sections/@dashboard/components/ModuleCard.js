@@ -46,7 +46,9 @@ export default function ModuleCard({ module }) {
     setExpanded(!expanded);
   };
 
-  const handleTextEdit = (e) => {};
+  const handleTextEdit = (e) => {
+    setText(e.target.value);
+  };
 
   const handleTextCut = (text) => {
     if (text.length > 100) {
