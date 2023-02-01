@@ -1,14 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 // utils
 import axios from '../../utils/axios';
-import { getModules, createModule } from 'src/pages/api/Modules';
+import { createLessonPlan, getLessonPlan } from 'src/pages/api/Modules';
 
 // ----------------------------------------------------------------------
+const API_URL = 'https://vjj6xrqlv1.execute-api.us-west-2.amazonaws.com/production/';
 
 const initialState = {
   isLoading: false,
   error: null,
   events: [],
+  modules: [],
   openDrawer: false,
   newLesson: false,
   selectedEventId: null,
@@ -37,25 +39,17 @@ const slice = createSlice({
       state.events = action.payload;
     },
 
-    // GET MODULES
-    getModulesSuccess(state, action) {
-      state.isLoading = false;
-      state.modules = action.payload;
-    },
-
-    // CREATE MODULE
-    createModuleSuccess(state, action) {
-      const newModule = action.payload;
-      state.isLoading = false;
-      state.modules = [...state.modules, newModule];
-    },
-
-    // CREATE EVENT
+    // CREATE LESSON
     createEventSuccess(state, action) {
-      const newEvent = action.payload;
+      const newLesson = action.payload.lesson_plan;
+      console.log('hi');
+      console.log(newLesson);
+      const lessonModules = newLesson.modules;
+      console.log('lessonmodules: ', lessonModules);
       state.isLoading = false;
-      state.events = [...state.events, newEvent];
-      state.selectedEventId = newEvent.id;
+      state.events = [...state.events, newLesson];
+      state.modules = [...state.modules, lessonModules];
+      state.selectedEventId = newLesson.id;
     },
 
     // UPDATE EVENT
@@ -111,31 +105,7 @@ export const { onOpenDrawer, onCloseDrawer, selectEvent, selectRange } = slice.a
 
 // ----------------------------------------------------------------------
 
-export function getAllModules() {
-  return async (dispatch) => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const response = await getModules();
-      dispatch(slice.actions.getModulesSuccess(response));
-    } catch (error) {
-      dispatch(slice.actions.hasError(error));
-    }
-  };
-}
-
 // ----------------------------------------------------------------------
-
-export function createNewModule(newModule) {
-  return async (dispatch) => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const response = await createModule(newModule);
-      dispatch(slice.actions.createModuleSuccess(response));
-    } catch (error) {
-      dispatch(slice.actions.hasError(error));
-    }
-  };
-}
 
 export function getEvents() {
   return async (dispatch) => {
@@ -151,12 +121,16 @@ export function getEvents() {
 
 // ----------------------------------------------------------------------
 
-export function createEvent(newEvent) {
+export function createEvent(event) {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.post('/api/calendar/events/new', newEvent);
-      dispatch(slice.actions.createEventSuccess(response.data.event));
+      const response = await createLessonPlan(event).then((response) => {
+        console.log('response: ', response);
+        return response;
+      });
+      console.log('create event response: ', response);
+      dispatch(slice.actions.createEventSuccess(response));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

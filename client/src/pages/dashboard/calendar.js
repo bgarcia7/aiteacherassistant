@@ -21,8 +21,6 @@ import {
   selectRange,
   onOpenDrawer,
   onCloseDrawer,
-  getAllModules,
-  onNewLesson,
 } from '../../redux/slices/calendar';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
@@ -74,7 +72,7 @@ export default function CalendarPage() {
 
   const calendarRef = useRef(null);
 
-  const { events, selectedRange, selectedEventId, modules, newLesson } = useSelector(
+  const { events, selectedRange, selectedEventId, modules } = useSelector(
     (state) => state.calendar
   );
 
@@ -100,7 +98,6 @@ export default function CalendarPage() {
 
   useEffect(() => {
     dispatch(getEvents());
-    dispatch(getAllModules());
   }, [dispatch]);
 
   useEffect(() => {
@@ -218,6 +215,7 @@ export default function CalendarPage() {
       enqueueSnackbar('Update success!');
     } else {
       dispatch(createEvent(newEvent));
+
       enqueueSnackbar('Create success!');
     }
   };
@@ -268,7 +266,6 @@ export default function CalendarPage() {
               name: 'Calendar',
             },
           ]}
-          moreLink={['https://fullcalendar.io/docs/react']}
           action={
             <Button
               variant="contained"
@@ -336,7 +333,7 @@ export default function CalendarPage() {
               <CalendarForm
                 event={selectedEvent}
                 range={selectedRange}
-                defaultModules={modules}
+                modules={modules}
                 onCancel={handleCloseDrawer}
                 onCreateUpdateEvent={handleCreateUpdateEvent}
                 onDeleteEvent={handleDeleteEvent}

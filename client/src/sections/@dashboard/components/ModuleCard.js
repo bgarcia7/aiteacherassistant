@@ -14,6 +14,8 @@ import SyncIcon from '@mui/icons-material/Sync';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import { Box } from '@mui/system';
+// API calls
+import { regenerateModuleBody } from 'src/pages/api/Modules';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -26,12 +28,11 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function ModuleCard() {
+export default function ModuleCard({ module }) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [objectiveText, setObjectiveText] = useState(
-    'Objective: Students will understand the basic concepts of chemistry and its role in our daily lives.'
-  );
+  const [text, setText] = useState(module.body);
+  const [title, setTitle] = useState(module.title);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -46,13 +47,30 @@ export default function ModuleCard() {
   };
 
   const handleTextEdit = (e) => {
-    setObjectiveText(e.target.value);
+    setText(e.target.value);
   };
 
+  const handleTextCut = (text) => {
+    if (text.length > 100) {
+      return text.slice(0, 100) + '...';
+    } else {
+      return text;
+    }
+  };
+
+  const handleRegenerateClick = async () => {
+    console.log('I was clicked');
+    const response = await regenerateModuleBody(module.id);
+    setText(response.body);
+    console.log(response);
+  };
+
+  useEffect(() => {
+    console.log('I was called');
+  }, [text]);
+
   return (
-    <Card
-      
-    >
+    <Card>
       <CardHeader
         action={
           <IconButton aria-label="settings">
@@ -63,8 +81,8 @@ export default function ModuleCard() {
             )}
           </IconButton>
         }
-        title="Introduction to Chemistry"
-        subheader="Core Objective"
+        title={title}
+        subheader={module.description}
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
@@ -73,7 +91,7 @@ export default function ModuleCard() {
               <textarea
                 rows="4"
                 cols="50"
-                value={objectiveText}
+                value={text}
                 onChange={handleTextEdit}
                 style={{
                   width: '100%',
@@ -84,14 +102,18 @@ export default function ModuleCard() {
                 }}
               ></textarea>
             </Box>
+          ) : expanded ? (
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+              <Typography paragraph>{text}</Typography>
+            </Collapse>
           ) : (
-            objectiveText
+            <Typography paragraph>{handleTextCut(text)}</Typography>
           )}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <SyncIcon />
+        <IconButton aria-label="regenerate">
+          <SyncIcon onClick={handleRegenerateClick} />
         </IconButton>
         <IconButton aria-label="share">
           <DeleteIcon />
@@ -105,21 +127,6 @@ export default function ModuleCard() {
           <ExpandMoreIcon />
         </ExpandMore>
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Introduction (10 minutes):</Typography>
-          <Typography paragraph>
-            Show pictures of everyday items (e.g. food, cleaning products) and ask students if they
-            know what they have in common.
-          </Typography>
-          <Typography paragraph>
-            Write their responses on the board and discuss the presence of chemicals in the items.
-          </Typography>
-          <Typography paragraph>
-            Introduce the topic of chemistry as the study of chemicals and their properties.
-          </Typography>
-        </CardContent>
-      </Collapse>
     </Card>
   );
 }
