@@ -1,6 +1,4 @@
 import { useState } from 'react';
-// @mui
-import { alpha } from '@mui/material/styles';
 import { Box, Step, Paper, Button, Stepper, StepLabel, Typography } from '@mui/material';
 // Question pages
 import AssessmentQuestion from './AssessmentQuestion';
@@ -23,13 +21,12 @@ export default function LinearStepper() {
 
   const handleNext = () => {
     let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
+    if (activeStep === steps.length - 1) {
+      window.location.href = '/dashboard';
+    }
   };
 
   const handleBack = () => {
@@ -72,23 +69,22 @@ export default function LinearStepper() {
           );
         })}
       </Stepper>
-      {activeStep === steps.length ? (
-        <>
-          <Paper
-            sx={{
-              p: 3,
-              my: 3,
-              minHeight: 120,
-            }}
-          >
-            <Typography sx={{ my: 1 }}>All steps completed - you&apos;re finished</Typography>
-          </Paper>
 
-          <Box sx={{ display: 'flex' }}>
-            <Box sx={{ flexGrow: 1 }} />
-            <Button onClick={handleReset}>Reset</Button>
+      {activeStep === steps.length ? (
+        <Paper
+          sx={{
+            p: 3,
+            my: 3,
+            minHeight: 120,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography sx={{ mt: 2, mb: 1 }}>Redirecting...</Typography>
           </Box>
-        </>
+        </Paper>
       ) : (
         <>
           <Paper
@@ -101,14 +97,19 @@ export default function LinearStepper() {
               justifyContent: 'center',
             }}
           >
-            <Box>
-              <AssessmentQuestion activeStep={activeStep} handleSelections={handleSelections} />
-            </Box>
+            <Box>{/* <AssessmentQuestion activeStep={activeStep} /> */}</Box>
           </Paper>
           <Box sx={{ display: 'flex' }}>
-            <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
-              Back
-            </Button>
+            {activeStep !== steps.length - 1 && (
+              <Button
+                color="inherit"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                Back
+              </Button>
+            )}
             <Box sx={{ flexGrow: 1 }} />
 
             <Button variant="contained" onClick={handleNext}>
