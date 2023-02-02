@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/system';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 // API calls
 import { regenerateModuleBody } from 'src/pages/api/Lesson';
 
@@ -30,8 +30,11 @@ const ExpandMore = styled((props) => {
 export default function ModuleCard({ module, updateModule }) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState(module.body);
-  const [title, setTitle] = useState(module.title);
+  const [isRegenerating, setIsRegenerating] = useState(false);
+
+  const [text, setText] = useState('');
+
+  const id1 = useRandomId();
 
   const update = () => {
     console.log('update was called from ModuleCard');
@@ -45,6 +48,7 @@ export default function ModuleCard({ module, updateModule }) {
   };
 
   const handleEditClick = () => {
+    setText(module.body);
     setIsEditing(!isEditing);
   };
 
@@ -60,7 +64,7 @@ export default function ModuleCard({ module, updateModule }) {
     setText(e.target.value);
   };
 
-  const handleTextCut = (text) => {
+  const cutText = (text) => {
     const maxLength = 300;
     if (text.length > maxLength) {
       return text.slice(0, maxLength) + '...';
@@ -107,7 +111,6 @@ export default function ModuleCard({ module, updateModule }) {
                 onChange={handleTextEdit}
                 style={{
                   width: '100%',
-                  resize: 'none',
                   border: 'none',
                   outline: 'none',
                   fontSize: 'inherit',
@@ -116,10 +119,18 @@ export default function ModuleCard({ module, updateModule }) {
             </Box>
           ) : expanded ? (
             <Collapse in={expanded} timeout="auto" unmountOnExit>
-              <Typography paragraph>{text}</Typography>
+              {text.split('\n').map((splitText) => (
+                <Typography paragraph>{splitText}</Typography>
+              ))}
             </Collapse>
           ) : (
-            <Typography paragraph>{handleTextCut(text)}</Typography>
+            <>
+              {cutText(text)
+                .split('\n')
+                .map((splitText) => (
+                  <Typography paragraph>{splitText}</Typography>
+                ))}
+            </>
           )}
         </Typography>
       </CardContent>
@@ -135,10 +146,20 @@ export default function ModuleCard({ module, updateModule }) {
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show more"
+          data-for={id1}
+          data-tip="Event Organizer"
         >
           <ExpandMoreIcon />
         </ExpandMore>
       </CardActions>
     </Card>
   );
+}
+
+function useRandomId() {
+  const randomId = useMemo(() => {
+    return '_' + Math.random().toString(36).slice(2, 9);
+  }, []);
+
+  return randomId;
 }
