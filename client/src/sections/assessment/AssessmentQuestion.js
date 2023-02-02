@@ -17,7 +17,7 @@ const AssessmentQuestion = ({ activeStep }) => {
         return <Question1 />;
     }
   };
-
+  
   return (
     <>
       <Paper
