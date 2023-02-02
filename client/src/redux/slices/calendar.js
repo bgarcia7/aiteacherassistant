@@ -36,7 +36,10 @@ const slice = createSlice({
     // GET EVENTS
     getEventsSuccess(state, action) {
       state.isLoading = false;
-      state.events = action.payload;
+      Object.keys(action.payload).forEach((key) => {
+        state.events[action.payload[key].id] = action.payload[key];
+      });
+      console.log('events:', state.events);
     },
 
     // CREATE LESSON
@@ -55,13 +58,12 @@ const slice = createSlice({
 
     // UPDATE EVENT
     updateEventSuccess(state, action) {
+      const newLesson = action.payload.lesson_plan;
       state.isLoading = false;
-      state.events = state.events.map((event) => {
-        if (event.id === action.payload.id) {
-          return action.payload;
-        }
-        return event;
-      });
+      state.events = {
+        ...state.events,
+        [newLesson.id]: newLesson,
+      };
     },
 
     // DELETE EVENT
@@ -75,6 +77,7 @@ const slice = createSlice({
       state.selectedEventId = null;
       const eventId = action.payload;
       state.selectedEventId = eventId;
+      console.log(eventId);
     },
 
     // SELECT RANGE

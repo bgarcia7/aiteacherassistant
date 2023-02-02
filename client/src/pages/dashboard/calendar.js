@@ -78,7 +78,7 @@ export default function CalendarPage() {
 
   const selectedEvent = useSelector(() => {
     if (selectedEventId) {
-      return events.find((event) => event.id === selectedEventId);
+      return events[selectedEventId];
     }
 
     return null;
@@ -374,7 +374,7 @@ export default function CalendarPage() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, filterEventColor, filterStartDate, filterEndDate, isError }) {
-  console.log(inputData);
+  console.log('inputData', inputData);
   const stabilizedThis = Object.keys(inputData).map((el, index) => [inputData[el], index]);
 
   inputData = stabilizedThis.map((el) => el[0]);

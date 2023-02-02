@@ -54,9 +54,10 @@ export default function CalendarForm({
   onCreateUpdateEvent,
   onDeleteEvent,
   onCancel,
-  modules,
 }) {
   const hasEventData = !!event;
+
+  console.log('calendar:', event?.id);
 
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Title is required'),
@@ -78,7 +79,7 @@ export default function CalendarForm({
 
   useEffect(() => {
     reset(getInitialValues(event, range));
-  }, [event, range, reset, modules]);
+  }, [event, range, reset, event?.modules]);
 
   const values = watch();
 
@@ -108,17 +109,16 @@ export default function CalendarForm({
   // drag and drop
 
   const [components, setComponents] = useState([]);
-  console.log(modules);
   useEffect(() => {
     const draggableComponents =
-      modules.length > 0 &&
-      modules[0].map((module, index) => ({
+      event?.modules?.length > 0 &&
+      event.modules.map((module, index) => ({
         id: module.id,
         content: <ModuleCard key={index} module={module} />,
       }));
     setComponents(draggableComponents);
     console.log('components:', components);
-  }, [modules]);
+  }, [event?.modules]);
 
   // create a draggable component for each module in generatedModules
 
