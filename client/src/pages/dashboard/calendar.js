@@ -1,27 +1,27 @@
-import FullCalendar from '@fullcalendar/react'; // => request placed at the top
+import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
-import dayGridPlugin from '@fullcalendar/daygrid';
+import FullCalendar from '@fullcalendar/react'; // => request placed at the top
 import timeGridPlugin from '@fullcalendar/timegrid';
 import timelinePlugin from '@fullcalendar/timeline';
 //
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // next
 import Head from 'next/head';
 // @mui
-import { Card, Button, Container, Grid, Drawer, Dialog, DialogTitle } from '@mui/material';
+import { Button, Card, Container, Grid } from '@mui/material';
 // redux
-import { useDispatch, useSelector } from '../../redux/store';
 import {
-  getEvents,
   createEvent,
-  updateEvent,
   deleteEvent,
+  getEvents,
+  onCloseDrawer,
+  onOpenDrawer,
   selectEvent,
   selectRange,
-  onOpenDrawer,
-  onCloseDrawer,
+  updateEvent,
 } from '../../redux/slices/calendar';
+import { useDispatch, useSelector } from '../../redux/store';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // utils
@@ -31,17 +31,17 @@ import useResponsive from '../../hooks/useResponsive';
 // layouts
 import DashboardLayout from '../../layouts/dashboard';
 // components
-import Iconify from '../../components/iconify';
-import { useSnackbar } from '../../components/snackbar';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import { useSettingsContext } from '../../components/settings';
 import { useDateRangePicker } from '../../components/date-range-picker';
+import Iconify from '../../components/iconify';
+import { useSettingsContext } from '../../components/settings';
+import { useSnackbar } from '../../components/snackbar';
 // sections
+import { useRouter } from 'next/router';
 import {
-  CalendarForm,
-  StyledCalendar,
-  CalendarToolbar,
   CalendarFilterDrawer,
+  CalendarToolbar,
+  StyledCalendar,
 } from '../../sections/@dashboard/calendar';
 // ----------------------------------------------------------------------
 
@@ -95,6 +95,8 @@ export default function CalendarPage() {
   const [view, setView] = useState(isDesktop ? 'dayGridMonth' : 'listWeek');
 
   const [openNewEvent, setOpenNewEvent] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(getEvents());
@@ -270,7 +272,7 @@ export default function CalendarPage() {
             <Button
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={() => setOpenNewEvent(true)}
+              onClick={() => router.push('/dashboard/lesson_create')}
             >
               Generate Lesson Plan
             </Button>
@@ -327,19 +329,6 @@ export default function CalendarPage() {
                 />
               </StyledCalendar>
             </Card>
-          </Grid>
-          <Grid item xs={12} md={5} maxHeight={isDesktop ? 720 : 'auto'}>
-            {selectedEventId || openNewEvent ? (
-              <CalendarForm
-                event={selectedEvent}
-                range={selectedRange}
-                modules={modules}
-                onCancel={handleCloseDrawer}
-                onCreateUpdateEvent={handleCreateUpdateEvent}
-                onDeleteEvent={handleDeleteEvent}
-                colorOptions={COLOR_OPTIONS}
-              />
-            ) : null}
           </Grid>
         </Grid>
       </Container>

@@ -1,9 +1,12 @@
 import axios from 'axios';
-const API_URL = 'https://vjj6xrqlv1.execute-api.us-west-2.amazonaws.com/production/';
+
+// const API_URL = 'https://vjj6xrqlv1.execute-api.us-west-2.amazonaws.com/production/';
+const API_URL = 'http://127.0.0.1:5000/';
 
 // ====================== Generate New Lesson ======================
 
 export const createLessonPlan = async (lessonPlan) => {
+  console.log('Sending lesson plan to server: ', lessonPlan);
   const response = await axios.post(`${API_URL}lesson_plan/`, lessonPlan, {
     headers: {
       'Content-Type': 'application/json',
@@ -16,14 +19,13 @@ export const createLessonPlan = async (lessonPlan) => {
   if (response.status !== 200) {
     throw new Error(response.data.message);
   }
-  console.log(response.data);
-  return response.data;
+  console.log('response', response.data);
+  return response.data.lesson_plan;
 };
 
 // ====================== Get Lesson ID ======================
-const getLessonPlan = async (req, res) => {
-  const lessonplanId = '7bd368d3-7a0a-4f3f-992b-6c4dfeea37b4';
-  const response = await axios.get(`${API_URL}lesson_plan/${lessonplanId}`);
+export const getLessonPlan = async (id) => {
+  const response = await axios.get(`${API_URL}lesson_plan/${id}`);
   if (response.status !== 200) {
     throw new Error(response.data.message);
   }

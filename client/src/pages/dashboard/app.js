@@ -1,28 +1,20 @@
 // next
 import Head from 'next/head';
 // @mui
+import { Button, Container, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { Container, Grid, Stack, Button } from '@mui/material';
 // auth
 import { useAuthContext } from '../../auth/useAuthContext';
 // layouts
 import DashboardLayout from '../../layouts/dashboard';
 // _mock_
-import {
-  _appFeatured,
-  _appAuthors,
-  _appInstalled,
-  _appRelated,
-  _appInvoices,
-} from '../../_mock/arrays';
+import { _appFeatured } from '../../_mock/arrays';
 // components
 import { useSettingsContext } from '../../components/settings';
 // sections
-import {
-  AppWelcome,
-  AppFeatured,
-} from '../../sections/@dashboard/general/app';
+import { AppFeatured, AppWelcome } from '../../sections/@dashboard/general/app';
 // assets
+import { useRouter } from 'next/router';
 import { SeoIllustration } from '../../assets/illustrations';
 
 // ----------------------------------------------------------------------
@@ -33,7 +25,7 @@ GeneralAppPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default function GeneralAppPage() {
   const { user } = useAuthContext();
-
+  const router = useRouter();
   const theme = useTheme();
 
   const { themeStretch } = useSettingsContext();
@@ -59,7 +51,11 @@ export default function GeneralAppPage() {
                   }}
                 />
               }
-              action={<Button variant="contained">Generate New Lesson Plan</Button>}
+              action={
+                <Button variant="contained" onClick={() => router.push('/dashboard/lesson_create')}>
+                  Generate New Lesson Plan
+                </Button>
+              }
             />
           </Grid>
 

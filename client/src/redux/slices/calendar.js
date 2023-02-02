@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 // utils
+import { createLessonPlan } from 'src/pages/api/Lesson';
 import axios from '../../utils/axios';
-import { createLessonPlan, getLessonPlan } from 'src/pages/api/Modules';
 
 // ----------------------------------------------------------------------
-const API_URL = 'https://vjj6xrqlv1.execute-api.us-west-2.amazonaws.com/production/';
 
 const initialState = {
   isLoading: false,

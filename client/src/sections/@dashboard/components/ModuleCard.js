@@ -1,21 +1,20 @@
-import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';
-import { styled } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SaveIcon from '@mui/icons-material/Save';
+import SyncIcon from '@mui/icons-material/Sync';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SyncIcon from '@mui/icons-material/Sync';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
 import { Box } from '@mui/system';
+import { useEffect, useState } from 'react';
 // API calls
-import { regenerateModuleBody } from 'src/pages/api/Modules';
+import { regenerateModuleBody } from 'src/pages/api/Lesson';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -62,8 +61,9 @@ export default function ModuleCard({ module, updateModule }) {
   };
 
   const handleTextCut = (text) => {
-    if (text.length > 100) {
-      return text.slice(0, 100) + '...';
+    const maxLength = 300;
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + '...';
     } else {
       return text;
     }

@@ -1,29 +1,29 @@
-import PropTypes from 'prop-types';
-import { useState, useRef, useEffect } from 'react';
-import * as Yup from 'yup';
-import merge from 'lodash/merge';
 import { isBefore } from 'date-fns';
+import merge from 'lodash/merge';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import * as Yup from 'yup';
 // form
-import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { Controller, useForm } from 'react-hook-form';
 // @mui
-import { Box, Stack, Button, Tooltip, TextField, IconButton, DialogActions } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { Box, DialogActions, Stack, TextField } from '@mui/material';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 // components
-import Iconify from '../../../components/iconify';
-import { ColorSinglePicker } from '../../../components/color-utils';
-import FormProvider, { RHFTextField, RHFSwitch } from '../../../components/hook-form';
+import { createLessonPlan } from 'src/pages/api/Lesson';
+import FormProvider, { RHFTextField } from '../../../components/hook-form';
+import { useSnackbar } from '../../../components/snackbar';
+import { useDispatch } from '../../../redux/store';
 import { ModuleCard } from '../components';
 
 // ----------------------------------------------------------------------
 
-const getInitialValues = (event, range) => {
+const getInitialValues = (event, range = null) => {
   const initialEvent = {
     title: '',
     description: '',
-    textColor: '#1890FF',
     allDay: false,
     start: range ? new Date(range.start).toISOString() : new Date().toISOString(),
     end: range ? new Date(range.end).toISOString() : new Date().toISOString(),
@@ -38,35 +38,27 @@ const getInitialValues = (event, range) => {
 
 // ----------------------------------------------------------------------
 
-CalendarForm.propTypes = {
-  event: PropTypes.object,
-  range: PropTypes.object,
-  onCancel: PropTypes.func,
-  onDeleteEvent: PropTypes.func,
-  onCreateUpdateEvent: PropTypes.func,
-  colorOptions: PropTypes.arrayOf(PropTypes.string),
-};
+LessonForm.propTypes = {};
 
-export default function CalendarForm({
-  event,
-  range,
-  colorOptions,
-  onCreateUpdateEvent,
-  onDeleteEvent,
-  onCancel,
-}) {
+export default function LessonForm() {
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+
   const hasEventData = !!event;
 
   console.log('calendar:', event?.id);
 
-  const EventSchema = Yup.object().shape({
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const LessonSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Title is required'),
     learning_objective: Yup.string().max(5000).required('Learning objective is required'),
   });
 
   const methods = useForm({
-    resolver: yupResolver(EventSchema),
-    defaultValues: getInitialValues(event, range),
+    resolver: yupResolver(LessonSchema),
+    defaultValues: getInitialValues({}),
   });
 
   const {
@@ -77,15 +69,12 @@ export default function CalendarForm({
     formState: { isSubmitting },
   } = methods;
 
-  useEffect(() => {
-    reset(getInitialValues(event, range));
-  }, [event, range, reset, event?.modules]);
-
   const values = watch();
 
   const onSubmit = async (data) => {
     try {
-      const newEvent = {
+      console.log('On submit calendar form');
+      const newLessonPlan = {
         title: data.title,
         learning_objective: data.learning_objective,
         textColor: data.textColor,
@@ -95,11 +84,20 @@ export default function CalendarForm({
         modules: data.modules,
         id: data.id,
       };
-      onCreateUpdateEvent(newEvent);
+
+      setLoading(true);
+      const savedLesson = await createLessonPlan(newLessonPlan);
+      setLoading(false);
+      enqueueSnackbar('Create success!');
+      console.log('CREATED', savedLesson);
+
+      console.log('Going to', `/dashboard/lesson/${savedLesson.id}`);
+      router.push(`/dashboard/lesson/${savedLesson.id}`);
       // onCancel();
       // reset();
     } catch (error) {
       console.error(error);
+      enqueueSnackbar('Create error...');
     }
   };
 
@@ -135,7 +133,7 @@ export default function CalendarForm({
   };
 
   const updateModule = (module) => {
-    console.log('updateModule was called in CalendarForm.js');
+    console.log('updateModule was called in LessonForm.js');
     const ix = event.modules.map((m) => m.id).indexOf(module.id);
     const modules = [...event.modules.slice(0, ix), module, ...event.modules.slice(ix + 1)];
     const newEvent = {
@@ -223,34 +221,18 @@ export default function CalendarForm({
             />
           )}
         />
-
-        <Controller
-          name="textColor"
-          control={control}
-          render={({ field }) => (
-            <ColorSinglePicker
-              value={field.value}
-              onChange={field.onChange}
-              colors={colorOptions}
-            />
-          )}
-        />
       </Stack>
 
       <DialogActions>
-        {hasEventData && (
+        {/* {hasEventData && (
           <Tooltip title="Delete Event">
             <IconButton onClick={onDeleteEvent}>
               <Iconify icon="eva:trash-2-outline" />
             </IconButton>
           </Tooltip>
-        )}
+        )} */}
 
         <Box sx={{ flexGrow: 1 }} />
-
-        <Button variant="outlined" color="inherit" onClick={onCancel}>
-          Cancel
-        </Button>
 
         <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
           {hasEventData ? 'Save' : 'Generate'}
