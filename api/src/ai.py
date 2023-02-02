@@ -4,8 +4,8 @@ from generation_constants import *
 from pdf import create_pdf, upload_pdf_to_s3
 
 import db
-# ===============[ INTERNAL FUNCTIONS ]=================
 
+# ===============[ INTERNAL FUNCTIONS ]=================
 
 #### GENERAL STRING FORMATTING ####
 def clean_text(string):
@@ -26,21 +26,6 @@ def parse_string_on_sent(string, s, regex_format=REGEX_BASE):
 def parse_options(q):
     return parse_string_on_sent(q, '|'.join(QUIZ_OPTION_SENTINELS), regex_format=REGEX_QUIZ)
 
-
-def get_response(prompt, temperature=0.6):
-    print("PROMPT:", prompt)
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=prompt,
-        temperature=temperature,
-        max_tokens=3500 - len(prompt.split()),
-        top_p=1,
-        frequency_penalty=1,
-        presence_penalty=1
-    )
-    return response.choices[0].text.strip()
-
-
 def structure_quiz_response(string):
     questions = parse_string_on_sent(string, '|'.join(QUIZ_QUESTION_SENTINELS))
     questions = [
@@ -58,7 +43,6 @@ def prettify_quiz(quiz):
 
 #### LESSON PLAN STRING FORMATTING ####
 # Accepts a string with different subsections seperated by \n
-
 
 def prettify_module(module_body):
     print("MODULE BODY:", module_body)
@@ -107,44 +91,23 @@ def structure_response(string):
 
 
 def structure_slide_response(string):
-    lines = clean_text(string).split("\n")
-    slideLines = []
-    currentLines = []
-    for line in lines:
-        cleanedLine = clean_text(line)
-        if cleanedLine.startswith("Slide"):
-            # print("CurrentLines", currentLines)
-            slideLines.append(currentLines[:])
-            currentLines = []
-        else:
-            currentLines.append(cleanedLine)
-    slideLines.append(currentLines[:])
-
-    cleanedSlideLines = [x for x in slideLines if len(x) > 0 and x[0] != ""]
-
-    newSlides = []
-    titleRegex = r'^Title *: *'
-    textRegex = r'^Text *: *'
-    imageRegex = r'Image *: *'
-    for slideLines in cleanedSlideLines:
-        newSlide = {"content": []}
-        print("SLIDELINES", slideLines)
-        for slideLine in slideLines:
-            if re.match(titleRegex, slideLine):
-                newSlide["title"] = re.sub(titleRegex, "", slideLine)
-                print("Is title\n", newSlide["title"])
-            elif re.match(imageRegex, slideLine):
-                newSlide["image_description"] = re.sub(
-                    imageRegex, "", slideLine)
-                print("Is image\n", newSlide["image_description"])
-            elif (not re.match(textRegex, slideLine)) and slideLine != "":
-                print("Is text\n", slideLine)
-                newSlide["content"].append(slideLine.replace("- ", ""))
+    formatted_slides = []
+    slides = [clean_text(x) for x in parse_string_on_sent(string, '|'.join(['Slide ?' + str(ix) for ix in range(1, 20)])) if x and ('slide' not in x and len(x) > 2*len('slide'))]
+    for slide in slides:
+        components = [clean_text(s) for s in parse_string_on_sent(slide, '|'.join(SLIDE_SENTINELS), REGEX_SLIDES_COMPONENTS)]
+        formatted_slide = {}
+        for ix, c in enumerate(components):
+            details = [clean_text(d) for d in parse_string_on_sent(clean_text(c), '|'.join(SLIDE_DETAIL_SENTINELS), REGEX_SLIDES_DETAILS)]
+            # if slide component couldn't be broken down into details, we store a single string instead of an array of length = 1. Length > 1 corresponds to "content"
+            if SLIDE_SENTINELS[ix].lower() == 'text':
+                formatted_slide[SLIDE_SENTINEL_MAPPING[SLIDE_SENTINELS[ix]]] = details
             else:
-                print("Discard\n", slideLine)
-        newSlides.append(newSlide)
-
-    return newSlides
+                formatted_slide[SLIDE_SENTINEL_MAPPING[SLIDE_SENTINELS[ix]]] = details[0]
+        formatted_slides.append(formatted_slide)
+    return formatted_slides
+    
+    
+    
 
 
 #### OPEN AI API CALLS ####
@@ -164,18 +127,7 @@ def get_response(prompt, temperature=0.6):
     return response.choices[0].text.strip()
 
 
-def create_quiz(lesson_plan):
-    # Finds lecture module and prettifys it as basis for generating quiz
-    lecture_string = prettify_module(
-        [x for x in lesson_plan['modules'] if 'lecture' in x['title'].lower()][0]['body'])
-    prompt = GENERATE_QUIZ_PROMPT.format(
-        learning_objective=lesson_plan['description'], lecture=lecture_string, num_question=5)
-    response = get_response(prompt, temperature=0.5)
-    quiz = structure_quiz_response(response)
-    return quiz
-
 # ===============[ EXTERNAL FUNCTIONS ]=================
-
 
 def generate_modules(title, learning_objective, num_minutes=60):
     print("GENERATING MODULES")
@@ -210,7 +162,13 @@ def regenerate_module(lesson_plan, module):
 
 
 def generate_quiz(lesson_plan):
-    quiz = create_quiz(lesson_plan)
+    lecture_string = prettify_module(
+        [x for x in lesson_plan['modules'] if 'lecture' in x['title'].lower()][0]['body'])
+    prompt = GENERATE_QUIZ_PROMPT.format(
+        learning_objective=lesson_plan['description'], lecture=lecture_string, num_question=5)
+    response = get_response(prompt, temperature=0.5)
+    print("RAW Response:\n", response)
+    quiz = structure_quiz_response(response)
     pdf_name = create_pdf(lesson_plan['title'], prettify_quiz(quiz))
     pdf_url = upload_pdf_to_s3(pdf_name)
     return {'content': quiz, 'pdf_url': pdf_url}

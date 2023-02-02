@@ -16,7 +16,6 @@ SCOPES = ['https://www.googleapis.com/auth/drive',
 TAAI_FOLDER_ID = "1iIPkhrTMgc6spXSTdIba0xBOGmyN41yU"
 PRESENTATION_TEMPLATE_ID = "1sWOCz6ETH__y1h9yirCzPUG9QG3s9RM-7HvRZNxJ_3U"
 
-
 def createGoogleSlides(title, slides):
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is

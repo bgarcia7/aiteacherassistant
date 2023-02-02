@@ -1,21 +1,27 @@
 SECTION_SENTINELS = ['I', 'II', 'III', 'IV', 'V']
 SUBSECTION_SENTINELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-REGEX_QUIZ = r'([\.\(\n]({s})[ \.\)])|^\W(({s})[\.\)])|([\.\(\n ]({s}) ?[\.\)])'
-REGEX_BASE = r'([\. \(\n]({s})[ \.\)]|({s})[\.\)\n])'
+SLIDE_SENTINELS = ['Title','Text','Image']
+SLIDE_DETAIL_SENTINELS = ['-', '–']
+SLIDE_SENTINEL_MAPPING = {'Title':'title', 'Text':'content', 'Image':'image_description'}
 QUIZ_QUESTION_SENTINELS = [str(x) for x in range(1, 20)]
 QUIZ_OPTION_SENTINELS = ['a', 'b', 'c', 'd', 'e']
+
+REGEX_QUIZ = r'([\.\(\n]({s})[ \.\)])|^\W(({s})[\.\)])|([\.\(\n ]({s}) ?[\.\)])'
+REGEX_BASE = r'([\. \(\n]({s})[ \.\)]|({s})[\.\)\n])'
+REGEX_SLIDES_COMPONENTS = r'[\.\(\n ]*{s}[ \.\):]'
+REGEX_SLIDES_DETAILS = r'[\.\(\n ]+({s}) ?|^({s})'
 
 REPLACEMENT_REGEXES = [
     ('<|im_end|>', ''),
     (r'(\. ?){2,}', '.'),
-    (r'^[\(\) \.]*', ''),
+    (r'^[\(\) \.:\n]*', ''),
     (r'(\. ?)\?', '?'),
     (r'(\. ?)\!', '!'),
     (r'(\. ?),', ','),
     (r'( , )', ', '),
     # Sometimes it does many tabs instead of a space
-    (r'(\t\t\t+)', '\n'),
-    (r'(      +)', '\n')
+    (r'(\t\t\t+)', ' '),
+    (r'(      +)', ' ')
 ]
 
 PROMPT_TEMPLATE = """Create a lesson plan for a {num_minutes} minute class consisting of an introduction, lecture, a guided practice, and an individual practice for the learning objective below:
