@@ -136,6 +136,19 @@ def get_lesson_plan(lesson_plan_id):
         # print("Exapnded", expanded_lesson_plan)
         return expanded_lesson_plan
 
+
+def update_lesson_plan(lesson_plan_id, new_lesson_plan):
+    with Session() as session:
+        lesson_plan = session.query(LessonPlan).filter_by(id=lesson_plan_id).first()
+        
+        update_fields = ['title', 'description']
+        for field in update_fields:
+            if new_lesson_plan.get(field):
+                setattr(lesson_plan, field, new_lesson_plan[field])
+
+        session.commit()
+        return lesson_plan.as_dict()
+
 # ===============[ MODULE FUNCTIONS ]=================
 
 
@@ -156,17 +169,11 @@ def insert_modules(modules):
 def update_module(module_id, new_module):
     with Session() as session:
         module = session.query(Module).filter_by(id=module_id).first()
-        if new_module.get('module_type'):
-            module.module_type = new_module['module_type']
 
-        if new_module.get('title'):
-            module.title = new_module['title']
-
-        if new_module.get('body'):
-            module.body = new_module['body']
-
-        if new_module.get('duration'):
-            module.duration = new_module['duration']
+        update_fields = ['module_type', 'title', 'body', 'duration']
+        for field in update_fields:
+            if new_module.get(field):
+                setattr(module, field, new_module[field])
 
         session.commit()
         return module.as_dict()
