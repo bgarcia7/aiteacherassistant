@@ -17,7 +17,7 @@ TAAI_FOLDER_ID = "1iIPkhrTMgc6spXSTdIba0xBOGmyN41yU"
 PRESENTATION_TEMPLATE_ID = "1sWOCz6ETH__y1h9yirCzPUG9QG3s9RM-7HvRZNxJ_3U"
 
 
-def main():
+def createGoogleSlides(title, slides):
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -37,39 +37,59 @@ def main():
             token.write(creds.to_json())
 
     try:
-        drive = build('drive', 'v3', credentials=creds)
-        slides = build('slides', 'v1', credentials=creds)
+        driveAPI = build('drive', 'v3', credentials=creds)
+        slidesAPI = build('slides', 'v1', credentials=creds)
 
-        # listDrive(drive)
+        # listDrive(driveAPI)
 
         # presentation = createPresentation(slides)
-        # moveFile(drive, presentation.get('presentationId'), TAAI_FOLDER_ID)
+        # moveFile(driveAPI, presentation.get('presentationId'), TAAI_FOLDER_ID)
 
         presentation_copy_id = copyPresentation(
-            drive, PRESENTATION_TEMPLATE_ID, "DUM")
-        moveFile(drive, presentation_copy_id, TAAI_FOLDER_ID)
-        makeFilePublic(drive, presentation_copy_id)
-        createSlide(slides, presentation_copy_id,
-                    "QUOTES", "EVERYDAY", "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")
+            driveAPI, PRESENTATION_TEMPLATE_ID, title)
+        moveFile(driveAPI, presentation_copy_id, TAAI_FOLDER_ID)
+        makeFilePublic(driveAPI, presentation_copy_id)
+        # TODO: Add image_description to google url
+        for slide in slides:
+            bullet_points = "\n".join([
+                f"- {line}" for line in slide.get("content")])
+            createSlide(slidesAPI, presentation_copy_id,
+                        slide.get("title"), bullet_points)
+            # createSlide(slidesAPI, presentation_copy_id, slide.get("title"), slide.get("content"), slide.get("image_description"))
+        return getDriveLink(driveAPI, presentation_copy_id)
 
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
         print(f'An error occurred: {error}')
 
 
-def createPresentation(slides):
+def createPresentation(slidesAPI):
     body = {
         'title': "YOU ALREADY KNOW"
     }
-    presentation = slides.presentations().create(body=body).execute()
+    presentation = slidesAPI.presentations().create(body=body).execute()
     print(f"Created presentation with ID:"
           f"{(presentation.get('presentationId'))}")
     return presentation
 
 
-def listDrive(drive):
+def getDriveLink(driveAPI, file_id):
+    """
+    Get the link to the file in Google Drive
+    """
+    try:
+        file = driveAPI.files().get(fileId=file_id, fields='webViewLink').execute()
+        link = file.get('webViewLink')
+        print("Link", link)
+        return link
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        return None
+
+
+def listDrive(driveAPI):
     # Call the Drive v3 API
-    results = drive.files().list(
+    results = driveAPI.files().list(
         pageSize=10, fields="nextPageToken, files(id, name)").execute()
     items = results.get('files', [])
 
@@ -81,7 +101,7 @@ def listDrive(drive):
         print(u'{0} ({1})'.format(item['name'], item['id']))
 
 
-def moveFile(drive, file_id, folder_id):
+def moveFile(driveAPI, file_id, folder_id):
     """Move specified file to the specified folder.
     Args:
         file_id: Id of the file to move.
@@ -96,12 +116,12 @@ def moveFile(drive, file_id, folder_id):
     try:
         # pylint: disable=maybe-no-member
         # Retrieve the existing parents to remove
-        file = drive.files().get(fileId=file_id, fields='parents').execute()
+        file = driveAPI.files().get(fileId=file_id, fields='parents').execute()
         previous_parents = ",".join(file.get('parents'))
         # Move the file to the new folder
-        file = drive.files().update(fileId=file_id, addParents=folder_id,
-                                    removeParents=previous_parents,
-                                    fields='id, parents').execute()
+        file = driveAPI.files().update(fileId=file_id, addParents=folder_id,
+                                       removeParents=previous_parents,
+                                       fields='id, parents').execute()
         return file.get('parents')
 
     except HttpError as error:
@@ -109,7 +129,7 @@ def moveFile(drive, file_id, folder_id):
         return None
 
 
-def copyPresentation(drive, presentation_id, copy_title):
+def copyPresentation(driveAPI, presentation_id, copy_title):
     """
            Creates the copy Presentation the user has access to.
            Load pre-authorized user credentials from the environment.
@@ -121,7 +141,7 @@ def copyPresentation(drive, presentation_id, copy_title):
         body = {
             'name': copy_title
         }
-        drive_response = drive.files().copy(
+        drive_response = driveAPI.files().copy(
             fileId=presentation_id, body=body).execute()
         presentation_copy_id = drive_response.get('id')
         print(
@@ -135,7 +155,7 @@ def copyPresentation(drive, presentation_id, copy_title):
     return presentation_copy_id
 
 
-def createSlide(slides, presentation_id, title, text, image_url):
+def createSlide(slidesAPI, presentation_id, title, text, image_url=None):
     """
     Creates the Presentation the user has access to.
     Load pre-authorized user credentials from the environment.
@@ -152,34 +172,6 @@ def createSlide(slides, presentation_id, title, text, image_url):
         emu4M = {
             'magnitude': 4000000,
             'unit': 'EMU'
-        }
-
-        body1Insert = {
-            "insertText": {
-                "objectId": bodyId1,
-                "text": text,
-            },
-        }
-
-        body2Insert = {
-            'createImage': {
-                'objectId': imageId,
-                'url': image_url,
-                'elementProperties': {
-                    'pageObjectId': pageId,
-                    'size': {
-                        'height': emu4M,
-                        'width': emu4M
-                    },
-                    'transform': {
-                        'scaleX': 1,
-                        'scaleY': 1,
-                        'translateX': 100000,
-                        'translateY': 100000,
-                        'unit': 'EMU'
-                    }
-                }
-            }
         }
 
         requests = [
@@ -220,10 +212,36 @@ def createSlide(slides, presentation_id, title, text, image_url):
                     "text": title,
                 },
             },
-            body1Insert,
-            body2Insert
-
         ]
+
+        requests.append({
+            "insertText": {
+                "objectId": bodyId1,
+                "text": text,
+            },
+        })
+
+        if image_url:
+            requests.append({
+                'createImage': {
+                    'objectId': imageId,
+                    'url': image_url,
+                    'elementProperties': {
+                        'pageObjectId': pageId,
+                        'size': {
+                            'height': emu4M,
+                            'width': emu4M
+                        },
+                        'transform': {
+                            'scaleX': 1,
+                            'scaleY': 1,
+                            'translateX': 100000,
+                            'translateY': 100000,
+                            'unit': 'EMU'
+                        }
+                    }
+                }
+            })
 
         # If you wish to populate the slide with elements,
         # add element create requests here, using the page_id.
@@ -232,7 +250,7 @@ def createSlide(slides, presentation_id, title, text, image_url):
         body = {
             'requests': requests
         }
-        response = slides.presentations().batchUpdate(
+        response = slidesAPI.presentations().batchUpdate(
             presentationId=presentation_id, body=body).execute()
         create_slide_response = response.get('replies')[0].get('createSlide')
         print(f"Created slide with ID:"
@@ -245,7 +263,7 @@ def createSlide(slides, presentation_id, title, text, image_url):
         return error
 
 
-def makeFilePublic(drive, file_id):
+def makeFilePublic(driveAPI, file_id):
     """Batch permission modification.
     Args:
         real_file_id: file Id
@@ -271,14 +289,14 @@ def makeFilePublic(drive, file_id):
                 ids.append(response.get('id'))
 
         # pylint: disable=maybe-no-member
-        batch = drive.new_batch_http_request(callback=callback)
+        batch = driveAPI.new_batch_http_request(callback=callback)
         public_permission = {
             'type': 'anyone',
             'role': 'writer'
         }
-        batch.add(drive.permissions().create(fileId=file_id,
-                                             body=public_permission,
-                                             fields='id',))
+        batch.add(driveAPI.permissions().create(fileId=file_id,
+                                                body=public_permission,
+                                                fields='id',))
         # This batch is probably unneccessary, but it was in sample code
         batch.execute()
         print(f"File {file_id} is now public")
@@ -288,7 +306,3 @@ def makeFilePublic(drive, file_id):
         ids = None
 
     return ids
-
-
-if __name__ == '__main__':
-    main()

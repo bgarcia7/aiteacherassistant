@@ -1,10 +1,9 @@
-import json
-import requests
 import openai
 import re
 from generation_constants import *
 from pdf import create_pdf, upload_pdf_to_s3
 
+import db
 # ===============[ INTERNAL FUNCTIONS ]=================
 
 
@@ -26,14 +25,6 @@ def parse_string_on_sent(string, s, regex_format=REGEX_BASE):
 #### QUIZ STRING FORMATTING ####
 def parse_options(q):
     return parse_string_on_sent(q, '|'.join(QUIZ_OPTION_SENTINELS), regex_format=REGEX_QUIZ)
-
-
-def parse_string_on_sent(string, c):
-    regex = r'([\. \(\n]({c})[ \.\)]|({c})[\.\)\n])'.format(c=c)
-    parsed = [x for x in re.split(
-        regex, string.strip(), maxsplit=0) if x and len(x.strip()) > 3]
-    # print(parsed)
-    return parsed
 
 
 def get_response(prompt, temperature=0.6):
@@ -115,6 +106,47 @@ def structure_response(string):
     return [structure_module(m) for m in modules]
 
 
+def structure_slide_response(string):
+    lines = clean_text(string).split("\n")
+    slideLines = []
+    currentLines = []
+    for line in lines:
+        cleanedLine = clean_text(line)
+        if cleanedLine.startswith("Slide"):
+            # print("CurrentLines", currentLines)
+            slideLines.append(currentLines[:])
+            currentLines = []
+        else:
+            currentLines.append(cleanedLine)
+    slideLines.append(currentLines[:])
+
+    cleanedSlideLines = [x for x in slideLines if len(x) > 0 and x[0] != ""]
+
+    newSlides = []
+    titleRegex = r'^Title *: *'
+    textRegex = r'^Text *: *'
+    imageRegex = r'Image *: *'
+    for slideLines in cleanedSlideLines:
+        newSlide = {"content": []}
+        print("SLIDELINES", slideLines)
+        for slideLine in slideLines:
+            if re.match(titleRegex, slideLine):
+                newSlide["title"] = re.sub(titleRegex, "", slideLine)
+                print("Is title\n", newSlide["title"])
+            elif re.match(imageRegex, slideLine):
+                newSlide["image_description"] = re.sub(
+                    imageRegex, "", slideLine)
+                print("Is image\n", newSlide["image_description"])
+            elif (not re.match(textRegex, slideLine)) and slideLine != "":
+                print("Is text\n", slideLine)
+                newSlide["content"].append(slideLine.replace("- ", ""))
+            else:
+                print("Discard\n", slideLine)
+        newSlides.append(newSlide)
+
+    return newSlides
+
+
 #### OPEN AI API CALLS ####
 def get_response(prompt, temperature=0.6):
     print("PROMPT:", prompt)
@@ -128,6 +160,7 @@ def get_response(prompt, temperature=0.6):
         frequency_penalty=1,
         presence_penalty=1
     )
+    db.insert_prompt(prompt, response.choices[0].text.strip())
     return response.choices[0].text.strip()
 
 
@@ -181,3 +214,14 @@ def generate_quiz(lesson_plan):
     pdf_name = create_pdf(lesson_plan['title'], prettify_quiz(quiz))
     pdf_url = upload_pdf_to_s3(pdf_name)
     return {'content': quiz, 'pdf_url': pdf_url}
+
+
+def generate_slides(lesson_plan):
+    lecture_string = prettify_module(
+        [x for x in lesson_plan['modules'] if 'lecture' in x['title'].lower()][0]['body'])
+    prompt = GENERATE_SLIDES_PROMPT.format(lecture=lecture_string)
+    response = get_response(prompt, temperature=0.5)
+    print("RAW Response:\n", response)
+    slides = structure_slide_response(response)
+    print("SLIDESSSSSS:\n", slides)
+    return slides
