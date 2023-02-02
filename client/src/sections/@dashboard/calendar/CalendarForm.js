@@ -90,8 +90,8 @@ export default function CalendarForm({
         learning_objective: data.learning_objective,
         textColor: data.textColor,
         allDay: data.allDay,
-        start: data.start,
-        end: data.end,
+        start: '2023-02-21T07:30:33.067Z',
+        end: '2023-02-21T09:00:33.067Z',
         modules: data.modules,
         id: data.id,
       };
@@ -143,8 +143,8 @@ export default function CalendarForm({
       learning_objective: event.learning_objective,
       textColor: event.textColor,
       allDay: event.allDay,
-      start: event.start,
-      end: event.end,
+      start: '2023-02-21T07:30:33.067Z',
+      end: '2023-02-21T09:00:33.067Z',
       modules: modules,
       id: event.id,
     };

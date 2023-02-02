@@ -18,6 +18,10 @@ const QUESTIONS = [
     id: 2,
     question: 'What lesson are you planning?',
   },
+  {
+    id: 3,
+    question: 'What grade level are you teaching?',
+  },
 ];
 
 const OPTIONS = [
@@ -123,11 +127,14 @@ export default function LinearStepper() {
             }}
           >
             <Box>
-              {OPTIONS.map((option) => {
+              {/* {OPTIONS.map((option) => {
                 if (option.questionId === activeStep + 1) {
                   return <PricingPlanCard key={option.id} option={option.option} />;
                 }
-              })}
+              })} */}
+              <Typography variant="h6" gutterBottom>
+                {QUESTIONS[activeStep].question}
+              </Typography>
             </Box>
           </Paper>
           <Box sx={{ display: 'flex' }}>
