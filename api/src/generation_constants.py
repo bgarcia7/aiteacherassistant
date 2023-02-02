@@ -1,18 +1,27 @@
 SECTION_SENTINELS = ['I', 'II', 'III', 'IV', 'V']
 SUBSECTION_SENTINELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+SLIDE_SENTINELS = ['Title','Text','Image']
+SLIDE_DETAIL_SENTINELS = ['-', '–']
+SLIDE_SENTINEL_MAPPING = {'Title':'title', 'Text':'content', 'Image':'image_description'}
+QUIZ_QUESTION_SENTINELS = [str(x) for x in range(1, 20)]
+QUIZ_OPTION_SENTINELS = ['a', 'b', 'c', 'd', 'e']
+
 REGEX_QUIZ = r'([\.\(\n]({s})[ \.\)])|^\W(({s})[\.\)])|([\.\(\n ]({s}) ?[\.\)])'
 REGEX_BASE = r'([\. \(\n]({s})[ \.\)]|({s})[\.\)\n])'
-QUIZ_QUESTION_SENTINELS = [str(x) for x in range(1, 20)]
-QUIZ_OPTION_SENTINELS = ['a','b','c','d','e']
+REGEX_SLIDES_COMPONENTS = r'[\.\(\n ]*{s}[ \.\):]'
+REGEX_SLIDES_DETAILS = r'[\.\(\n ]+({s}) ?|^({s})'
 
-REPLACEMENT_REGEXES=[
+REPLACEMENT_REGEXES = [
     ('<|im_end|>', ''),
     (r'(\. ?){2,}', '.'),
-    (r'^[\(\) \.]*', ''),
+    (r'^[\(\) \.:\n]*', ''),
     (r'(\. ?)\?', '?'),
     (r'(\. ?)\!', '!'),
     (r'(\. ?),', ','),
-    (r'( , )', ', ')
+    (r'( , )', ', '),
+    # Sometimes it does many tabs instead of a space
+    (r'(\t\t\t+)', ' '),
+    (r'(      +)', ' ')
 ]
 
 PROMPT_TEMPLATE = """Create a lesson plan for a {num_minutes} minute class consisting of an introduction, lecture, a guided practice, and an individual practice for the learning objective below:
@@ -72,7 +81,7 @@ REGENERATE_MODULE_PROMPT = """Given the lesson plan below, please create a compl
 {lesson_plan}
 """
 
-GENERATE_QUIZ_PROMPT ="""Create a {num_question} question multiple choice quiz that can be used for a lesson plan with the following objective and lecture. Seperate each question and option with a new line:
+GENERATE_QUIZ_PROMPT = """Create a {num_question} question multiple choice quiz that can be used for a lesson plan with the following objective and lecture. Seperate each question and option with a new line:
 learning_objective: {learning_objective}
 lecture: {lecture}
 
@@ -102,4 +111,32 @@ a) multiple choice question 5 option a
 b) multiple choice question 5 option b
 c) multiple choice question 5 option c
 d) multiple choice question 5 option d
+"""
+
+GENERATE_SLIDES_PROMPT = """You're a K-12 teacher with the following general lecture notes for an upcoming class:
+
+Lecture notes: ###
+{lecture}
+###
+
+Based on these lecture notes, create 5-10 powerpoint slides to present to your students that fully explain and define the topics avoiding directions or vague descriptions.
+
+Desired format:
+
+Slide 1
+Title: Sample Title
+Text:
+- Detailed Long Sample Point A
+- Detailed Long Sample Point B
+- More Points
+Image: Sample Image Description
+
+Slide 2
+Title: Sample Title 2
+Text:
+- Detailed Long Sample Point C
+- Detailed Long Sample Point D
+- More Points
+Image: Sample Image Description 2
+...
 """

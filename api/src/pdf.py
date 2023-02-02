@@ -1,16 +1,16 @@
 import boto3 
 from fpdf import FPDF
+LOCAL_DIR= '/tmp/'
 
 def encode_text(text):
     return text.encode('latin-1', 'replace').decode('latin-1')
 
 def upload_pdf_to_s3(pdf_file_name):
     # local directoy prepends string to pdf_file_name depending on env
-    local_dir = '/tmp/'
     
     s3 = boto3.resource('s3')
     BUCKET = "aiteacherassistant"
-    s3.Bucket(BUCKET).upload_file(local_dir + pdf_file_name, pdf_file_name)
+    s3.Bucket(BUCKET).upload_file(LOCAL_DIR + pdf_file_name, pdf_file_name)
     pdf_url = 'https://aiteacherassistant.s3.us-west-2.amazonaws.com/' + pdf_file_name
     return pdf_url
 
@@ -32,5 +32,5 @@ def create_pdf(lesson_plan_title, quiz):
 
     # save the pdf with name .pdf
     pdf_file_name = lesson_plan_title.replace(' ', '_') + '.pdf'
-    pdf.output(pdf_file_name) 
+    pdf.output(LOCAL_DIR + pdf_file_name) 
     return pdf_file_name
