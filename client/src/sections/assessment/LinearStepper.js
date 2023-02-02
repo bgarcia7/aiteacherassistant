@@ -79,7 +79,6 @@ export default function LinearStepper() {
               p: 3,
               my: 3,
               minHeight: 120,
-              bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
             }}
           >
             <Typography sx={{ my: 1 }}>All steps completed - you&apos;re finished</Typography>
