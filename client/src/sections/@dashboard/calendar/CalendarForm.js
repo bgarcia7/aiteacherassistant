@@ -92,6 +92,8 @@ export default function CalendarForm({
         allDay: data.allDay,
         start: data.start,
         end: data.end,
+        modules: data.modules,
+        id: data.id,
       };
       onCreateUpdateEvent(newEvent);
       // onCancel();
@@ -114,7 +116,7 @@ export default function CalendarForm({
       event?.modules?.length > 0 &&
       event.modules.map((module, index) => ({
         id: module.id,
-        content: <ModuleCard key={index} module={module} />,
+        content: <ModuleCard updateModule={updateModule} key={index} module={module} />,
       }));
     setComponents(draggableComponents);
     console.log('components:', components);
@@ -130,6 +132,23 @@ export default function CalendarForm({
     items.splice(result.destination.index, 0, reorderedItem);
 
     setComponents(items);
+  };
+
+  const updateModule = (module) => {
+    console.log('updateModule was called in CalendarForm.js');
+    const ix = event.modules.map((m) => m.id).indexOf(module.id);
+    const modules = [...event.modules.slice(0, ix), module, ...event.modules.slice(ix + 1)];
+    const newEvent = {
+      title: event.title,
+      learning_objective: event.learning_objective,
+      textColor: event.textColor,
+      allDay: event.allDay,
+      start: event.start,
+      end: event.end,
+      modules: modules,
+      id: event.id,
+    };
+    onCreateUpdateEvent(newEvent);
   };
 
   return (

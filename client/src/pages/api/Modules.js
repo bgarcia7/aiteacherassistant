@@ -34,7 +34,15 @@ const getLessonPlan = async (req, res) => {
 // ====================== Regenerate Module Body ======================
 
 export const regenerateModuleBody = async (moduleId) => {
-  const response = await axios.post(`${API_URL}module/${moduleId}/regenerate`);
+  const response = await axios.post(`${API_URL}module/${moduleId}/regenerate`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
+      'Access-Control-Allow-Headers':
+        'X-Requested-With, Content-Type, X-Auth-Token, Origin, Authorization',
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
   if (response.status !== 200) {
     throw new Error(response.data.message);
   }

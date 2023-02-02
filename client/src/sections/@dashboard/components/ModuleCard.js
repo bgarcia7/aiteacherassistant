@@ -28,11 +28,22 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function ModuleCard({ module }) {
+export default function ModuleCard({ module, updateModule }) {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(module.body);
   const [title, setTitle] = useState(module.title);
+
+  const update = () => {
+    console.log('update was called from ModuleCard');
+
+    const newModule = {
+      title: title,
+      body: text,
+      id: module.id,
+    };
+    updateModule(newModule);
+  };
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -67,6 +78,7 @@ export default function ModuleCard({ module }) {
 
   useEffect(() => {
     console.log('I was called');
+    update();
   }, [text]);
 
   return (

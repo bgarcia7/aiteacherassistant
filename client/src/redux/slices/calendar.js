@@ -64,6 +64,7 @@ const slice = createSlice({
         ...state.events,
         [newLesson.id]: newLesson,
       };
+      console.log('newLesson: ', newLesson);
     },
 
     // DELETE EVENT
@@ -144,6 +145,7 @@ export function createEvent(event) {
 // ----------------------------------------------------------------------
 
 export function updateEvent(eventId, event) {
+  console.log('upadingEvent: ', eventId, event);
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
