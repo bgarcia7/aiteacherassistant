@@ -8,6 +8,7 @@ import { _pricingPlans } from '../_mock/arrays';
 import SimpleLayout from '../layouts/simple';
 // sections
 import { PricingPlanCard } from '../sections/pricing';
+import { LinearStepper, CardOption } from '../sections/assessment';
 
 // ----------------------------------------------------------------------
 
@@ -29,20 +30,11 @@ export default function PricingPage() {
           minHeight: 1,
         }}
       >
-        <Typography align="center" sx={{ color: 'text.secondary' }}>
+        <Typography align="center" sx={{ color: 'text.secondary', mb: 4 }}>
           Let's ask you a couple of questions...
         </Typography>
 
-        <Typography variant="h3" align="center" paragraph>
-          Do you want to generate plans for your entire curriculum or start with a single lesson
-          plan?
-        </Typography>
-
-        <Box gap={3} display="grid" gridTemplateColumns={{ md: 'repeat(3, 1fr)' }}>
-          {_pricingPlans.map((card, index) => (
-            <PricingPlanCard key={card.subscription} card={card} index={index} />
-          ))}
-        </Box>
+        <LinearStepper />
       </Container>
     </>
   );
