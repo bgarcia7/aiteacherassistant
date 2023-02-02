@@ -2,77 +2,21 @@ import { useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Step, Paper, Button, Stepper, StepLabel, Typography } from '@mui/material';
-import OptionButton from './OptionButton';
-import PricingPlanCard from './PricingPlanCard';
+// Question pages
+import AssessmentQuestion from './AssessmentQuestion';
 // ----------------------------------------------------------------------
 
 const steps = ['Generation Type', 'Select standards', 'Finshing up'];
 
-const QUESTIONS = [
-  {
-    id: 1,
-    question:
-      'Do you want to generate plans for your entire curriculum or start with a single lesson plan?',
-  },
-  {
-    id: 2,
-    question: 'What lesson are you planning?',
-  },
-  {
-    id: 3,
-    question: 'What grade level are you teaching?',
-  },
-];
-
-const OPTIONS = [
-  {
-    id: 1,
-    questionId: 1,
-    option: 'Entire Curriculum',
-  },
-  {
-    id: 2,
-    questionId: 1,
-    option: 'Single Lesson',
-  },
-];
-
 export default function LinearStepper() {
   const [activeStep, setActiveStep] = useState(0);
-  const [skipped, setSkipped] = useState(new Set());
-
-  const isStepOptional = (step) => step === 1;
-
-  const isStepSkipped = (step) => skipped.has(step);
 
   const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
   };
 
   const handleReset = () => {
@@ -85,15 +29,6 @@ export default function LinearStepper() {
         {steps.map((label, index) => {
           const stepProps = {};
           const labelProps = {};
-
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
-          return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          );
         })}
       </Stepper>
       {activeStep === steps.length ? (
@@ -127,14 +62,7 @@ export default function LinearStepper() {
             }}
           >
             <Box>
-              {/* {OPTIONS.map((option) => {
-                if (option.questionId === activeStep + 1) {
-                  return <PricingPlanCard key={option.id} option={option.option} />;
-                }
-              })} */}
-              <Typography variant="h6" gutterBottom>
-                {QUESTIONS[activeStep].question}
-              </Typography>
+              <AssessmentQuestion activeStep={activeStep} />
             </Box>
           </Paper>
           <Box sx={{ display: 'flex' }}>
@@ -142,11 +70,7 @@ export default function LinearStepper() {
               Back
             </Button>
             <Box sx={{ flexGrow: 1 }} />
-            {isStepOptional(activeStep) && (
-              <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                Skip
-              </Button>
-            )}
+            
             <Button variant="contained" onClick={handleNext}>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
