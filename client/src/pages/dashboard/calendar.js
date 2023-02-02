@@ -374,7 +374,8 @@ export default function CalendarPage() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, filterEventColor, filterStartDate, filterEndDate, isError }) {
-  const stabilizedThis = inputData.map((el, index) => [el, index]);
+  console.log(inputData);
+  const stabilizedThis = Object.keys(inputData).map((el, index) => [inputData[el], index]);
 
   inputData = stabilizedThis.map((el) => el[0]);
 

@@ -9,7 +9,7 @@ const API_URL = 'https://vjj6xrqlv1.execute-api.us-west-2.amazonaws.com/producti
 const initialState = {
   isLoading: false,
   error: null,
-  events: [],
+  events: {},
   modules: [],
   openDrawer: false,
   newLesson: false,
@@ -42,13 +42,14 @@ const slice = createSlice({
     // CREATE LESSON
     createEventSuccess(state, action) {
       const newLesson = action.payload.lesson_plan;
-      console.log('hi');
-      console.log(newLesson);
-      const lessonModules = newLesson.modules;
-      console.log('lessonmodules: ', lessonModules);
+      // const lessonModules = newLesson.modules;
       state.isLoading = false;
-      state.events = [...state.events, newLesson];
-      state.modules = [...state.modules, lessonModules];
+      state.events = {
+        ...state.events,
+        [newLesson.id]: newLesson,
+      };
+
+      // state.modules = [...state.modules, lessonModules];
       state.selectedEventId = newLesson.id;
     },
 

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { alpha } from '@mui/material/styles';
 import { Box, Step, Paper, Button, Stepper, StepLabel, Typography } from '@mui/material';
 import OptionButton from './OptionButton';
+import PricingPlanCard from './PricingPlanCard';
 // ----------------------------------------------------------------------
 
 const steps = ['Generation Type', 'Select standards', 'Finshing up'];
@@ -124,7 +125,7 @@ export default function LinearStepper() {
             <Box>
               {OPTIONS.map((option) => {
                 if (option.questionId === activeStep + 1) {
-                  return <OptionButton key={option.id} option={option.option} />;
+                  return <PricingPlanCard key={option.id} option={option.option} />;
                 }
               })}
             </Box>
