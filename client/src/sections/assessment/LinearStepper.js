@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Box, Step, Paper, Button, Stepper, StepLabel, Typography } from '@mui/material';
 import LoadingScreen from 'src/components/loading-screen/LoadingScreen';
+import { useAuthContext } from 'src/auth/useAuthContext';
 // Question pages
 import AssessmentQuestion from './AssessmentQuestion';
 // ----------------------------------------------------------------------
@@ -8,6 +9,8 @@ import AssessmentQuestion from './AssessmentQuestion';
 const steps = ['Generation Type', 'Select standards', 'Finshing up'];
 
 export default function LinearStepper() {
+  
+
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
   const [selections, setSelections] = useState({});
@@ -25,6 +28,7 @@ export default function LinearStepper() {
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
+    // Login when finished
     if (activeStep === steps.length - 1) {
       window.location.href = '/dashboard';
     }
