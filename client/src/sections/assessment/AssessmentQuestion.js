@@ -1,4 +1,4 @@
-import { Box, Step, Paper, Button, Stepper, StepLabel, Typography } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 // Questions
 import Question1 from './questions/Question1';
 import Question2 from './questions/Question2';
@@ -17,7 +17,7 @@ const AssessmentQuestion = ({ activeStep }) => {
         return <Question1 />;
     }
   };
-  
+
   return (
     <>
       <Paper
