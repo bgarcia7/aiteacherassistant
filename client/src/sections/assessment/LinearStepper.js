@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Box, Step, Paper, Button, Stepper, StepLabel, Typography } from '@mui/material';
+import LoadingScreen from 'src/components/loading-screen/LoadingScreen';
 // Question pages
 import AssessmentQuestion from './AssessmentQuestion';
 // ----------------------------------------------------------------------
@@ -71,20 +72,7 @@ export default function LinearStepper() {
       </Stepper>
 
       {activeStep === steps.length ? (
-        <Paper
-          sx={{
-            p: 3,
-            my: 3,
-            minHeight: 120,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography sx={{ mt: 2, mb: 1 }}>Redirecting...</Typography>
-          </Box>
-        </Paper>
+        <LoadingScreen />
       ) : (
         <>
           <Paper
