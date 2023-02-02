@@ -22,8 +22,6 @@ const AssessmentQuestion = ({ activeStep }) => {
     <>
       <Paper
         sx={{
-          p: 3,
-          my: 3,
           minHeight: 120,
           display: 'flex',
           alignItems: 'center',
