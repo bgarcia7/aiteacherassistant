@@ -57,6 +57,12 @@ const Question2 = () => {
               multiline
               rows={4}
             />
+            <Divider>
+              <Typography variant="h6" color={'#919EAB'}>
+                OR
+              </Typography>
+            </Divider>
+            <RHFTextField name="title" label="Search for any national learning objective" />
           </Stack>
         </FormProvider>
       </Box>
