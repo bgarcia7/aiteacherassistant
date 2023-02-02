@@ -2692,7 +2692,7 @@
   dependencies:
     "@algolia/events" "^4.0.1"
 
-"algoliasearch@>= 3.1 < 5", "algoliasearch@>= 3.1 < 6":
+"algoliasearch@^4.14.3", "algoliasearch@>= 3.1 < 5", "algoliasearch@>= 3.1 < 6":
   "integrity" "sha512-GZTEuxzfWbP/vr7ZJfGzIl8fOsoxN916Z6FY2Egc9q2TmZ6hvq5KfAxY89pPW01oW/2HDEKA8d30f9iAH9eXYg=="
   "resolved" "https://registry.npmjs.org/algoliasearch/-/algoliasearch-4.14.3.tgz"
   "version" "4.14.3"

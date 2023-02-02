@@ -14,7 +14,7 @@ export default function LinearStepper() {
   const [selections, setSelections] = useState({});
 
   const handleSelections = (selection) => {
-    setSelections({ ...selections, ...selection });
+    // setSelections({ ...selections, ...selection });
   };
 
   const isStepOptional = (step) => step === 1;

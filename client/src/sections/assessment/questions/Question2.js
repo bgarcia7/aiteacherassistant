@@ -11,6 +11,8 @@ import * as Yup from 'yup';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+// algolia search bar
+import AlgoliaSearch from './components/AlgoliaSearch';
 
 const Question2 = () => {
   const defaultValues = {
@@ -63,6 +65,7 @@ const Question2 = () => {
               </Typography>
             </Divider>
             <RHFTextField name="title" label="Search for any national learning objective" />
+            {/* <AlgoliaSearch /> */}
           </Stack>
         </FormProvider>
       </Box>
