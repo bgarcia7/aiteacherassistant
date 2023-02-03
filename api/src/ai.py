@@ -61,7 +61,7 @@ def prettify_module(module_body):
     # try:
     #     return '\n'.join([s for ix2, s in enumerate(module_body.split("\n"))])
     # except:
-    #     return module_body
+    #     return '\n'.join(module_body.split("\n"))
 
 
 def prettify_lesson_plan(lesson_plan):
