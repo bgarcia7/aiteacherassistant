@@ -21,7 +21,7 @@ const Question3 = () => {
         />
       </Box>
       <Typography variant="h6" gutterBottom component="div" textAlign={'center'}>
-        We&apos;re generating your lesson plans in the background. <br /> Click the finish button to login and view your lesson plans. 
+        We&apos;re putting everything together for you. 
       </Typography>
     </Box>
   );
