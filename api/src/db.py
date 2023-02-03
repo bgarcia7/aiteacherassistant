@@ -127,20 +127,33 @@ def get_lesson_plan(lesson_plan_id):
     with Session() as session:
         lesson_plan = session.query(LessonPlan).filter_by(
             id=lesson_plan_id).first()
+
+        expanded_lesson_plan = lesson_plan.as_dict()
+        # Add modules
         modules = session.query(Module).filter_by(
             lesson_plan_id=lesson_plan_id).all()
-        expanded_lesson_plan = lesson_plan.as_dict()
         # print("Modules", lesson_plan.modules)
         expanded_lesson_plan['modules'] = [module.as_dict()
                                            for module in modules]
+
+        # Add quizzes
+        quiz = session.query(Quiz).filter_by(
+            lesson_plan_id=lesson_plan_id).first()
+        expanded_lesson_plan["quiz"] = quiz.as_dict()
+
+        # Add slide_deck
+        slide_deck = get_slide_deck_by_lesson_plan(lesson_plan_id)
+        expanded_lesson_plan["slide_deck"] = slide_deck
+
         # print("Exapnded", expanded_lesson_plan)
         return expanded_lesson_plan
 
 
 def update_lesson_plan(lesson_plan_id, new_lesson_plan):
     with Session() as session:
-        lesson_plan = session.query(LessonPlan).filter_by(id=lesson_plan_id).first()
-        
+        lesson_plan = session.query(LessonPlan).filter_by(
+            id=lesson_plan_id).first()
+
         update_fields = ['title', 'description']
         for field in update_fields:
             if new_lesson_plan.get(field):
@@ -210,8 +223,23 @@ def get_slide_deck(slide_deck_id):
     with Session() as session:
         slide_deck = session.query(SlideDeck).filter_by(
             id=slide_deck_id).first()
+        return expand_slide_deck(slide_deck)
+
+
+def get_slide_deck_by_lesson_plan(lesson_plan_id):
+    with Session() as session:
+        slide_deck = session.query(SlideDeck).filter_by(
+            lesson_plan_id=lesson_plan_id).first()
+        if slide_deck:
+            return expand_slide_deck(slide_deck)
+        else:
+            return None
+
+
+def expand_slide_deck(slide_deck):
+    with Session() as session:
         slides = session.query(Slide).filter_by(
-            slide_deck_id=slide_deck_id).all()
+            slide_deck_id=slide_deck.id).all()
         expanded_slide_deck = slide_deck.as_dict()
         expanded_slide_deck['slides'] = [slide.as_dict()
                                          for slide in slides]

@@ -13,6 +13,7 @@ import json
 from lesson_plan import lesson_plan_blueprint
 from module import module_blueprint
 from quiz import quiz_blueprint
+from slide_deck import slide_deck_blueprint
 app = Flask(__name__)
 CORS(app)
 
@@ -21,18 +22,22 @@ CORS(app)
 # openai.api_key = os.environ.get('OPENAI_KEY')
 
 # ========[ LOCAL ]=========
-openai.organization = json.load(open('zappa_settings.json'))['production']['environment_variables']['OPENAI_ORG']
-openai.api_key = json.load(open('zappa_settings.json'))['production']['environment_variables']['OPENAI_KEY']
+openai.organization = json.load(open('zappa_settings.json'))[
+    'production']['environment_variables']['OPENAI_ORG']
+openai.api_key = json.load(open('zappa_settings.json'))[
+    'production']['environment_variables']['OPENAI_KEY']
 
 
 @app.route('/')
 def hello_world():
- return '<h1>SHE LIVES</h1>'
+    return '<h1>SHE LIVES</h1>'
+
 
 app.register_blueprint(lesson_plan_blueprint, url_prefix='/lesson_plan')
 app.register_blueprint(module_blueprint, url_prefix='/module')
 app.register_blueprint(quiz_blueprint, url_prefix='/quiz')
+app.register_blueprint(slide_deck_blueprint, url_prefix='/slide_deck')
 
 # We only need this for local development.
 if __name__ == '__main__':
- app.run(debug=True)
+    app.run(debug=True)
