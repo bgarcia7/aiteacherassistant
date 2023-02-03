@@ -1,8 +1,10 @@
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy import Column, String, Integer, Sequence, ForeignKey, JSON
+from sqlalchemy import create_engine, MetaData, desc
+from sqlalchemy import Column, String, Integer, Sequence, ForeignKey, JSON, Time
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import desc
+from datetime import datetime, timezone
 
 import time
 import os
@@ -20,6 +22,10 @@ base = declarative_base()
 Session = sessionmaker(engine)
 
 # ===============[ MODELS ]=================
+
+
+def now():
+    return datetime.now(timezone.utc)
 
 
 class LessonPlan(base):
@@ -58,6 +64,7 @@ class Quiz(base):
     content = Column(JSON)
     lesson_plan_id = Column(UUID, ForeignKey("lesson_plans.id"))
     lesson_plan = relationship("LessonPlan", back_populates="quizzes")
+    inserted_at = Column(Time, default=now)
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -70,6 +77,7 @@ class SlideDeck(base):
     lesson_plan_id = Column(UUID, ForeignKey("lesson_plans.id"))
     lesson_plan = relationship("LessonPlan", back_populates="slide_decks")
     slides = relationship("Slide", back_populates="slide_deck")
+    inserted_at = Column(Time, default=now)
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -138,17 +146,18 @@ def get_lesson_plan(lesson_plan_id):
 
         # Add quizzes
         quiz = session.query(Quiz).filter_by(
-            lesson_plan_id=lesson_plan_id).first()
+            lesson_plan_id=lesson_plan_id).order_by(desc(Quiz.inserted_at)).first()
+
         if quiz:
             expanded_lesson_plan["quiz"] = quiz.as_dict()
 
-        # Add slide_deck
-        slide_deck = get_slide_deck_by_lesson_plan(lesson_plan_id)
-        if slide_deck:
-            expanded_lesson_plan["slide_deck"] = slide_deck
+            # Add slide_deck
+            slide_deck = get_slide_deck_by_lesson_plan(lesson_plan_id)
+            if slide_deck:
+                expanded_lesson_plan["slide_deck"] = slide_deck
 
-        # print("Exapnded", expanded_lesson_plan)
-        return expanded_lesson_plan
+            # print("Exapnded", expanded_lesson_plan)
+            return expanded_lesson_plan
 
 
 def update_lesson_plan(lesson_plan_id, new_lesson_plan):
@@ -231,7 +240,7 @@ def get_slide_deck(slide_deck_id):
 def get_slide_deck_by_lesson_plan(lesson_plan_id):
     with Session() as session:
         slide_deck = session.query(SlideDeck).filter_by(
-            lesson_plan_id=lesson_plan_id).first()
+            lesson_plan_id=lesson_plan_id).order_by(desc(SlideDeck.inserted_at)).first()
         if slide_deck:
             return expand_slide_deck(slide_deck)
         else:

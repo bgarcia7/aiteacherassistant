@@ -64,27 +64,28 @@ export default function LessonPlanView(props) {
 
   const handleGenerateQuiz = async () => {
     try {
-      enqueueSnackbar('Generating your Quiz, it takes around a minute');
+      enqueueSnackbar('Generating your quiz, it takes around a minute');
 
       console.log('Start generating quiz');
       setIsGeneratingQuiz(true);
       const newQuiz = await generateQuiz(lessonPlan.id);
       console.log('Generated Quiz', newQuiz);
-      setIsGeneratingQuiz(false);
-      refreshLessonPlan();
+      await refreshLessonPlan();
     } catch (err) {
       enqueueSnackbar('Error Generating Quiz', { variant: 'error' });
     }
+
+    setIsGeneratingQuiz(false);
   };
 
   const handleGenerateSlides = async () => {
     try {
-      enqueueSnackbar('Generating your Slides, it takes around a minute');
+      enqueueSnackbar('Generating your slides, it takes around a minute');
       console.log('Generating slides');
       setIsGeneratingSlides(true);
       const newSlides = await generateSlides(lessonPlan.id);
       console.log('Generated Slides', newSlides);
-      refreshLessonPlan();
+      await refreshLessonPlan();
     } catch (err) {
       enqueueSnackbar('Error Generating Slides', { variant: 'error' });
     }
@@ -170,15 +171,29 @@ export default function LessonPlanView(props) {
           <Typography variant="h3">Slides</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          {lessonPlan.slide_deck ? (
+          {isGeneratingSlides ? (
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <LoadingIcon />
+            </div>
+          ) : lessonPlan.slide_deck ? (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div>
+              <div
+                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+              >
                 <Button
                   variant="contained"
                   onClick={() => window.open(lessonPlan.slide_deck.drive_url, '_blank')}
                   disabled={isGeneratingSlides}
                 >
                   Open in Google Slides
+                </Button>
+
+                <Button
+                  variant="contained"
+                  onClick={handleGenerateSlides}
+                  disabled={isGeneratingSlides}
+                >
+                  Regenerate Slides
                 </Button>
               </div>
               <div style={{ height: '16px' }} />
@@ -212,9 +227,15 @@ export default function LessonPlanView(props) {
           <Typography variant="h3">Quiz</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          {lessonPlan.quiz ? (
+          {isGeneratingQuiz ? (
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <LoadingIcon />
+            </div>
+          ) : lessonPlan.quiz ? (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div>
+              <div
+                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+              >
                 <Button
                   variant="contained"
                   onClick={handleDownloadQuiz}
@@ -222,14 +243,23 @@ export default function LessonPlanView(props) {
                 >
                   Download PDF
                 </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleGenerateQuiz}
+                  disabled={isGeneratingQuiz}
+                >
+                  Regenerate Quiz
+                </Button>
               </div>
               <div style={{ height: '16px' }} />
               <QuizDisplay quizContent={lessonPlan.quiz.content} />
             </div>
           ) : (
-            <Button variant="contained" onClick={handleGenerateQuiz} disabled={isGeneratingQuiz}>
-              Generate Quiz
-            </Button>
+            <>
+              <Button variant="contained" onClick={handleGenerateQuiz} disabled={isGeneratingQuiz}>
+                Generate Quiz
+              </Button>
+            </>
           )}
         </AccordionDetails>
       </Accordion>

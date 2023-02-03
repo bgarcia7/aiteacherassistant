@@ -43,10 +43,19 @@ export const regenerateModuleBody = async (moduleId) => {
 };
 
 export const updateModule = async (moduleId, module) => {
-  const response = await axios.post(`${API_URL}module/${moduleId}/edit`, {});
+  const response = await axios.post(`${API_URL}module/${moduleId}/edit`, { module });
   if (response.status !== 200) {
     throw new Error(response.data.message);
   }
+  return response.data;
+};
+
+export const deleteModule = async (moduleId) => {
+  const response = await axios.delete(`${API_URL}module/${moduleId}`);
+  if (response.status !== 200) {
+    throw new Error(response.data.message);
+  }
+
   return response.data;
 };
 

@@ -13,7 +13,8 @@ import Typography from '@mui/material/Typography';
 import { Box } from '@mui/system';
 import { useState } from 'react';
 // API calls
-import { regenerateModuleBody } from 'src/pages/api/Lesson';
+import LoadingIcon from 'src/components/loading-screen/LoadingIcon';
+import { deleteModule, regenerateModuleBody } from 'src/pages/api/Lesson';
 import { useSnackbar } from '../../../components/snackbar';
 
 const ExpandMore = styled((props) => {
@@ -73,15 +74,29 @@ export default function ModuleCard({ module, refreshLessonPlan }) {
 
   const handleRegenerateClick = async () => {
     enqueueSnackbar('Regenerating module, this may take up to a minute');
-    setIsRegenerating(true);
-    const response = await regenerateModuleBody(module.id);
-    setText(response.body);
-    console.log(response);
+    try {
+      setAnchorEl(null);
+      setIsRegenerating(true);
+      const response = await regenerateModuleBody(module.id);
+      console.log('Regenerated', response);
+      await refreshLessonPlan();
+    } catch (err) {
+      console.log('Error regenerating module: ', err);
+      enqueueSnackbar('Failed to regenerate module, please try again later');
+    }
     setIsRegenerating(false);
-    refreshLessonPlan();
   };
 
   const handleDeleteClick = async () => {
+    try {
+      console.log('Deleting module', module.id);
+      const response = await deleteModule(module.id);
+      console.log('Deleted', response);
+      refreshLessonPlan();
+    } catch (err) {
+      console.log('Error regenerating module: ', err);
+      enqueueSnackbar('Failed to delete module, please try again later');
+    }
     console.log('Handle delete');
   };
 
@@ -97,6 +112,53 @@ export default function ModuleCard({ module, refreshLessonPlan }) {
   //   console.log('I was called');
   //   update();
   // }, [text]);
+
+  let content = (
+    <>
+      {cutText(module.body)
+        .split('\n')
+        .map((splitText, i) => (
+          <Typography paragraph key={i}>
+            {splitText}
+          </Typography>
+        ))}
+    </>
+  );
+
+  if (isRegenerating) {
+    content = (
+      <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <LoadingIcon />
+      </div>
+    );
+  } else if (isEditing) {
+    content = (
+      <Box>
+        <textarea
+          rows="4"
+          cols="50"
+          value={module.body}
+          onChange={handleTextEdit}
+          style={{
+            width: '100%',
+            border: 'none',
+            outline: 'none',
+            fontSize: 'inherit',
+          }}
+        ></textarea>
+      </Box>
+    );
+  } else if (expanded) {
+    content = (
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        {module.body.split('\n').map((splitText, i) => (
+          <Typography paragraph key={i}>
+            {splitText}
+          </Typography>
+        ))}
+      </Collapse>
+    );
+  }
 
   return (
     <Card>
@@ -131,40 +193,7 @@ export default function ModuleCard({ module, refreshLessonPlan }) {
       />
       <CardContent onClick={handleExpandClick}>
         <Typography variant="body2" color="text.secondary">
-          {isEditing ? (
-            <Box>
-              <textarea
-                rows="4"
-                cols="50"
-                value={module.body}
-                onChange={handleTextEdit}
-                style={{
-                  width: '100%',
-                  border: 'none',
-                  outline: 'none',
-                  fontSize: 'inherit',
-                }}
-              ></textarea>
-            </Box>
-          ) : expanded ? (
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-              {module.body.split('\n').map((splitText, i) => (
-                <Typography paragraph key={i}>
-                  {splitText}
-                </Typography>
-              ))}
-            </Collapse>
-          ) : (
-            <>
-              {cutText(module.body)
-                .split('\n')
-                .map((splitText, i) => (
-                  <Typography paragraph key={i}>
-                    {splitText}
-                  </Typography>
-                ))}
-            </>
-          )}
+          {content}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
