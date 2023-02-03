@@ -13,7 +13,7 @@ export const AUTH0_API = {
 
 export const ALGOLIA_API = {
   appId: process.env.ALGOLIA_APP_ID,
-  apiKey: process.env.ALGOLIA_API_KEY,
+  apiKey: process.env.ALGOLIA_SEARCH_API_KEY,
 };
 
 export const MAP_API = process.env.MAPBOX_API;

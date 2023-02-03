@@ -1,18 +1,94 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-dom';
+import CustomHits from './CustomHits';
 import algoliasearch from 'algoliasearch';
+import { Typography, Box, Button, Divider, Grid, IconButton } from '@mui/material';
 import { ALGOLIA_API } from '../../../../config-global';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const SelectedHits = ({ selectedHits, onHitRemove }) => {
+  return (
+    <div>
+      {selectedHits.map((hit) => (
+        <Grid container>
+          <Grid item xs={10}>
+            <Button
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                justifyContent: 'flex-start',
+                textAlign: 'left',
+                minWidth: 1,
+                margin: '0 auto',
+                borderRadius: 1,
+                m: 2,
+                listStyle: 'none',
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                }}
+              >
+                <Typography variant="h6" gutterBottom component="div">
+                  {hit.standard_title}, {hit.jurisdiction.title}
+                </Typography>
+                <Typography variant="body2" gutterBottom component="div">
+                  {hit.description}
+                </Typography>
+              </Box>
+              <Divider />
+            </Button>
+          </Grid>
+          <Grid
+            item
+            xs={2}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}
+          >
+            <Button onClick={() => onHitRemove(hit)}>
+              <DeleteIcon />
+            </Button>
+          </Grid>
+        </Grid>
+      ))}
+    </div>
+  );
+};
 
 const AlgoliaSearch = () => {
-  const { ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY } = ALGOLIA_API;
-  console.log('ALGOLIA_APP_ID', ALGOLIA_APP_ID);
+  const { appId, apiKey } = ALGOLIA_API;
 
-  const searchClient = algoliasearch('JZDWBAQ1E2', '2dacfa1aed04d6901e466487c8f1b140');
+  const searchClient = algoliasearch(appId, apiKey);
+
+  // store the search results in state
+  const [selectedHits, setselectedHits] = useState([]);
+
+  const onHitSelect = (hit) => {
+    setselectedHits([...selectedHits, hit]);
+  };
+
+  const onHitRemove = (hit) => {
+    setselectedHits(selectedHits.filter((h) => h.objectID !== hit.objectID));
+  };
 
   return (
-    <InstantSearch searchClient={searchClient} indexName="demo_ecommerce">
+    <InstantSearch searchClient={searchClient} indexName="standards">
       <SearchBox />
-      <Hits />
+      {selectedHits.length > 0 && (
+        <SelectedHits selectedHits={selectedHits} onHitRemove={onHitRemove} />
+      )}
+      <Hits hitComponent={(props) => <CustomHits {...props} onHitSelect={onHitSelect} />} />
     </InstantSearch>
   );
 };

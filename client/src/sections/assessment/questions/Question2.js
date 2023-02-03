@@ -65,9 +65,12 @@ const Question2 = () => {
               </Typography>
             </Divider>
             <RHFTextField name="title" label="Search for any national learning objective" />
-            {/* <AlgoliaSearch /> */}
           </Stack>
         </FormProvider>
+        <Stack spacing={3} sx={{ px: 3 }}>
+          <AlgoliaSearch />
+        </Stack>
+        
       </Box>
     </Box>
   );
