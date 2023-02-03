@@ -18,11 +18,12 @@ const Question2 = () => {
   const defaultValues = {
     title: '',
     lesson_description: '',
+    search: '',
   };
 
   const EventSchema = Yup.object().shape({
     title: Yup.string().max(255).required('Title is required'),
-    learning_objective: Yup.string().max(5000).required('Learning objective is required'),
+    learning_objective: Yup.string().max(255).required('Learning objective is required'),
   });
 
   const methods = useForm({
@@ -64,13 +65,12 @@ const Question2 = () => {
                 OR
               </Typography>
             </Divider>
-            <RHFTextField name="title" label="Search for any national learning objective" />
+            <RHFTextField name="search" label="Search for any national learning objective or select from the suggestions below" />
           </Stack>
         </FormProvider>
         <Stack spacing={3} sx={{ px: 3 }}>
           <AlgoliaSearch />
         </Stack>
-        
       </Box>
     </Box>
   );
