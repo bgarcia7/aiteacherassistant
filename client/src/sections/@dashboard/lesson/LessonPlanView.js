@@ -40,14 +40,16 @@ export default function LessonPlanView(props) {
   const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
   const { themeStretch } = useSettingsContext();
 
+  const refreshLessonPlan = async () => {
+    const newLessonPlan = await getLessonPlan(props.id);
+    console.log('Got lesson plan: ', newLessonPlan);
+    setLessonPlan(newLessonPlan);
+    setModules(newLessonPlan.modules);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    (async () => {
-      const newLessonPlan = await getLessonPlan(props.id);
-      console.log('Got lesson plan: ', newLessonPlan);
-      setLessonPlan(newLessonPlan);
-      setModules(newLessonPlan.modules);
-      setLoading(false);
-    })();
+    refreshLessonPlan();
   }, []);
 
   const onDragEnd = (result) => {
@@ -60,18 +62,6 @@ export default function LessonPlanView(props) {
     setModules(items);
   };
 
-  const updateModule = (module) => {
-    console.log('updateModule was called in LessonPlanView.js');
-    const ix = modules.map((m) => m.id).indexOf(module.id);
-    const newModules = [...modules.slice(0, ix), module, ...modules.slice(ix + 1)];
-    const newEvent = {
-      ...lessonPlan,
-      modules: newModules,
-    };
-
-    // onCreateUpdateEvent(newEvent);
-  };
-
   const handleGenerateQuiz = async () => {
     try {
       enqueueSnackbar('Generating your Quiz, it takes around a minute');
@@ -81,6 +71,7 @@ export default function LessonPlanView(props) {
       const newQuiz = await generateQuiz(lessonPlan.id);
       console.log('Generated Quiz', newQuiz);
       setIsGeneratingQuiz(false);
+      refreshLessonPlan();
     } catch (err) {
       enqueueSnackbar('Error Generating Quiz', { variant: 'error' });
     }
@@ -93,6 +84,7 @@ export default function LessonPlanView(props) {
       setIsGeneratingSlides(true);
       const newSlides = await generateSlides(lessonPlan.id);
       console.log('Generated Slides', newSlides);
+      refreshLessonPlan();
     } catch (err) {
       enqueueSnackbar('Error Generating Slides', { variant: 'error' });
     }
@@ -150,7 +142,11 @@ export default function LessonPlanView(props) {
                                 marginBottom: 3,
                               }}
                             >
-                              <ModuleCard updateModule={updateModule} key={index} module={module} />
+                              <ModuleCard
+                                refreshLessonPlan={refreshLessonPlan}
+                                key={index}
+                                module={module}
+                              />
                             </Box>
                           )}
                         </Draggable>
@@ -190,10 +186,8 @@ export default function LessonPlanView(props) {
                 width="100%"
                 height="640px"
                 slidesLink={lessonPlan.slide_deck.drive_url}
-                slideDuration={5}
                 position={0}
                 showControls
-                loop
               />
             </div>
           ) : (

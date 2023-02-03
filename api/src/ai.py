@@ -127,8 +127,8 @@ def get_response(prompt, temperature=0.6):
         temperature=temperature,
         max_tokens=3500 - len(prompt.split()),
         top_p=1,
-        frequency_penalty=1,
-        presence_penalty=1
+        frequency_penalty=0,
+        presence_penalty=0
     )
     db.insert_prompt(prompt, response.choices[0].text.strip())
     return response.choices[0].text.strip()

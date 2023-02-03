@@ -139,11 +139,13 @@ def get_lesson_plan(lesson_plan_id):
         # Add quizzes
         quiz = session.query(Quiz).filter_by(
             lesson_plan_id=lesson_plan_id).first()
-        expanded_lesson_plan["quiz"] = quiz.as_dict()
+        if quiz:
+            expanded_lesson_plan["quiz"] = quiz.as_dict()
 
         # Add slide_deck
         slide_deck = get_slide_deck_by_lesson_plan(lesson_plan_id)
-        expanded_lesson_plan["slide_deck"] = slide_deck
+        if slide_deck:
+            expanded_lesson_plan["slide_deck"] = slide_deck
 
         # print("Exapnded", expanded_lesson_plan)
         return expanded_lesson_plan
