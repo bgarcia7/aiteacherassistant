@@ -23,9 +23,10 @@ export default class MyDocument extends Document {
           <meta name="theme-color" content={palette('light').primary.main} />
 
           {/* Favicon */}
-          <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-          <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
-          <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+          <link rel="manifest" href="/site.webmanifest" />
 
           {/* Emotion */}
           <meta name="emotion-insertion-point" content="" />
@@ -34,10 +35,9 @@ export default class MyDocument extends Document {
           {/* Meta */}
           <meta
             name="description"
-            content="The starting point for your next project with Minimal UI Kit, built on the newest version of Material-UI ©, ready to be customized to your style"
+            content="AI Teaching Assistant aims helps teachers product lesson plans in minutes, not hours. Tell your TA what you're trying to teach and have your lesson plans, quizzes, slides, and more instantly generated."
           />
-          <meta name="keywords" content="react,material,kit,application,dashboard,admin,template" />
-          <meta name="author" content="Minimal UI Kit" />
+          <meta name="author" content="AITA" />
         </Head>
 
         <body>
