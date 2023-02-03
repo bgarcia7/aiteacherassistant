@@ -71,6 +71,11 @@ def createGoogleSlides(title, slides):
                         slide.get("title"), bullet_points, "https://www.nature.com/scitable/content/ne0000/ne0000/ne0000/ne0000/96519252/Hui_figure1_v001-01_1_2.jpg")
             # createSlide(slidesAPI, presentation_copy_id, slide.get("title"), slide.get("content"), slide.get("image_description"))
 
+        # createdSlides = getPresentationSlides(slidesAPI, presentation_copy_id)
+        # for obj in createdSlides[1]["pageElements"]:
+        #     print("Transform", obj["transform"])
+        # print(createdSlides[1]["pageElements"])
+
         return getDriveLink(driveAPI, presentation_copy_id)
 
     except HttpError as error:
@@ -92,7 +97,7 @@ def getPresentationSlides(slidesAPI, presentationId):
     slides = slidesAPI.presentations().get(presentationId=presentationId,
                                            fields="slides").execute().get("slides", [])
     print(f"Found {len(slides)} slides in presentation {presentationId}")
-    print(slides)
+    # print(slides)
     return slides
 
 
@@ -310,8 +315,8 @@ def createSlide(slidesAPI, presentation_id, title, text, image_url=None):
                         'transform': {
                             'scaleX': 1,
                             'scaleY': 1,
-                            'translateX': 200000,
-                            'translateY': 200000,
+                            'translateX': 4900000,
+                            'translateY': 1100000,
                             'unit': 'EMU'
                         }
                     }
