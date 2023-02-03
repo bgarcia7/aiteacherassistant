@@ -39,7 +39,7 @@ def structure_quiz_response(string):
     questions = parse_string_on_sent(string, '|'.join(QUIZ_QUESTION_SENTINELS))
     questions = [
         {'question': clean_text(parse_options(q)[0]),
-         'options':[clean_text(o) for o in parse_options(q)[1:]]}
+         'options':[clean_text(o) for o in parse_options(q)[1:]] + ['None of the Above', 'All of the Above']}
         for q in questions
     ]
     return questions
@@ -117,7 +117,7 @@ def format_slides(slides):
 
 def structure_slide_response(string):
     formatted_slides = []
-    slides = [clean_text(x) for x in parse_string_on_sent(response, '|'.join(['Slide ?' + str(ix) for ix in range(1, 20)]), '{s}')]
+    slides = [clean_text(x) for x in parse_string_on_sent(string, '|'.join(['Slide ?' + str(ix) for ix in range(1, 20)]), '{s}')]
     for slide in slides:
         components = [clean_text(s) for s in parse_string_on_sent(
             slide, '|'.join(SLIDE_SENTINELS), REGEX_SLIDES_COMPONENTS)]

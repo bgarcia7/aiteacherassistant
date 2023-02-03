@@ -45,7 +45,7 @@ const StyledDescription = styled('div')(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'start',
   justifyContent: 'flex-start',
-  padding: theme.spacing(15, 0),
+  padding: theme.spacing(20, 0),
   height: '100%',
 }));
 
@@ -143,26 +143,13 @@ function Description() {
   return (
     <StyledDescription>
       <m.div variants={varFade().in}>
-        <Typography variant="h2" color={'#EFEEE9'}>
-          Meet Your New
+        <Typography variant="h1" color={'#FFFFFF'}>
+          Meet Your New Teaching Assistant
         </Typography>
-      </m.div>
-      <m.div variants={varFade().in}>
-        <StyledGradientText
-          animate={{ backgroundPosition: '200% center' }}
-          transition={{
-            repeatType: 'reverse',
-            ease: 'linear',
-            duration: 20,
-            repeat: Infinity,
-          }}
-        >
-          Teaching Assistant
-        </StyledGradientText>
       </m.div>
 
       <m.div variants={varFade().in}>
-        <Typography variant="body2" color={'#EFEEE9'}>
+        <Typography variant="h4" color={'#EFEEE9'}>
           Choose your curriculum and generate your next few weeks’ worth of lesson plans in less
           than 5 minutes.
         </Typography>
