@@ -3,9 +3,6 @@ import { Alert, Tooltip, Stack, Typography, Box, Button } from '@mui/material';
 import { Container } from '@mui/system';
 // auth
 import { useAuthContext } from '../../auth/useAuthContext';
-// components
-import Logo from '../../components/Logo';
-import Image from 'src/assets/illustrations/MotivationIllustration';
 
 // ----------------------------------------------------------------------
 
@@ -67,7 +64,6 @@ export default function LoginAuth0() {
             textAlign: 'center',
           }}
         >
-          <Logo />
           <Typography variant="h4">Your lesson is ready! </Typography>
           <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
             Login or Create an account to view your lesson plan
