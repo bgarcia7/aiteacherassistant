@@ -1,7 +1,7 @@
+import FullCalendar from '@fullcalendar/react'; // => request placed at the top
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
-import FullCalendar from '@fullcalendar/react'; // => request placed at the top
 import timeGridPlugin from '@fullcalendar/timegrid';
 import timelinePlugin from '@fullcalendar/timeline';
 //
