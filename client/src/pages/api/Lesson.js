@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const API_URL = 'https://vjj6xrqlv1.execute-api.us-west-2.amazonaws.com/production/';
-const API_URL = 'http://127.0.0.1:5000/';
+const API_URL = 'https://vjj6xrqlv1.execute-api.us-west-2.amazonaws.com/production/';
+// const API_URL = 'http://127.0.0.1:5000/';
 
 // ====================== Lesson Functions ======================
 
