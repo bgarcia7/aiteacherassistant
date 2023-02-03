@@ -27,11 +27,11 @@ export default function LinearStepper() {
 
   // store all selections in state on next
   const handleAllAnswers = (answers) => {
-    setAllAnswers(answers.map((item) => (item.id === selection.id ? selection : item)));
-    // erase questionAnswers
+    setAllAnswers([...allAnswers, answers]);
+    // reset questionAnswers
     setQuestionAnswers([]);
-    console.log('All Answers', allAnswers);
   };
+  console.log('All Answers', allAnswers);
 
   const isStepOptional = (step) => step === 1;
 
@@ -39,11 +39,6 @@ export default function LinearStepper() {
 
   const handleNext = () => {
     let newSkipped = skipped;
-
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
 
     handleAllAnswers(questionAnswers);
 

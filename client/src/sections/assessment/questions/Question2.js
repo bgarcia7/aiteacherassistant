@@ -36,6 +36,11 @@ const Question2 = ({ handleSelections }) => {
     formState: { isSubmitting },
   } = methods;
 
+  const onSubmit = (data) => {
+    console.log('data', data);
+    handleSelections(data);
+  };
+
   return (
     <Box
       display={'flex'}
