@@ -56,7 +56,33 @@ const Question1 = ({ handleSelections }) => {
               }}
               value={option.value}
               onClick={handleChange}
-            ></Button>
+            >
+              {option.value}
+              {option.label === '1' && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mt: 2,
+                  }}
+                >
+                  <CalendarTodayIcon sx={{ fontSize: 80 }} />
+                </Box>
+              )}
+              {option.label === '2' && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mt: 2,
+                  }}
+                >
+                  <DescriptionIcon sx={{ fontSize: 80 }} />
+                </Box>
+              )}
+            </Button>
           </Box>
         ))}
       </Box>
