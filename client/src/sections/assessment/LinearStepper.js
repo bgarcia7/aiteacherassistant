@@ -16,22 +16,21 @@ export default function LinearStepper() {
 
   // stoe answers in state for each individual question
   const handleSelections = (answers) => {
-    const index = questionAnswers.findIndex((item) => item.id === answers.id);
-    if (index !== -1) {
-      setQuestionAnswers(questionAnswers.splice(index, 1, answers));
-    } else {
-      setQuestionAnswers([...questionAnswers, answers]);
-    }
-    console.log('questionAnswers', questionAnswers);
+    setQuestionAnswers(answers);
   };
 
   // store all selections in state on next
   const handleAllAnswers = (answers) => {
-    setAllAnswers([...allAnswers, answers]);
+    setAllAnswers([
+      ...allAnswers,
+      {
+        question: activeStep,
+        answer: answers,
+      },
+    ]);
     // reset questionAnswers
     setQuestionAnswers([]);
   };
-  console.log('All Answers', allAnswers);
 
   const isStepOptional = (step) => step === 1;
 
@@ -45,9 +44,14 @@ export default function LinearStepper() {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
 
-    // Login when finished
+    // REQUEST TO GENERATE LESSON FROM API WITH ANSWERS -> DIRECT USER TO LOGIN SCREEN WHILE GENERATING TAKES PLACE
     if (activeStep === steps.length - 1) {
-      window.location.href = '/dashboard';
+      // convert allAnswers to object
+      const answers = allAnswers.reduce((acc, curr) => {
+        acc[curr.question] = curr.answer;
+        return acc;
+      }, {});
+      console.log('generating lesson with this: ', answers);
     }
   };
 
@@ -55,24 +59,22 @@ export default function LinearStepper() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
+  // const handleSkip = () => {
+  //   if (!isStepOptional(activeStep)) {
+  //     throw new Error("You can't skip a step that isn't optional.");
+  //   }
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
-  };
+  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  //   setSkipped((prevSkipped) => {
+  //     const newSkipped = new Set(prevSkipped.values());
+  //     newSkipped.add(activeStep);
+  //     return newSkipped;
+  //   });
+  // };
 
-  const handleReset = () => {
-    setActiveStep(0);
-  };
+  // const handleReset = () => {
+  //   setActiveStep(0);
+  // };
 
   return (
     <>

@@ -3,42 +3,23 @@ import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/system';
-import { Divider } from '@mui/material';
-// form
-import * as Yup from 'yup';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-// algolia search bar
+import { Divider, TextField } from '@mui/material';
+
 import AlgoliaSearch from './components/AlgoliaSearch';
 
 const Question2 = ({ handleSelections }) => {
-  const defaultValues = {
-    title: '',
-    lesson_description: '',
-  };
+  const [title, setTitle] = useState('');
+  const [learningObjective, setLearningObjective] = useState('');
 
-  const EventSchema = Yup.object().shape({
-    title: Yup.string().max(255).required('Title is required'),
-    learning_objective: Yup.string().max(255).required('Learning objective is required'),
-  });
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    if (name === 'title') {
+      setTitle(value);
+    } else if (name === 'learning_objective') {
+      setLearningObjective(value);
+    }
 
-  const methods = useForm({
-    resolver: yupResolver(EventSchema),
-    defaultValues: defaultValues,
-  });
-
-  const {
-    reset,
-    watch,
-    control,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
-
-  const onSubmit = (data) => {
-    console.log('data', data);
-    handleSelections(data);
+    handleSelections({ title, learning_objective: learningObjective });
   };
 
   return (
@@ -52,23 +33,29 @@ const Question2 = ({ handleSelections }) => {
         What lesson would you like to plan?
       </Typography>
       <Box my={5}>
-        <FormProvider methods={methods}>
-          <Stack spacing={3} sx={{ px: 3 }}>
-            <RHFTextField name="title" label="Lesson Title" />
-            <RHFTextField
-              name="learning_objective"
-              label="Learning objective"
-              fullWidth
-              multiline
-              rows={4}
-            />
-            <Divider>
-              <Typography variant="h6" color={'#919EAB'}>
-                OR
-              </Typography>
-            </Divider>
-          </Stack>
-        </FormProvider>
+        <Stack spacing={3} sx={{ px: 3 }}>
+          <TextField
+            name="title"
+            label="Lesson Title"
+            fullWidth
+            value={title}
+            onChange={handleChange}
+          />
+          <TextField
+            name="learning_objective"
+            label="Learning objective"
+            fullWidth
+            multiline
+            onChange={handleChange}
+            value={learningObjective}
+            rows={4}
+          />
+          <Divider>
+            <Typography variant="h6" color={'#919EAB'}>
+              OR
+            </Typography>
+          </Divider>
+        </Stack>
         <Box py={3} px={3}>
           <AlgoliaSearch />
         </Box>

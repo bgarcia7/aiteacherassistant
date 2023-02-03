@@ -19,7 +19,6 @@ const Question1 = ({ handleSelections }) => {
     setSelectedAnswer(event.target.value);
     handleSelections(event.target.value);
   };
-  console.log('selectedAnswer', selectedAnswer);
   return (
     <Box>
       <Typography variant="h6" gutterBottom component="div" textAlign={'center'}>
