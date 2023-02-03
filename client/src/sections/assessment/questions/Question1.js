@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DescriptionIcon from '@mui/icons-material/Description';
 
-const Question1 = () => {
+const Question1 = ({ handleSelections, handleNext }) => {
   const OPTIONS = [
     { value: 'Entire Curriculum', label: '1' },
     { value: 'Single Lesson', label: '2' },
@@ -70,6 +70,7 @@ const Question1 = () => {
           </Box>
         ))}
       </Box>
+      
     </Box>
   );
 };

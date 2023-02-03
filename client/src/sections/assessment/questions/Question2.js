@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/system';
 import { Divider } from '@mui/material';
@@ -14,11 +12,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // algolia search bar
 import AlgoliaSearch from './components/AlgoliaSearch';
 
-const Question2 = () => {
+const Question2 = ({ handleSelections }) => {
   const defaultValues = {
     title: '',
     lesson_description: '',
-    search: '',
   };
 
   const EventSchema = Yup.object().shape({
