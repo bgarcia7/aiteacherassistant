@@ -150,7 +150,7 @@ def queue_text_to_speech(text):
     headers = {
         'Accept': '*/*',
         'Accept-Encoding': 'gzip, deflate',
-        'Authorization': 'Basic ODZjMzk5MjdiNTQ4OTdlMzNkZGNhYWZhMmZmODY5YzQ6YmNhNGFmZGUwZTVjNmM1NjczYWZhMmYwOWY2MjRhZTU=',
+        'Authorization': 'Basic ' + BEAM_AUTH_TOKEN,
         'Connection': 'keep-alive',
         'Content-Type': 'application/json'
     }
