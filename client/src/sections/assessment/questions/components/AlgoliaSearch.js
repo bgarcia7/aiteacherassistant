@@ -68,7 +68,7 @@ const SelectedHits = ({ selectedHits, onHitRemove }) => {
   );
 };
 
-const AlgoliaSearch = ({ handleAlgoliaSelection }) => {
+const AlgoliaSearch = ({ handleAlgoliaSelection, handleAlgoliaDelete }) => {
   const { appId, apiKey } = ALGOLIA_API;
 
   const searchClient = algoliasearch(appId, apiKey);
@@ -83,6 +83,7 @@ const AlgoliaSearch = ({ handleAlgoliaSelection }) => {
 
   const onHitRemove = (hit) => {
     setselectedHits(selectedHits.filter((h) => h.objectID !== hit.objectID));
+    handleAlgoliaDelete(hit);
   };
 
   return (
