@@ -54,13 +54,14 @@ def prettify_quiz(quiz):
 # Accepts a string with different subsections seperated by \n
 
 def prettify_module(module_body):
-    print("MODULE BODY:", module_body)
-    print([(ix2, s) for ix2, s in enumerate(module_body.split("\n"))])
-    # TODO: rework modules into json to support higher order structure
-    try:
-        return '\n'.join([SUBSECTION_SENTINELS[ix2] + '. ' + s for ix2, s in enumerate(module_body.split("\n"))])
-    except:
-        return '\n • '.join(module_body.split("\n"))
+    return module_body
+    # print("MODULE BODY:", module_body)
+    # print([(ix2, s) for ix2, s in enumerate(module_body.split("\n"))])
+    # # TODO: rework modules into json to support higher order structure
+    # try:
+    #     return '\n'.join([s for ix2, s in enumerate(module_body.split("\n"))])
+    # except:
+    #     return module_body
 
 
 def prettify_lesson_plan(lesson_plan):
@@ -116,8 +117,7 @@ def format_slides(slides):
 
 def structure_slide_response(string):
     formatted_slides = []
-    slides = [clean_text(x) for x in parse_string_on_sent(string, '|'.join(
-        ['Slide ?' + str(ix) for ix in range(1, 20)])) if x and ('slide' not in x.lower() and len(x) > 2*len('slide'))]
+    slides = [clean_text(x) for x in parse_string_on_sent(response, '|'.join(['Slide ?' + str(ix) for ix in range(1, 20)]), '{s}')]
     for slide in slides:
         components = [clean_text(s) for s in parse_string_on_sent(
             slide, '|'.join(SLIDE_SENTINELS), REGEX_SLIDES_COMPONENTS)]
