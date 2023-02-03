@@ -50,6 +50,7 @@
     "axios": "^1.2.0",
     "change-case": "^4.1.2",
     "date-fns": "^2.29.3",
+    "eslint-config-next": "^13.1.6",
     "firebase": "^9.14.0",
     "framer-motion": "^7.6.12",
     "highlight.js": "^11.7.0",

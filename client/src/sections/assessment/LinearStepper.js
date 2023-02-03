@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Box, Step, Paper, Button, Stepper, StepLabel, Typography } from '@mui/material';
 import LoadingScreen from 'src/components/loading-screen/LoadingScreen';
-import { useAuthContext } from 'src/auth/useAuthContext';
 // Question pages
 import AssessmentQuestion from './AssessmentQuestion';
+// Generate lesson plan API
+import { createLessonPlan } from 'src/pages/api/OnboardingLesson';
 // ----------------------------------------------------------------------
 
 const steps = ['Generation Type', 'Select standards', 'Finshing up'];
@@ -13,24 +14,24 @@ export default function LinearStepper() {
   const [skipped, setSkipped] = useState(new Set());
   const [allAnswers, setAllAnswers] = useState([]);
   const [questionAnswers, setQuestionAnswers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // stoe answers in state for each individual question
   const handleSelections = (answers) => {
-    const index = questionAnswers.findIndex((item) => item.id === answers.id);
-    if (index !== -1) {
-      setQuestionAnswers(questionAnswers.splice(index, 1, answers));
-    } else {
-      setQuestionAnswers([...questionAnswers, answers]);
-    }
-    console.log('questionAnswers', questionAnswers);
+    setQuestionAnswers(answers);
   };
 
   // store all selections in state on next
   const handleAllAnswers = (answers) => {
-    setAllAnswers(answers.map((item) => (item.id === selection.id ? selection : item)));
-    // erase questionAnswers
+    setAllAnswers([
+      ...allAnswers,
+      {
+        question: activeStep,
+        answers,
+      },
+    ]);
+    // reset questionAnswers
     setQuestionAnswers([]);
-    console.log('All Answers', allAnswers);
   };
 
   const isStepOptional = (step) => step === 1;
@@ -40,19 +41,14 @@ export default function LinearStepper() {
   const handleNext = () => {
     let newSkipped = skipped;
 
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-
     handleAllAnswers(questionAnswers);
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
 
-    // Login when finished
+    // REQUEST TO GENERATE LESSON FROM API WITH ANSWERS -> DIRECT USER TO LOGIN SCREEN WHILE GENERATING TAKES PLACE
     if (activeStep === steps.length - 1) {
-      window.location.href = '/dashboard';
+      handleFinish(allAnswers);
     }
   };
 
@@ -60,23 +56,24 @@ export default function LinearStepper() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
+  const handleFinish = async (answers) => {
+    setLoading(true);
+    // convert allAnswers to object
+    // const objectAnswers = answers.reduce((acc, curr) => {
+    //   acc[curr.question] = curr.answer;
+    //   return acc;
+    // }, {});
+    // send answers to API
+    const response = await createLessonPlan(answers);
+    // set response to local storage
+    const id = response.lesson_plan.id;
+    localStorage.setItem('lessonPlanId', JSON.stringify(response.lesson_plan.id));
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
-  };
+    console.log(localStorage.getItem('lessonPlanId'), 'localStorage.getItem("lessonPlan")');
+    setLoading(false);
 
-  const handleReset = () => {
-    setActiveStep(0);
+    // redirect to login screen
+    window.location.href = `/dashboard/lesson/${id}`;
   };
 
   return (
