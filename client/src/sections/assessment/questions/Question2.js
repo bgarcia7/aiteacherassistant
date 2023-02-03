@@ -22,6 +22,16 @@ const Question2 = ({ handleSelections }) => {
     handleSelections({ title, learning_objective: learningObjective });
   };
 
+  const handleAlgoliaSelection = (selection) => {
+    setTitle(selection.standard_title);
+    setLearningObjective(selection.description);
+    console.log(selection);
+    handleSelections({
+      title: selection.standard_title,
+      learning_objective: selection.description,
+    });
+  };
+
   return (
     <Box
       display={'flex'}
@@ -57,7 +67,7 @@ const Question2 = ({ handleSelections }) => {
           </Divider>
         </Stack>
         <Box py={3} px={3}>
-          <AlgoliaSearch />
+          <AlgoliaSearch handleAlgoliaSelection={handleAlgoliaSelection} />
         </Box>
       </Box>
     </Box>
