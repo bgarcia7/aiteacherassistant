@@ -4,20 +4,20 @@ import Question1 from './questions/Question1';
 import Question2 from './questions/Question2';
 import Question3 from './questions/Question3';
 
-const Questions = ({ activeStep }) => {
+const Questions = ({ activeStep, handleSelections }) => {
   switch (activeStep) {
     case 0:
-      return <Question1 />;
+      return <Question1 handleSelections={handleSelections} />;
     case 1:
-      return <Question2 />;
+      return <Question2 handleSelections={handleSelections} />;
     case 2:
-      return <Question3 />;
+      return <Question3 handleSelections={handleSelections} />;
     default:
       <Question1 />;
   }
 };
 
-const AssessmentQuestion = ({ activeStep }) => {
+const AssessmentQuestion = ({ activeStep, handleSelections }) => {
   return (
     <>
       <Paper
@@ -29,7 +29,7 @@ const AssessmentQuestion = ({ activeStep }) => {
         }}
       >
         <Box>
-          <Questions activeStep={activeStep} />
+          <Questions activeStep={activeStep} handleSelections={handleSelections} />
         </Box>
       </Paper>
     </>

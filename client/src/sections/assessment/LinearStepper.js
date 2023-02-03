@@ -11,10 +11,26 @@ const steps = ['Generation Type', 'Select standards', 'Finshing up'];
 export default function LinearStepper() {
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
-  const [selections, setSelections] = useState({});
+  const [allAnswers, setAllAnswers] = useState([]);
+  const [questionAnswers, setQuestionAnswers] = useState([]);
 
-  const handleSelections = (selection) => {
-    setSelections({ ...selections, ...selection });
+  // stoe answers in state for each individual question
+  const handleSelections = (answers) => {
+    const index = questionAnswers.findIndex((item) => item.id === answers.id);
+    if (index !== -1) {
+      setQuestionAnswers(questionAnswers.splice(index, 1, answers));
+    } else {
+      setQuestionAnswers([...questionAnswers, answers]);
+    }
+    console.log('questionAnswers', questionAnswers);
+  };
+
+  // store all selections in state on next
+  const handleAllAnswers = (answers) => {
+    setAllAnswers(answers.map((item) => (item.id === selection.id ? selection : item)));
+    // erase questionAnswers
+    setQuestionAnswers([]);
+    console.log('All Answers', allAnswers);
   };
 
   const isStepOptional = (step) => step === 1;
@@ -24,8 +40,16 @@ export default function LinearStepper() {
   const handleNext = () => {
     let newSkipped = skipped;
 
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values());
+      newSkipped.delete(activeStep);
+    }
+
+    handleAllAnswers(questionAnswers);
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
+
     // Login when finished
     if (activeStep === steps.length - 1) {
       window.location.href = '/dashboard';
@@ -91,25 +115,19 @@ export default function LinearStepper() {
               <AssessmentQuestion activeStep={activeStep} handleSelections={handleSelections} />
             </Box>
           </Paper>
-          <Box sx={{ display: 'flex' }}>
-            {activeStep !== steps.length - 1 && (
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-            )}
-            <Box sx={{ flexGrow: 1 }} />
-
-            <Button variant="contained" onClick={handleNext}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button>
-          </Box>
         </>
       )}
+      <Box sx={{ display: 'flex' }}>
+        {activeStep !== steps.length - 1 && (
+          <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+            Back
+          </Button>
+        )}
+        <Box sx={{ flexGrow: 1 }} />
+        <Button variant="contained" onClick={handleNext}>
+          Next
+        </Button>
+      </Box>
     </>
   );
 }
