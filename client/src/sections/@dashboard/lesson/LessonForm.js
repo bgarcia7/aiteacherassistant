@@ -86,6 +86,7 @@ export default function LessonForm() {
       };
 
       setLoading(true);
+      enqueueSnackbar('Creating lesson, this may take up to a minute...');
       const savedLesson = await createLessonPlan(newLessonPlan);
       setLoading(false);
       enqueueSnackbar('Create success!');

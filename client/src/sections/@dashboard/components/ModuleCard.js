@@ -1,20 +1,20 @@
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SaveIcon from '@mui/icons-material/Save';
-import SyncIcon from '@mui/icons-material/Sync';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/system';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 // API calls
 import { regenerateModuleBody } from 'src/pages/api/Lesson';
+import { useSnackbar } from '../../../components/snackbar';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -27,14 +27,12 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function ModuleCard({ module, updateModule }) {
+export default function ModuleCard({ module, refreshLessonPlan }) {
+  const { enqueueSnackbar } = useSnackbar();
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
-
-  const [text, setText] = useState('');
-
-  const id1 = useRandomId();
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // const update = () => {
   //   console.log('update was called from ModuleCard');
@@ -74,14 +72,25 @@ export default function ModuleCard({ module, updateModule }) {
   };
 
   const handleRegenerateClick = async () => {
-    console.log('I was clicked');
+    enqueueSnackbar('Regenerating module, this may take up to a minute');
+    setIsRegenerating(true);
     const response = await regenerateModuleBody(module.id);
     setText(response.body);
     console.log(response);
+    setIsRegenerating(false);
+    refreshLessonPlan();
   };
 
   const handleDeleteClick = async () => {
     console.log('Handle delete');
+  };
+
+  const handleMoreOptionsClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   // useEffect(() => {
@@ -93,14 +102,34 @@ export default function ModuleCard({ module, updateModule }) {
     <Card>
       <CardHeader
         action={
-          <IconButton aria-label="settings" onClick={isEditing ? handleSaveClick : handleEditClick}>
-            {isEditing ? <SaveIcon /> : <EditIcon />}
-          </IconButton>
+          <>
+            <IconButton aria-label="more options" onClick={handleMoreOptionsClick}>
+              <MoreHorizIcon />
+            </IconButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem onClick={handleRegenerateClick} disabled={isRegenerating}>
+                Regenerate Module
+              </MenuItem>
+              <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+            </Menu>
+          </>
+
+          // <IconButton aria-label="settings" onClick={isEditing ? handleSaveClick : handleEditClick}>
+          //   {isEditing ? <SaveIcon /> : <EditIcon />}
+          // </IconButton>
         }
         title={module.title}
         subheader={module.description}
       />
-      <CardContent>
+      <CardContent onClick={handleExpandClick}>
         <Typography variant="body2" color="text.secondary">
           {isEditing ? (
             <Box>
@@ -139,31 +168,21 @@ export default function ModuleCard({ module, updateModule }) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="regenerate" onClick={handleRegenerateClick}>
+        {/* <IconButton aria-label="regenerate" onClick={handleRegenerateClick}>
           <SyncIcon />
         </IconButton>
         <IconButton aria-label="share" onClick={handleDeleteClick}>
           <DeleteIcon />
-        </IconButton>
+        </IconButton> */}
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show more"
-          data-for={id1}
-          data-tip="Event Organizer"
         >
           <ExpandMoreIcon />
         </ExpandMore>
       </CardActions>
     </Card>
   );
-}
-
-function useRandomId() {
-  const randomId = useMemo(() => {
-    return '_' + Math.random().toString(36).slice(2, 9);
-  }, []);
-
-  return randomId;
 }
