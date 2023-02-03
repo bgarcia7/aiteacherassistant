@@ -13,7 +13,7 @@ const Question1 = ({ handleSelections }) => {
     { value: 'Single Lesson', label: '2' },
   ];
 
-  const [selectedAnswer, setSelectedAnswer] = useState({generation_type: ''});
+  const [selectedAnswer, setSelectedAnswer] = useState({ generation_type: '' });
 
   const handleChange = (event) => {
     setSelectedAnswer({ generation_type: event.target.value });
@@ -33,6 +33,7 @@ const Question1 = ({ handleSelections }) => {
             alignItems={'center'}
             maxWidth={1}
             margin={'0 auto'}
+            key={option.label}
             sx={{
               borderRadius: 1,
               p: 2,
@@ -55,18 +56,7 @@ const Question1 = ({ handleSelections }) => {
               }}
               value={option.value}
               onClick={handleChange}
-            >
-              {option.value}
-              {/* {option.label === '1' ? (
-                <Box component={'span'}>
-                  <CalendarTodayIcon sx={{ fontSize: 80, mt: 4 }} />
-                </Box>
-              ) : (
-                <Box component={'span'}>
-                  <DescriptionIcon sx={{ fontSize: 80, mt: 4 }} />
-                </Box>
-              )} */}
-            </Button>
+            ></Button>
           </Box>
         ))}
       </Box>
