@@ -57,11 +57,15 @@ const Question1 = () => {
               onClick={handleChange}
             >
               {option.value}
-              {option.label === '1' ? (
-                <CalendarTodayIcon sx={{ fontSize: 80, mt: 4 }} />
+              {/* {option.label === '1' ? (
+                <Box component={'span'}>
+                  <CalendarTodayIcon sx={{ fontSize: 80, mt: 4 }} />
+                </Box>
               ) : (
-                <DescriptionIcon sx={{ fontSize: 80, mt: 4 }} />
-              )}
+                <Box component={'span'}>
+                  <DescriptionIcon sx={{ fontSize: 80, mt: 4 }} />
+                </Box>
+              )} */}
             </Button>
           </Box>
         ))}

@@ -9,14 +9,12 @@ import AssessmentQuestion from './AssessmentQuestion';
 const steps = ['Generation Type', 'Select standards', 'Finshing up'];
 
 export default function LinearStepper() {
-  
-
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
   const [selections, setSelections] = useState({});
 
   const handleSelections = (selection) => {
-    // setSelections({ ...selections, ...selection });
+    setSelections({ ...selections, ...selection });
   };
 
   const isStepOptional = (step) => step === 1;
@@ -89,7 +87,9 @@ export default function LinearStepper() {
               justifyContent: 'center',
             }}
           >
-            <Box>{/* <AssessmentQuestion activeStep={activeStep} /> */}</Box>
+            <Box>
+              <AssessmentQuestion activeStep={activeStep} handleSelections={handleSelections} />
+            </Box>
           </Paper>
           <Box sx={{ display: 'flex' }}>
             {activeStep !== steps.length - 1 && (

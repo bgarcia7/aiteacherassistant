@@ -7,8 +7,8 @@ import LoginAuth0 from 'src/sections/auth/LoginAuth0';
 const Question3 = () => {
   return (
     <Box>
-      <LoginAuth0 />
-      {/* <Typography variant="h6" gutterBottom component="div" textAlign={'center'}>
+      {/* <LoginAuth0 /> */}
+      <Typography variant="h6" gutterBottom component="div" textAlign={'center'}>
         Awesome, we&apos;re almost done!
       </Typography>
       <Box display={'flex'} justifyContent={'center'} alignItems={'center'} py={5}>
@@ -22,7 +22,7 @@ const Question3 = () => {
       </Box>
       <Typography variant="h6" gutterBottom component="div" textAlign={'center'}>
         We&apos;re generating your lesson plans in the background. <br /> Click the finish button to login and view your lesson plans. 
-      </Typography> */}
+      </Typography>
     </Box>
   );
 };

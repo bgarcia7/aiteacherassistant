@@ -57,7 +57,7 @@ export function AuthProvider({ children }) {
         clientId: AUTH0_API.clientId || '',
         domain: AUTH0_API.domain || '',
         authorizationParams: {
-          redirect_uri: 'http://localhost:3030/',
+          redirect_uri: window.location.origin,
         },
       });
 

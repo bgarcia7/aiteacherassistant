@@ -32,6 +32,8 @@
     "@hello-pangea/dnd": "^16.1.0",
     "@hookform/resolvers": "^2.9.10",
     "@iconify/react": "^4.0.0",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "@mui/lab": "^5.0.0-alpha.109",
     "@mui/material": "^5.10.15",
     "@mui/system": "^5.10.15",
