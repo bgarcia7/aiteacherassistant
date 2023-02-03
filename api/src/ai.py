@@ -105,10 +105,15 @@ def structure_slide_response(string):
             slide, '|'.join(SLIDE_SENTINELS), REGEX_SLIDES_COMPONENTS)]
         formatted_slide = {}
         for ix, c in enumerate(components):
+<<<<<<< Updated upstream
             # print("Component: ", c, "IX:", ix)
             details = [clean_text(d) for d in parse_string_on_sent(
                 clean_text(c), '|'.join(SLIDE_DETAIL_SENTINELS), REGEX_SLIDES_DETAILS)]
             # if slide component couldn't be broken down into details, we store a single string instead of an array of length = 1. Length > 1 corresponds to "content"
+=======
+            details = [clean_text(d) for d in parse_string_on_sent(clean_text(c), '|'.join(SLIDE_DETAIL_SENTINELS), REGEX_SLIDES_DETAILS)]
+            # if slide component is for text, should be stored as array vs single string
+>>>>>>> Stashed changes
             if SLIDE_SENTINELS[ix].lower() == 'text':
                 formatted_slide[SLIDE_SENTINEL_MAPPING[SLIDE_SENTINELS[ix]]] = details
             else:
@@ -127,8 +132,8 @@ def get_response(prompt, temperature=0.6):
         temperature=temperature,
         max_tokens=3500 - len(prompt.split()),
         top_p=1,
-        frequency_penalty=1,
-        presence_penalty=1
+        frequency_penalty=0,
+        presence_penalty=0
     )
     db.insert_prompt(prompt, response.choices[0].text.strip())
     return response.choices[0].text.strip()
