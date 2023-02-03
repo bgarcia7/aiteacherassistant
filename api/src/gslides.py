@@ -14,7 +14,9 @@ SCOPES = ['https://www.googleapis.com/auth/drive',
           "https://www.googleapis.com/auth/presentations"]
 
 TAAI_FOLDER_ID = "1iIPkhrTMgc6spXSTdIba0xBOGmyN41yU"
+# TAAI_FOLDER_ID_BCG = "1Io__8dCragsggnYhy9CnqTjg_OH7c1mo"
 PRESENTATION_TEMPLATE_ID = "1sWOCz6ETH__y1h9yirCzPUG9QG3s9RM-7HvRZNxJ_3U"
+# PRESENTATION_TEMPLATE_ID = "1HdmiH3xwbPJIi8_VEFbcXgwn6GqXRgteri8GEtDwqNM"
 
 SAMPLE_SLIDES = [{"content":
                   ['In this lecture we discussed four types ofconsumer…withinanecosystemandtheirroleinmaintainingbalance'],

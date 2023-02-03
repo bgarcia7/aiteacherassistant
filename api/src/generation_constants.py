@@ -4,7 +4,7 @@ SLIDE_SENTINELS = ['Title','Text','Image']
 SLIDE_DETAIL_SENTINELS = ['-', '–']
 SLIDE_SENTINEL_MAPPING = {'Title':'title', 'Text':'content', 'Image':'image_description'}
 QUIZ_QUESTION_SENTINELS = [str(x) for x in range(1, 20)]
-QUIZ_OPTION_SENTINELS = ['a', 'b', 'c', 'd', 'e']
+QUIZ_OPTION_SENTINELS = ['a', 'b', 'c', 'd', 'e','f','g','h']
 MIN_LINE_LENGTH=5
 
 REGEX_QUIZ = r'([\.\(\n]({s})[ \.\)])|^\W(({s})[\.\)])|([\.\(\n ]({s}) ?[\.\)])'
