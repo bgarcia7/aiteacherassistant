@@ -7,18 +7,18 @@ import Typography from '@mui/material/Typography';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DescriptionIcon from '@mui/icons-material/Description';
 
-const Question1 = ({ handleSelections, handleNext }) => {
+const Question1 = ({ handleSelections }) => {
   const OPTIONS = [
     { value: 'Entire Curriculum', label: '1' },
     { value: 'Single Lesson', label: '2' },
   ];
 
-  const [selectedAnswer, setSelectedAnswer] = useState('');
+  const [selectedAnswer, setSelectedAnswer] = useState({generation_type: ''});
 
   const handleChange = (event) => {
-    setSelectedAnswer(event.target.value);
+    setSelectedAnswer({ generation_type: event.target.value });
+    handleSelections({ generation_type: event.target.value });
   };
-  console.log('selectedAnswer', selectedAnswer);
   return (
     <Box>
       <Typography variant="h6" gutterBottom component="div" textAlign={'center'}>
@@ -40,7 +40,7 @@ const Question1 = ({ handleSelections, handleNext }) => {
             }}
           >
             <Button
-              variant={selectedAnswer === option.value ? 'contained' : 'outlined'}
+              variant={selectedAnswer.generation_type === option.value ? 'contained' : 'outlined'}
               color="primary"
               size="large"
               sx={{
@@ -70,7 +70,6 @@ const Question1 = ({ handleSelections, handleNext }) => {
           </Box>
         ))}
       </Box>
-      
     </Box>
   );
 };

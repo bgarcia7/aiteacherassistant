@@ -26,6 +26,7 @@ const SelectedHits = ({ selectedHits, onHitRemove }) => {
                 m: 2,
                 listStyle: 'none',
               }}
+              variant="contained"
             >
               <Box
                 sx={{
