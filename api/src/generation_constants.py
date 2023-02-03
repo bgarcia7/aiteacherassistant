@@ -5,6 +5,7 @@ SLIDE_DETAIL_SENTINELS = ['-', '–']
 SLIDE_SENTINEL_MAPPING = {'Title':'title', 'Text':'content', 'Image':'image_description'}
 QUIZ_QUESTION_SENTINELS = [str(x) for x in range(1, 20)]
 QUIZ_OPTION_SENTINELS = ['a', 'b', 'c', 'd', 'e']
+MIN_LINE_LENGTH=5
 
 REGEX_QUIZ = r'([\.\(\n]({s})[ \.\)])|^\W(({s})[\.\)])|([\.\(\n ]({s}) ?[\.\)])'
 REGEX_BASE = r'([\. \(\n]({s})[ \.\)]|({s})[\.\)\n])'
@@ -140,3 +141,12 @@ Text:
 Image: Sample Image Description 2
 ...
 """
+
+SLIDES_TO_SCRIPT_PROMPT = """You're a teacher teaching a class with this learning objective: {learning_objective}. You will use the slides below for your lesson. Create a full script that you'll use along with the slides. The script should include more detail than the slides. Talk in a natural voice, as if you're having a conversation with your students and your slides are just visual aides.
+
+{slides}
+
+Desired Format:
+Slide 1: "This is what I'll say when reviewing slide 1"
+Slide 2: "This is what I'll say when reviewing slide 2"
+Slide 3: "This is what I"ll say when reviewing slide 3", etc, etc"""

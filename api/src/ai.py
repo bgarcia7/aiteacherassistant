@@ -1,9 +1,15 @@
 import openai
+import requests
 import re
+import json
 from generation_constants import *
 
 from pdf import create_pdf, upload_pdf_to_s3
 import db
+
+
+BEAM_AUTH_TOKEN = json.load(open('zappa_settings.json'))[
+    'production']['environment_variables']['BEAM_AUTH_TOKEN']
 
 # ===============[ INTERNAL FUNCTIONS ]=================
 
@@ -20,7 +26,7 @@ def clean_text(string):
 def parse_string_on_sent(string, s, regex_format=REGEX_BASE):
     regex = regex_format.format(s=s)
     parsed = [x for x in re.split(
-        regex, string.strip(), maxsplit=0) if x and len(x.strip()) > 3]
+        regex, string.strip(), maxsplit=0) if x and len(x.strip()) >= MIN_LINE_LENGTH]
     return parsed
 
 
@@ -46,7 +52,6 @@ def prettify_quiz(quiz):
 
 #### LESSON PLAN STRING FORMATTING ####
 # Accepts a string with different subsections seperated by \n
-
 
 def prettify_module(module_body):
     print("MODULE BODY:", module_body)
@@ -94,20 +99,27 @@ def structure_response(string):
     return [structure_module(m) for m in modules]
 
 
+def format_slides(slides):
+    string = ''
+    for ix, s in enumerate(slides):
+        string += 'Slide ' + str(ix+1) + '\n'
+        string += 'Slide Title: ' + s['title'] + '\n'
+        string += 'Slide Content:\n' + '\n-'.join(s.get('content', [''])) + '\n'
+        string += 'Slide Image Description: ' + s.get('image_description', '') + '\n'
+        string +='\n'
+    return string
+
+
 def structure_slide_response(string):
     formatted_slides = []
     slides = [clean_text(x) for x in parse_string_on_sent(string, '|'.join(
         ['Slide ?' + str(ix) for ix in range(1, 20)])) if x and ('slide' not in x.lower() and len(x) > 2*len('slide'))]
-    # print(slides)
     for slide in slides:
-        # print(slide)
         components = [clean_text(s) for s in parse_string_on_sent(
             slide, '|'.join(SLIDE_SENTINELS), REGEX_SLIDES_COMPONENTS)]
         formatted_slide = {}
         for ix, c in enumerate(components):
-            # print("Component: ", c, "IX:", ix)
-            details = [clean_text(d) for d in parse_string_on_sent(
-                clean_text(c), '|'.join(SLIDE_DETAIL_SENTINELS), REGEX_SLIDES_DETAILS)]
+            details = [clean_text(d) for d in parse_string_on_sent(clean_text(c), '|'.join(SLIDE_DETAIL_SENTINELS), REGEX_SLIDES_DETAILS)]
             # if slide component couldn't be broken down into details, we store a single string instead of an array of length = 1. Length > 1 corresponds to "content"
             if SLIDE_SENTINELS[ix].lower() == 'text':
                 formatted_slide[SLIDE_SENTINEL_MAPPING[SLIDE_SENTINELS[ix]]] = details
@@ -117,7 +129,7 @@ def structure_slide_response(string):
     return formatted_slides
 
 
-#### OPEN AI API CALLS ####
+#### API CALLS ####
 def get_response(prompt, temperature=0.6):
     print("PROMPT:", prompt)
     response = openai.Completion.create(
@@ -132,6 +144,31 @@ def get_response(prompt, temperature=0.6):
     )
     db.insert_prompt(prompt, response.choices[0].text.strip())
     return response.choices[0].text.strip()
+
+def queue_text_to_speech(text):
+    url = "https://beam.slai.io/27j54"
+    headers = {
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate',
+        'Authorization': 'Basic ODZjMzk5MjdiNTQ4OTdlMzNkZGNhYWZhMmZmODY5YzQ6YmNhNGFmZGUwZTVjNmM1NjczYWZhMmYwOWY2MjRhZTU=',
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/json'
+    }
+
+    data = {
+        'text': text,
+        'file_name': 'audio.wav'
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    if response.status_code == 200:
+        print('Queued text-to-speech transformation')
+        task_id = response.json()['task_id']
+    else:
+        print('Failed to queue text-to-speech transformation')
+        task_id = None
+
+    return task_id
 
 
 # ===============[ EXTERNAL FUNCTIONS ]=================
@@ -177,10 +214,8 @@ def generate_quiz(lesson_plan):
     print("RAW Response:\n", response)
     quiz = structure_quiz_response(response)
 
-    pdf_url = "https://aiteacherassistant.s3.us-west-2.amazonaws.com/Introduction_to_the_civil_war.pdf"
-    # pdf_name = create_pdf(lesson_plan['title'], prettify_quiz(quiz))
-    # pdf_url = upload_pdf_to_s3(pdf_name)
-
+    pdf_name = create_pdf(lesson_plan['title'], prettify_quiz(quiz))
+    pdf_url = upload_pdf_to_s3(pdf_name)
     return {'content': quiz, 'pdf_url': pdf_url}
 
 
@@ -193,3 +228,11 @@ def generate_slides(lesson_plan):
     slides = structure_slide_response(response)
     print("SLIDESSSSSS:\n", slides)
     return slides
+
+def generate_audio(lesson_objective, slide_deck):
+    script = get_response(SLIDES_TO_SCRIPT_PROMPT.format(learning_objective=lesson_objective, slides=format_slides(slide_deck['slides'])))
+    parsed_script = [clean_text(x) for x in parse_string_on_sent(script, '|'.join(['[Ss]lide ?' + str(ix) for ix in range(1, 20)]), '{s}')]
+    clean_script = '\n'.join(parsed_script)
+    audio_task_id = queue_text_to_speech(clean_script)
+    
+    return parsed_script, audio_task_id

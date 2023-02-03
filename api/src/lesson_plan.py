@@ -1,6 +1,4 @@
 from flask import Blueprint, request, jsonify
-
-
 import db
 import ai
 import gslides
