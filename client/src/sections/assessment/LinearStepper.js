@@ -65,10 +65,15 @@ export default function LinearStepper() {
     // }, {});
     // send answers to API
     const response = await createLessonPlan(answers);
+    // set response to local storage
+    const id = response.lesson_plan.id;
+    localStorage.setItem('lessonPlanId', JSON.stringify(response.lesson_plan.id));
+
+    console.log(localStorage.getItem('lessonPlanId'), 'localStorage.getItem("lessonPlan")');
     setLoading(false);
 
     // redirect to login screen
-    window.location.href = '/dashboard';
+    window.location.href = `/dashboard/lesson/${id}`;
   };
 
   return (
