@@ -88,26 +88,14 @@ export default function LinearStepper() {
             }}
           >
             <Box>
-              <AssessmentQuestion activeStep={activeStep} handleSelections={handleSelections} />
+              <AssessmentQuestion
+                activeStep={activeStep}
+                handleSelections={handleSelections}
+                handleNext={handleNext}
+                handleBack={handleBack}
+              />
             </Box>
           </Paper>
-          <Box sx={{ display: 'flex' }}>
-            {activeStep !== steps.length - 1 && (
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-            )}
-            <Box sx={{ flexGrow: 1 }} />
-
-            <Button variant="contained" onClick={handleNext}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button>
-          </Box>
         </>
       )}
     </>

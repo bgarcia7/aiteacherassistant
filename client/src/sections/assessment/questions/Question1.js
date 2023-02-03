@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DescriptionIcon from '@mui/icons-material/Description';
 
-const Question1 = () => {
+const Question1 = ({ handleSelections, handleNext }) => {
   const OPTIONS = [
     { value: 'Entire Curriculum', label: '1' },
     { value: 'Single Lesson', label: '2' },
@@ -69,6 +69,18 @@ const Question1 = () => {
             </Button>
           </Box>
         ))}
+      </Box>
+      <Box sx={{ display: 'flex' }}>
+        {/* !== steps.length - 1 && (
+          <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+            Back
+          </Button>
+        )} */}
+        <Box sx={{ flexGrow: 1 }} />
+
+        <Button variant="contained" onClick={handleNext}>
+          Next
+        </Button>
       </Box>
     </Box>
   );
