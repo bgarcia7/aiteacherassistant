@@ -116,8 +116,7 @@ def format_slides(slides):
 
 def structure_slide_response(string):
     formatted_slides = []
-    slides = [clean_text(x) for x in parse_string_on_sent(string, '|'.join(
-        ['Slide ?' + str(ix) for ix in range(1, 20)])) if x and ('slide' not in x.lower() and len(x) > 2*len('slide'))]
+    slides = [clean_text(x) for x in parse_string_on_sent(response, '|'.join(['Slide ?' + str(ix) for ix in range(1, 20)]), '{s}')]
     for slide in slides:
         components = [clean_text(s) for s in parse_string_on_sent(
             slide, '|'.join(SLIDE_SENTINELS), REGEX_SLIDES_COMPONENTS)]
