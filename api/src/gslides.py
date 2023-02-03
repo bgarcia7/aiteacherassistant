@@ -68,7 +68,7 @@ def createGoogleSlides(title, slides):
             bullet_points = "\n".join([
                 f"- {line}" for line in slide.get("content")])
             createSlide(slidesAPI, presentation_copy_id,
-                        slide.get("title"), bullet_points, "https://www.nature.com/scitable/content/ne0000/ne0000/ne0000/ne0000/96519252/Hui_figure1_v001-01_1_2.jpg")
+                        slide.get("title"), bullet_points, slide.get("image_url"))
             # createSlide(slidesAPI, presentation_copy_id, slide.get("title"), slide.get("content"), slide.get("image_description"))
 
         # createdSlides = getPresentationSlides(slidesAPI, presentation_copy_id)

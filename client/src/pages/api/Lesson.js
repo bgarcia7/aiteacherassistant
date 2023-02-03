@@ -76,4 +76,16 @@ export const generateSlides = async (lesson_plan_id) => {
     throw new Error(response.data.message);
   }
   return response.data;
+
+  // const slide_deck = response.data;
+  // console.log('Step 1/2 Generating Slides Complete: ', slide_deck);
+
+  // const response2 = await axios.post(`${API_URL}slide_deck/${slide_deck.id}google`, {
+  //   lesson_plan_id,
+  // });
+  // if (response2.status !== 200) {
+  //   throw new Error(response2.data.message);
+  // }
+
+  // return response2.data;
 };

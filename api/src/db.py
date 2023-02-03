@@ -74,8 +74,8 @@ class SlideDeck(base):
     __tablename__ = 'slide_decks'
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     drive_url = Column(String)
-    audio_task_id=Column(String)
-    audio_script=Column(JSON)
+    audio_task_id = Column(String)
+    audio_script = Column(JSON)
     lesson_plan_id = Column(UUID, ForeignKey("lesson_plans.id"))
     lesson_plan = relationship("LessonPlan", back_populates="slide_decks")
     slides = relationship("Slide", back_populates="slide_deck")
@@ -106,6 +106,7 @@ class Prompt(base):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 base.metadata.create_all(engine)
 
@@ -278,6 +279,21 @@ def insert_slide_deck(lesson_plan_id, slides, drive_url=None):
         session.refresh(slide_deck)
         return slide_deck.as_dict()
 
+
+def update_slide_deck(slide_deck_id, new_slide_deck):
+    with Session() as session:
+        slide_deck = session.query(SlideDeck).filter_by(
+            id=slide_deck_id).first()
+
+        update_fields = ['drive_url']
+        for field in update_fields:
+            if new_slide_deck.get(field):
+                setattr(slide_deck, field, new_slide_deck[field])
+
+        session.commit()
+        return slide_deck.as_dict()
+
+
 def insert_audio_data(slide_deck_id, audio_task_id, audio_script):
     with Session() as session:
         slide_deck = session.query(SlideDeck).filter_by(
@@ -285,6 +301,7 @@ def insert_audio_data(slide_deck_id, audio_task_id, audio_script):
         setattr(slide_deck, 'audio_task_id', audio_task_id)
         setattr(slide_deck, 'audio_script', audio_script)
         session.commit()
+
 
 def insert_prompt(prompt, response):
     with Session() as session:

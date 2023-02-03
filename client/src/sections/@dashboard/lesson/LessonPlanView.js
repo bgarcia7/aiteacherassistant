@@ -16,6 +16,7 @@ import {
 // components
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PropTypes from 'prop-types';
+import { useAuthContext } from 'src/auth/useAuthContext';
 import LoadingIcon from 'src/components/loading-screen/LoadingIcon';
 import { useSettingsContext } from 'src/components/settings';
 import { generateQuiz, generateSlides, getLessonPlan } from 'src/pages/api/Lesson';
@@ -31,6 +32,7 @@ LessonPlanView.propTypes = {
 
 export default function LessonPlanView(props) {
   const { enqueueSnackbar } = useSnackbar();
+  const { user } = useAuthContext();
   const dispatch = useDispatch();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -47,6 +49,10 @@ export default function LessonPlanView(props) {
     setModules(newLessonPlan.modules);
     setLoading(false);
   };
+
+  useEffect(() => {
+    console.log('USERS', user);
+  }, []);
 
   useEffect(() => {
     refreshLessonPlan();
