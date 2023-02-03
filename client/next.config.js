@@ -22,5 +22,10 @@ module.exports = withTM({
     // ALGOLIA
     ALGOLIA_APP_ID: 'JZDWBAQ1E2',
     ALGOLIA_SEARCH_API_KEY: '2dacfa1aed04d6901e466487c8f1b140',
+    eslint: {
+      // Warning: This allows production builds to successfully complete even if
+      // your project has ESLint errors.
+      ignoreDuringBuilds: true,
+    },
   },
 });

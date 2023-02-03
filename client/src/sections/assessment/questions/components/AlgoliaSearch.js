@@ -11,7 +11,7 @@ const SelectedHits = ({ selectedHits, onHitRemove }) => {
   return (
     <div>
       {selectedHits.map((hit) => (
-        <Grid container>
+        <Grid container key={hit.objectID}>
           <Grid item xs={10}>
             <Button
               sx={{
