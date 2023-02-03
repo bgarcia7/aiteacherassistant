@@ -76,6 +76,7 @@ class SlideDeck(base):
     drive_url = Column(String)
     audio_task_id = Column(String)
     audio_script = Column(JSON)
+    audio_link = Column(String)
     lesson_plan_id = Column(UUID, ForeignKey("lesson_plans.id"))
     lesson_plan = relationship("LessonPlan", back_populates="slide_decks")
     slides = relationship("Slide", back_populates="slide_deck")
@@ -285,7 +286,7 @@ def update_slide_deck(slide_deck_id, new_slide_deck):
         slide_deck = session.query(SlideDeck).filter_by(
             id=slide_deck_id).first()
 
-        update_fields = ['drive_url']
+        update_fields = ['drive_url', 'audio_link']
         for field in update_fields:
             if new_slide_deck.get(field):
                 setattr(slide_deck, field, new_slide_deck[field])

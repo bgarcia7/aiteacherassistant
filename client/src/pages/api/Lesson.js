@@ -106,3 +106,14 @@ export const checkAudio = async (audio_task_id) => {
   }
   return response.data;
 };
+
+export const saveAudioFileLink = async (slide_deck_id, audio_link) => {
+  const response = await axios.post(`${API_URL}slide_deck/${slide_deck_id}/edit`, {
+    audio_link,
+  });
+  if (response.status !== 200) {
+    throw new Error(response.data.message);
+  }
+
+  return response.data;
+};

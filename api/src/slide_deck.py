@@ -57,10 +57,28 @@ def create_slides():
     return jsonify({"slides": expanded_slide_deck})
 
 
+@slide_deck_blueprint.route('/<slide_deck_id>/edit', methods=['POST'])
+def update_slide_deck(slide_deck_id):
+    print("Hit update")
+    data = request.get_json()
+
+    audio_link = data.get('audio_link')
+    if not slide_deck_id:
+        return jsonify({"error": "Missing slide_deck_id"}), 400
+
+    if not audio_link:
+        return jsonify({"error": "Missing audio_link"}), 400
+
+    print("Updating slide deck with", audio_link)
+    updated_slide_deck = db.update_slide_deck(
+        slide_deck_id, {"audio_link": audio_link})
+    return jsonify(updated_slide_deck), 200
+
+
 @slide_deck_blueprint.route('/audio', methods=['POST'])
 def create_slides_audio():
     data = request.get_json()
-    print("Got data", data)
+    print("AAA Got data", data)
     lesson_plan_id = data.get('lesson_plan_id')
     if not lesson_plan_id:
         return jsonify({"error": "Missing lesson_plan_id"}), 400
@@ -70,14 +88,13 @@ def create_slides_audio():
     if not slide_deck:
         return jsonify({"error": "Missing slides for lesson_plan_id: {pid}".format(pid=lesson_plan_id)}), 400
 
+    print("AAA GENERATING AUDIO", lesson_plan['description'], slide_deck)
     script, audio_task_id = ai.generate_audio(
         lesson_plan['description'], slide_deck)
-    print("INSERTING AUDIO DATA", slide_deck['id'], audio_task_id, script)
+    print("AAA INSERTING AUDIO DATA", slide_deck['id'], audio_task_id, script)
     db.insert_audio_data(slide_deck['id'], audio_task_id, script)
 
     return jsonify({'audio_task_id': audio_task_id, 'script': script}), 200
-
-# "RUNNING" or "COMPLETE"
 
 
 @slide_deck_blueprint.route('/audio_check', methods=['POST'])

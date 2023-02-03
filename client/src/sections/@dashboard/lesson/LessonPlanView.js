@@ -25,6 +25,7 @@ import {
   generateQuiz,
   generateSlides,
   getLessonPlan,
+  saveAudioFileLink,
 } from 'src/pages/api/Lesson';
 import { useSnackbar } from '../../../components/snackbar';
 import { useDispatch } from '../../../redux/store';
@@ -48,7 +49,6 @@ export default function LessonPlanView(props) {
   const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
   const [isGeneratingAudio, setIsGeneratingAudio] = useState(null);
   const { themeStretch } = useSettingsContext();
-  const [audioFileLink, setAudioFileLink] = useState(null);
 
   const refreshLessonPlan = async () => {
     const newLessonPlan = await getLessonPlan(props.id);
@@ -122,12 +122,19 @@ export default function LessonPlanView(props) {
       const interval = setInterval(async () => {
         const audio = await checkAudio(isGeneratingAudio);
         console.log('Checking audio', audio, audio.outputs.audio);
+        //"RUNNING" or "COMPLETE"
         if (audio.status === 'COMPLETE') {
           setIsGeneratingAudio(false);
           console.log('Successfully generated audio');
           clearInterval(interval);
+          console.log(
+            'Saving audio file link',
+            audio.outputs.audio,
+            'to',
+            lessonPlan.slide_deck.id
+          );
+          await saveAudioFileLink(lessonPlan.slide_deck.id, audio.outputs.audio);
           await refreshLessonPlan();
-          setAudioFileLink(audio.outputs.audio);
         }
       }, 5000);
 
@@ -246,8 +253,11 @@ export default function LessonPlanView(props) {
                 position={0}
                 showControls
               />
-              {audioFileLink && (
-                <Button variant="contained" onClick={() => window.open(audioFileLink, '_blank')}>
+              {lessonPlan.slide_deck && lessonPlan.slide_deck.audio_link && (
+                <Button
+                  variant="contained"
+                  onClick={() => window.open(lessonPlan.slide_deck.audio_link, '_blank')}
+                >
                   Open Audio File
                 </Button>
               )}
