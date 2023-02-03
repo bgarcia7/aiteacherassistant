@@ -53,6 +53,7 @@ def prettify_quiz(quiz):
 #### LESSON PLAN STRING FORMATTING ####
 # Accepts a string with different subsections seperated by \n
 
+
 def prettify_module(module_body):
     return module_body
     # print("MODULE BODY:", module_body)
@@ -109,21 +110,25 @@ def format_slides(slides):
     for ix, s in enumerate(slides):
         string += 'Slide ' + str(ix+1) + '\n'
         string += 'Slide Title: ' + s['title'] + '\n'
-        string += 'Slide Content:\n' + '\n-'.join(s.get('content', [''])) + '\n'
-        string += 'Slide Image Description: ' + s.get('image_description', '') + '\n'
-        string +='\n'
+        string += 'Slide Content:\n' + \
+            '\n-'.join(s.get('content', [''])) + '\n'
+        string += 'Slide Image Description: ' + \
+            s.get('image_description', '') + '\n'
+        string += '\n'
     return string
 
 
 def structure_slide_response(string):
     formatted_slides = []
-    slides = [clean_text(x) for x in parse_string_on_sent(string, '|'.join(['Slide ?' + str(ix) for ix in range(1, 20)]), '{s}')]
+    slides = [clean_text(x) for x in parse_string_on_sent(
+        string, '|'.join(['Slide ?' + str(ix) for ix in range(1, 20)]), '{s}')]
     for slide in slides:
         components = [clean_text(s) for s in parse_string_on_sent(
             slide, '|'.join(SLIDE_SENTINELS), REGEX_SLIDES_COMPONENTS)]
         formatted_slide = {}
         for ix, c in enumerate(components):
-            details = [clean_text(d) for d in parse_string_on_sent(clean_text(c), '|'.join(SLIDE_DETAIL_SENTINELS), REGEX_SLIDES_DETAILS)]
+            details = [clean_text(d) for d in parse_string_on_sent(
+                clean_text(c), '|'.join(SLIDE_DETAIL_SENTINELS), REGEX_SLIDES_DETAILS)]
             # if slide component couldn't be broken down into details, we store a single string instead of an array of length = 1. Length > 1 corresponds to "content"
             if SLIDE_SENTINELS[ix].lower() == 'text':
                 formatted_slide[SLIDE_SENTINEL_MAPPING[SLIDE_SENTINELS[ix]]] = details
@@ -148,6 +153,7 @@ def get_response(prompt, temperature=0.6):
     )
     db.insert_prompt(prompt, response.choices[0].text.strip())
     return response.choices[0].text.strip()
+
 
 def queue_text_to_speech(text):
     url = "https://beam.slai.io/27j54"
@@ -233,10 +239,13 @@ def generate_slides(lesson_plan):
     print("SLIDESSSSSS:\n", slides)
     return slides
 
+
 def generate_audio(lesson_objective, slide_deck):
-    script = get_response(SLIDES_TO_SCRIPT_PROMPT.format(learning_objective=lesson_objective, slides=format_slides(slide_deck['slides'])))
-    parsed_script = [clean_text(x) for x in parse_string_on_sent(script, '|'.join(['[Ss]lide ?' + str(ix) for ix in range(1, 20)]), '{s}')]
+    script = get_response(SLIDES_TO_SCRIPT_PROMPT.format(
+        learning_objective=lesson_objective, slides=format_slides(slide_deck['slides'])))
+    parsed_script = [clean_text(x) for x in parse_string_on_sent(
+        script, '|'.join(['[Ss]lide ?' + str(ix) for ix in range(1, 20)]), '{s}')]
     clean_script = '\n'.join(parsed_script)
     audio_task_id = queue_text_to_speech(clean_script)
-    
+
     return parsed_script, audio_task_id

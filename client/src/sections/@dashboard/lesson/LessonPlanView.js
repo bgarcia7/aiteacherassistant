@@ -19,7 +19,13 @@ import PropTypes from 'prop-types';
 import { useAuthContext } from 'src/auth/useAuthContext';
 import LoadingIcon from 'src/components/loading-screen/LoadingIcon';
 import { useSettingsContext } from 'src/components/settings';
-import { generateQuiz, generateSlides, getLessonPlan } from 'src/pages/api/Lesson';
+import {
+  checkAudio,
+  generateAudio,
+  generateQuiz,
+  generateSlides,
+  getLessonPlan,
+} from 'src/pages/api/Lesson';
 import { useSnackbar } from '../../../components/snackbar';
 import { useDispatch } from '../../../redux/store';
 import { ModuleCard } from '../components';
@@ -40,7 +46,9 @@ export default function LessonPlanView(props) {
   const [modules, setModules] = useState([]);
   const [isGeneratingSlides, setIsGeneratingSlides] = useState(false);
   const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
+  const [isGeneratingAudio, setIsGeneratingAudio] = useState(null);
   const { themeStretch } = useSettingsContext();
+  const [audioFileLink, setAudioFileLink] = useState(null);
 
   const refreshLessonPlan = async () => {
     const newLessonPlan = await getLessonPlan(props.id);
@@ -97,7 +105,35 @@ export default function LessonPlanView(props) {
     }
 
     setIsGeneratingSlides(false);
+
+    try {
+      // enqueueSnackbar('Generating your audio, it takes around a minute');
+      const audioTask = await generateAudio(lessonPlan.id);
+      console.log('Generated audioTask', audioTask);
+      setIsGeneratingAudio(audioTask.audio_task_id);
+    } catch (err) {
+      console.log('ERRR', err);
+      enqueueSnackbar('Error Generating Audio', { variant: 'error' });
+    }
   };
+
+  useEffect(() => {
+    if (isGeneratingAudio) {
+      const interval = setInterval(async () => {
+        const audio = await checkAudio(isGeneratingAudio);
+        console.log('Checking audio', audio, audio.outputs.audio);
+        if (audio.status === 'COMPLETE') {
+          setIsGeneratingAudio(false);
+          console.log('Successfully generated audio');
+          clearInterval(interval);
+          await refreshLessonPlan();
+          setAudioFileLink(audio.outputs.audio);
+        }
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isGeneratingAudio]);
 
   const handleDownloadQuiz = async () => {
     if (!lessonPlan.quiz) {
@@ -210,6 +246,11 @@ export default function LessonPlanView(props) {
                 position={0}
                 showControls
               />
+              {audioFileLink && (
+                <Button variant="contained" onClick={() => window.open(audioFileLink, '_blank')}>
+                  Open Audio File
+                </Button>
+              )}
             </div>
           ) : (
             <Button

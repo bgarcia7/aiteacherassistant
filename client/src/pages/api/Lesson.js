@@ -89,3 +89,20 @@ export const generateSlides = async (lesson_plan_id) => {
 
   // return response2.data;
 };
+
+export const generateAudio = async (lesson_plan_id) => {
+  console.log('GENERATING AUDIO FOR LESSON PLAN: ', lesson_plan_id);
+  const response = await axios.post(`${API_URL}slide_deck/audio`, { lesson_plan_id });
+  if (response.status !== 200) {
+    throw new Error(response.data.message);
+  }
+  return response.data;
+};
+
+export const checkAudio = async (audio_task_id) => {
+  const response = await axios.post(`${API_URL}slide_deck/audio_check`, { audio_task_id });
+  if (response.status !== 200) {
+    throw new Error(response.data.message);
+  }
+  return response.data;
+};

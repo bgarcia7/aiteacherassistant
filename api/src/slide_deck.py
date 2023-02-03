@@ -5,6 +5,11 @@ import db
 import ai
 import gslides
 import requests
+import json
+
+
+BEAM_AUTH_TOKEN = json.load(open('zappa_settings.json'))[
+    'production']['environment_variables']['BEAM_AUTH_TOKEN']
 
 slide_deck_blueprint = Blueprint(
     "slide_deck_blueprint", __name__
@@ -72,10 +77,47 @@ def create_slides_audio():
 
     return jsonify({'audio_task_id': audio_task_id, 'script': script}), 200
 
+# "RUNNING" or "COMPLETE"
+
+
+@slide_deck_blueprint.route('/audio_check', methods=['POST'])
+def check_slides_audio():
+    data = request.get_json()
+
+    audio_task_id = data.get('audio_task_id')
+    if not audio_task_id:
+        return jsonify({"error": "Missing audio_task_id"}), 400
+    taskState = getBeamTaskState(audio_task_id)
+    return jsonify(taskState), 200
+
 
 def getGoogleImage(image_description):
     payload = {"query": image_description}
     r = requests.post(
         'http://ec2-35-86-252-232.us-west-2.compute.amazonaws.com/get_image', json=payload)
+    if r.status_code == 200:
+        myResp = r.json()
+        return myResp['image_url']
+    else:
+        return None
+
+
+def getBeamTaskState(task_id):
+    url = "https://api.slai.io/beam/task"
+
+    headers = {
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate',
+        'Authorization': f'Basic {BEAM_AUTH_TOKEN}',
+        'Content-Type': 'application/json',
+    }
+
+    data = {
+        "action": "retrieve",
+        "task_id": task_id
+    }
+
+    r = requests.post(url, headers=headers, json=data)
     myResp = r.json()
-    return myResp['image_url']
+    print("Beam Task State", myResp)
+    return myResp
