@@ -15,6 +15,7 @@ const CustomHit = ({ hit, onHitSelect }) => {
         borderRadius: 1,
         m: 2,
         listStyle: 'none',
+        minWidth: 1,
       }}
       onClick={() => onHitSelect(hit)}
     >

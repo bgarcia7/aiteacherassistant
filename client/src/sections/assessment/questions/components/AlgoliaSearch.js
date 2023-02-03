@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-dom';
 import CustomHits from './CustomHits';
+import CustomSearchBox from './CustomSearchBox';
 import algoliasearch from 'algoliasearch';
 import { Typography, Box, Button, Divider, Grid, IconButton } from '@mui/material';
 import { ALGOLIA_API } from '../../../../config-global';
@@ -84,7 +85,7 @@ const AlgoliaSearch = () => {
 
   return (
     <InstantSearch searchClient={searchClient} indexName="standards">
-      <SearchBox />
+      <CustomSearchBox />
       {selectedHits.length > 0 && (
         <SelectedHits selectedHits={selectedHits} onHitRemove={onHitRemove} />
       )}

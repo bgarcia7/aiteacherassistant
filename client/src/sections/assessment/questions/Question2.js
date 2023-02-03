@@ -65,12 +65,11 @@ const Question2 = () => {
                 OR
               </Typography>
             </Divider>
-            <RHFTextField name="search" label="Search for any national learning objective or select from the suggestions below" />
           </Stack>
         </FormProvider>
-        <Stack spacing={3} sx={{ px: 3 }}>
+        <Box py={3} px={3}>
           <AlgoliaSearch />
-        </Stack>
+        </Box>
       </Box>
     </Box>
   );
