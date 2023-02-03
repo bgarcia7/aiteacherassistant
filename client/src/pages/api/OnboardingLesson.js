@@ -3,7 +3,10 @@ import axios from 'axios';
 const API_URL = 'https://vjj6xrqlv1.execute-api.us-west-2.amazonaws.com/production/';
 
 export const createLessonPlan = async (lessonPlan) => {
-  console.log('Sending lesson plan to server: ', lessonPlan);
+  console.log('Sending lesson plan to server: ', lessonPlan[1].answers);
+  const { learning_objective, title } = lessonPlan[1].answers;
+  console.log('learning_objective: ', learning_objective);
+  console.log('title: ', title);
   //   const response = await axios.post(`${API_URL}lesson_plan/`, lessonPlan, {
   //     headers: {
   //       'Content-Type': 'application/json',
@@ -17,5 +20,5 @@ export const createLessonPlan = async (lessonPlan) => {
   //     throw new Error(response.data.message);
   //   }
   //   console.log('response', response.data);
-  return 'success';
+  return 'succesddds';
 };

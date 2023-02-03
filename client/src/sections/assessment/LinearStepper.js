@@ -27,7 +27,7 @@ export default function LinearStepper() {
       ...allAnswers,
       {
         question: activeStep,
-        answer: answers,
+        answers,
       },
     ]);
     // reset questionAnswers
@@ -59,13 +59,13 @@ export default function LinearStepper() {
   const handleFinish = async (answers) => {
     setLoading(true);
     // convert allAnswers to object
-    const objectAnswers = answers.reduce((acc, curr) => {
-      acc[curr.question] = curr.answer;
-      return acc;
-    }, {});
-    console.log('generating lesson with this: ', objectAnswers);
+    // const objectAnswers = answers.reduce((acc, curr) => {
+    //   acc[curr.question] = curr.answer;
+    //   return acc;
+    // }, {});
+    console.log('answers: ', answers)
     // send answers to API
-    const response = await createLessonPlan(objectAnswers);
+    const response = await createLessonPlan(answers);
     console.log('response: ', response);
     setLoading(false);
   };
