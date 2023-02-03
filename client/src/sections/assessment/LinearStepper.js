@@ -63,11 +63,12 @@ export default function LinearStepper() {
     //   acc[curr.question] = curr.answer;
     //   return acc;
     // }, {});
-    console.log('answers: ', answers)
     // send answers to API
     const response = await createLessonPlan(answers);
-    console.log('response: ', response);
     setLoading(false);
+
+    // redirect to login screen
+    window.location.href = '/dashboard';
   };
 
   return (
