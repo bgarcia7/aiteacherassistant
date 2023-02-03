@@ -191,7 +191,7 @@ export default function LessonPlanView(props) {
                 height="640px"
                 slidesLink={lessonPlan.slide_deck.drive_url}
                 slideDuration={5}
-                position={1}
+                position={0}
                 showControls
                 loop
               />
