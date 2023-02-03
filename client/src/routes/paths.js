@@ -12,6 +12,7 @@ const ROOTS_DASHBOARD = '/dashboard';
 
 export const PATH_AUTH = {
   root: ROOTS_AUTH,
+  login: path(ROOTS_DASHBOARD, '/app'),
   login: path(ROOTS_AUTH, '/login'),
   register: path(ROOTS_AUTH, '/register'),
   loginUnprotected: path(ROOTS_AUTH, '/login-unprotected'),
@@ -25,6 +26,7 @@ export const PATH_PAGE = {
   comingSoon: '/coming-soon',
   maintenance: '/maintenance',
   pricing: '/pricing',
+  assessment: '/assessment',
   payment: '/payment',
   about: '/about-us',
   contact: '/contact-us',
