@@ -56,7 +56,11 @@ def prettify_quiz(quiz):
 def prettify_module(module_body):
     print("MODULE BODY:", module_body)
     print([(ix2, s) for ix2, s in enumerate(module_body.split("\n"))])
-    return '\n'.join([SUBSECTION_SENTINELS[ix2] + '. ' + s for ix2, s in enumerate(module_body.split("\n"))])
+    # TODO: rework modules into json to support higher order structure
+    try:
+        return '\n'.join([SUBSECTION_SENTINELS[ix2] + '. ' + s for ix2, s in enumerate(module_body.split("\n"))])
+    except:
+        return '\n • '.join(module_body.split("\n"))
 
 
 def prettify_lesson_plan(lesson_plan):
