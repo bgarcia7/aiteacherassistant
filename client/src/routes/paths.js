@@ -3,6 +3,7 @@
 function path(root, sublink) {
   return `${root}${sublink}`;
 }
+// small change for push
 
 const ROOTS_AUTH = '/auth';
 const ROOTS_DASHBOARD = '/dashboard';
