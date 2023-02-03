@@ -35,9 +35,6 @@ export default function AuthGuard({ children }) {
   }
 
   if (!isAuthenticated) {
-    if (pathname !== requestedLocation) {
-      setRequestedLocation(pathname);
-    }
     return <Login />;
   }
 

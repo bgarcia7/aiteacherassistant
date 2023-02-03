@@ -11,6 +11,11 @@ export const AUTH0_API = {
   domain: process.env.AUTH0_DOMAIN,
 };
 
+export const ALGOLIA_API = {
+  appId: process.env.ALGOLIA_APP_ID,
+  apiKey: process.env.ALGOLIA_API_KEY,
+};
+
 export const MAP_API = process.env.MAPBOX_API;
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
