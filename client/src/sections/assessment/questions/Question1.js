@@ -13,11 +13,11 @@ const Question1 = ({ handleSelections }) => {
     { value: 'Single Lesson', label: '2' },
   ];
 
-  const [selectedAnswer, setSelectedAnswer] = useState('');
+  const [selectedAnswer, setSelectedAnswer] = useState({generation_type: ''});
 
   const handleChange = (event) => {
-    setSelectedAnswer(event.target.value);
-    handleSelections(event.target.value);
+    setSelectedAnswer({ generation_type: event.target.value });
+    handleSelections({ generation_type: event.target.value });
   };
   return (
     <Box>
@@ -40,7 +40,7 @@ const Question1 = ({ handleSelections }) => {
             }}
           >
             <Button
-              variant={selectedAnswer === option.value ? 'contained' : 'outlined'}
+              variant={selectedAnswer.generation_type === option.value ? 'contained' : 'outlined'}
               color="primary"
               size="large"
               sx={{

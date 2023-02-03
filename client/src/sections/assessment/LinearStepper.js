@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Box, Step, Paper, Button, Stepper, StepLabel, Typography } from '@mui/material';
 import LoadingScreen from 'src/components/loading-screen/LoadingScreen';
-import { useAuthContext } from 'src/auth/useAuthContext';
 // Question pages
 import AssessmentQuestion from './AssessmentQuestion';
+// Generate lesson plan API
+import { createLessonPlan } from 'src/pages/api/OnboardingLesson';
 // ----------------------------------------------------------------------
 
 const steps = ['Generation Type', 'Select standards', 'Finshing up'];
@@ -13,6 +14,7 @@ export default function LinearStepper() {
   const [skipped, setSkipped] = useState(new Set());
   const [allAnswers, setAllAnswers] = useState([]);
   const [questionAnswers, setQuestionAnswers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // stoe answers in state for each individual question
   const handleSelections = (answers) => {
@@ -46,12 +48,7 @@ export default function LinearStepper() {
 
     // REQUEST TO GENERATE LESSON FROM API WITH ANSWERS -> DIRECT USER TO LOGIN SCREEN WHILE GENERATING TAKES PLACE
     if (activeStep === steps.length - 1) {
-      // convert allAnswers to object
-      const answers = allAnswers.reduce((acc, curr) => {
-        acc[curr.question] = curr.answer;
-        return acc;
-      }, {});
-      console.log('generating lesson with this: ', answers);
+      handleFinish(allAnswers);
     }
   };
 
@@ -59,22 +56,19 @@ export default function LinearStepper() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  // const handleSkip = () => {
-  //   if (!isStepOptional(activeStep)) {
-  //     throw new Error("You can't skip a step that isn't optional.");
-  //   }
-
-  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  //   setSkipped((prevSkipped) => {
-  //     const newSkipped = new Set(prevSkipped.values());
-  //     newSkipped.add(activeStep);
-  //     return newSkipped;
-  //   });
-  // };
-
-  // const handleReset = () => {
-  //   setActiveStep(0);
-  // };
+  const handleFinish = async (answers) => {
+    setLoading(true);
+    // convert allAnswers to object
+    const objectAnswers = answers.reduce((acc, curr) => {
+      acc[curr.question] = curr.answer;
+      return acc;
+    }, {});
+    console.log('generating lesson with this: ', objectAnswers);
+    // send answers to API
+    const response = await createLessonPlan(objectAnswers);
+    console.log('response: ', response);
+    setLoading(false);
+  };
 
   return (
     <>
