@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/system';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 // API calls
 import { regenerateModuleBody } from 'src/pages/api/Lesson';
 
@@ -36,16 +36,16 @@ export default function ModuleCard({ module, updateModule }) {
 
   const id1 = useRandomId();
 
-  const update = () => {
-    console.log('update was called from ModuleCard');
+  // const update = () => {
+  //   console.log('update was called from ModuleCard');
 
-    const newModule = {
-      title: title,
-      body: text,
-      id: module.id,
-    };
-    updateModule(newModule);
-  };
+  //   const newModule = {
+  //     title: title,
+  //     body: text,
+  //     id: module.id,
+  //   };
+  //   updateModule(newModule);
+  // };
 
   const handleEditClick = () => {
     setText(module.body);
@@ -80,24 +80,24 @@ export default function ModuleCard({ module, updateModule }) {
     console.log(response);
   };
 
-  useEffect(() => {
-    console.log('I was called');
-    update();
-  }, [text]);
+  const handleDeleteClick = async () => {
+    console.log('Handle delete');
+  };
+
+  // useEffect(() => {
+  //   console.log('I was called');
+  //   update();
+  // }, [text]);
 
   return (
     <Card>
       <CardHeader
         action={
-          <IconButton aria-label="settings">
-            {isEditing ? (
-              <SaveIcon onClick={handleSaveClick} />
-            ) : (
-              <EditIcon onClick={handleEditClick} />
-            )}
+          <IconButton aria-label="settings" onClick={isEditing ? handleSaveClick : handleEditClick}>
+            {isEditing ? <SaveIcon /> : <EditIcon />}
           </IconButton>
         }
-        title={title}
+        title={module.title}
         subheader={module.description}
       />
       <CardContent>
@@ -107,7 +107,7 @@ export default function ModuleCard({ module, updateModule }) {
               <textarea
                 rows="4"
                 cols="50"
-                value={text}
+                value={module.body}
                 onChange={handleTextEdit}
                 style={{
                   width: '100%',
@@ -119,13 +119,13 @@ export default function ModuleCard({ module, updateModule }) {
             </Box>
           ) : expanded ? (
             <Collapse in={expanded} timeout="auto" unmountOnExit>
-              {text.split('\n').map((splitText) => (
+              {module.body.split('\n').map((splitText) => (
                 <Typography paragraph>{splitText}</Typography>
               ))}
             </Collapse>
           ) : (
             <>
-              {cutText(text)
+              {cutText(module.body)
                 .split('\n')
                 .map((splitText) => (
                   <Typography paragraph>{splitText}</Typography>
@@ -135,10 +135,10 @@ export default function ModuleCard({ module, updateModule }) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="regenerate">
-          <SyncIcon onClick={handleRegenerateClick} />
+        <IconButton aria-label="regenerate" onClick={handleRegenerateClick}>
+          <SyncIcon />
         </IconButton>
-        <IconButton aria-label="share">
+        <IconButton aria-label="share" onClick={handleDeleteClick}>
           <DeleteIcon />
         </IconButton>
         <ExpandMore

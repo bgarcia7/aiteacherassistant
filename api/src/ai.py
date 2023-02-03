@@ -8,6 +8,8 @@ import db
 # ===============[ INTERNAL FUNCTIONS ]=================
 
 #### GENERAL STRING FORMATTING ####
+
+
 def clean_text(string):
     string = string.strip()
     for rtr in REPLACEMENT_REGEXES:
@@ -26,6 +28,7 @@ def parse_string_on_sent(string, s, regex_format=REGEX_BASE):
 def parse_options(q):
     return parse_string_on_sent(q, '|'.join(QUIZ_OPTION_SENTINELS), regex_format=REGEX_QUIZ)
 
+
 def structure_quiz_response(string):
     questions = parse_string_on_sent(string, '|'.join(QUIZ_QUESTION_SENTINELS))
     questions = [
@@ -43,6 +46,7 @@ def prettify_quiz(quiz):
 
 #### LESSON PLAN STRING FORMATTING ####
 # Accepts a string with different subsections seperated by \n
+
 
 def prettify_module(module_body):
     print("MODULE BODY:", module_body)
@@ -92,12 +96,18 @@ def structure_response(string):
 
 def structure_slide_response(string):
     formatted_slides = []
-    slides = [clean_text(x) for x in parse_string_on_sent(string, '|'.join(['Slide ?' + str(ix) for ix in range(1, 20)])) if x and ('slide' not in x and len(x) > 2*len('slide'))]
+    slides = [clean_text(x) for x in parse_string_on_sent(string, '|'.join(
+        ['Slide ?' + str(ix) for ix in range(1, 20)])) if x and ('slide' not in x.lower() and len(x) > 2*len('slide'))]
+    # print(slides)
     for slide in slides:
-        components = [clean_text(s) for s in parse_string_on_sent(slide, '|'.join(SLIDE_SENTINELS), REGEX_SLIDES_COMPONENTS)]
+        # print(slide)
+        components = [clean_text(s) for s in parse_string_on_sent(
+            slide, '|'.join(SLIDE_SENTINELS), REGEX_SLIDES_COMPONENTS)]
         formatted_slide = {}
         for ix, c in enumerate(components):
-            details = [clean_text(d) for d in parse_string_on_sent(clean_text(c), '|'.join(SLIDE_DETAIL_SENTINELS), REGEX_SLIDES_DETAILS)]
+            # print("Component: ", c, "IX:", ix)
+            details = [clean_text(d) for d in parse_string_on_sent(
+                clean_text(c), '|'.join(SLIDE_DETAIL_SENTINELS), REGEX_SLIDES_DETAILS)]
             # if slide component couldn't be broken down into details, we store a single string instead of an array of length = 1. Length > 1 corresponds to "content"
             if SLIDE_SENTINELS[ix].lower() == 'text':
                 formatted_slide[SLIDE_SENTINEL_MAPPING[SLIDE_SENTINELS[ix]]] = details
@@ -105,9 +115,6 @@ def structure_slide_response(string):
                 formatted_slide[SLIDE_SENTINEL_MAPPING[SLIDE_SENTINELS[ix]]] = details[0]
         formatted_slides.append(formatted_slide)
     return formatted_slides
-    
-    
-    
 
 
 #### OPEN AI API CALLS ####

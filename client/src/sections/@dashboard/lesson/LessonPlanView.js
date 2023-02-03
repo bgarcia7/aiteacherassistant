@@ -3,10 +3,21 @@ import { useEffect, useState } from 'react';
 // form
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 // @mui
-import { Box, Stack } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Container,
+  Stack,
+  Typography,
+} from '@mui/material';
 // components
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PropTypes from 'prop-types';
-import { getLessonPlan } from 'src/pages/api/Lesson';
+import { useSettingsContext } from 'src/components/settings';
+import { generateQuiz, generateSlides, getLessonPlan } from 'src/pages/api/Lesson';
 import { useSnackbar } from '../../../components/snackbar';
 import { useDispatch } from '../../../redux/store';
 import { ModuleCard } from '../components';
@@ -22,6 +33,7 @@ export default function LessonPlanView(props) {
   const [loading, setLoading] = useState(true);
   const [lessonPlan, setLessonPlan] = useState(null);
   const [modules, setModules] = useState([]);
+  const { themeStretch } = useSettingsContext();
 
   useEffect(() => {
     (async () => {
@@ -48,16 +60,21 @@ export default function LessonPlanView(props) {
     const ix = modules.map((m) => m.id).indexOf(module.id);
     const newModules = [...modules.slice(0, ix), module, ...modules.slice(ix + 1)];
     const newEvent = {
-      title: lessonPlan.title,
-      learning_objective: lessonPlan.learning_objective,
-      textColor: lessonPlan.textColor,
-      allDay: lessonPlan.allDay,
-      start: '2023-02-21T07:30:33.067Z',
-      end: '2023-02-21T09:00:33.067Z',
+      ...lessonPlan,
       modules: newModules,
-      id: lessonPlan.id,
     };
+
     // onCreateUpdateEvent(newEvent);
+  };
+
+  const handleGenerateQuiz = () => {
+    const newQuiz = generateQuiz(lessonPlan.id);
+    console.log('Generated Quiz', newQuiz);
+  };
+
+  const handleGenerateSlides = () => {
+    const newSlides = generateSlides(lessonPlan.id);
+    console.log('Generated Slides', newSlides);
   };
 
   if (loading) {
@@ -65,33 +82,79 @@ export default function LessonPlanView(props) {
   }
 
   return (
-    <Stack spacing={3} sx={{ px: 3 }}>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable">
-          {(provided) => (
-            <Box ref={provided.innerRef} {...provided.droppableProps}>
-              {modules.length > 0 &&
-                modules.map((module, index) => (
-                  <Draggable key={module.id} draggableId={module.id} index={index}>
-                    {(provided) => (
-                      <Box
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        sx={{
-                          marginBottom: 3,
-                        }}
-                      >
-                        <ModuleCard updateModule={updateModule} key={index} module={module} />
-                      </Box>
-                    )}
-                  </Draggable>
-                ))}
-              {provided.placeholder}
-            </Box>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </Stack>
+    <Container maxWidth={themeStretch ? false : 'xl'}>
+      {/* LessonPlan */}
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography variant="h3">Lesson Plan</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Stack spacing={3} sx={{ px: 3 }}>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppable">
+                {(provided) => (
+                  <Box ref={provided.innerRef} {...provided.droppableProps}>
+                    {modules.length > 0 &&
+                      modules.map((module, index) => (
+                        <Draggable key={module.id} draggableId={module.id} index={index}>
+                          {(provided) => (
+                            <Box
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              sx={{
+                                marginBottom: 3,
+                              }}
+                            >
+                              <ModuleCard updateModule={updateModule} key={index} module={module} />
+                            </Box>
+                          )}
+                        </Draggable>
+                      ))}
+                    {provided.placeholder}
+                  </Box>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </Stack>
+        </AccordionDetails>
+      </Accordion>
+
+      {/* Slides */}
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography variant="h3">Slides</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Button variant="contained" onClick={handleGenerateSlides}>
+            Generate Slides
+          </Button>
+        </AccordionDetails>
+      </Accordion>
+
+      {/* Quiz */}
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography variant="h3">Quiz</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Button variant="contained" onClick={handleGenerateQuiz}>
+            Generate Quiz
+          </Button>
+        </AccordionDetails>
+      </Accordion>
+    </Container>
   );
 }

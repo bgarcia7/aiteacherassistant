@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 
 
-
 import db
 import ai
 import gslides
@@ -43,14 +42,5 @@ def update_lesson_plan():
     updated_modules = [db.update_module(m.get('id'), m) for m in modules]
     updated_lesson_plan = db.update_lesson_plan(data.get('id'), data)
     expanded_lesson_plan = db.get_lesson_plan(updated_lesson_plan['id'])
-    
-    return {'lesson_plan': expanded_lesson_plan}
 
-@lesson_plan_blueprint.route('/<plan_id>/slides', methods=['POST'])
-def create_slides(plan_id):
-    lesson_plan = db.get_lesson_plan(plan_id)
-    slides = ai.generate_slides(lesson_plan)
-    drive_url = gslides.createGoogleSlides(lesson_plan.get("title"), slides)
-    slide_deck = db.insert_slide_deck(plan_id, slides, drive_url)
-    expanded_slide_deck = db.get_slide_deck(slide_deck['id'])
-    return jsonify({"slides": expanded_slide_deck})
+    return {'lesson_plan': expanded_lesson_plan}
