@@ -16,11 +16,14 @@ import {
 // components
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PropTypes from 'prop-types';
+import LoadingIcon from 'src/components/loading-screen/LoadingIcon';
 import { useSettingsContext } from 'src/components/settings';
 import { generateQuiz, generateSlides, getLessonPlan } from 'src/pages/api/Lesson';
 import { useSnackbar } from '../../../components/snackbar';
 import { useDispatch } from '../../../redux/store';
 import { ModuleCard } from '../components';
+import ReactGoogleSlides from './GoogleSlides';
+import QuizDisplay from './QuizDisplay';
 
 LessonPlanView.propTypes = {
   id: PropTypes.string,
@@ -33,6 +36,8 @@ export default function LessonPlanView(props) {
   const [loading, setLoading] = useState(true);
   const [lessonPlan, setLessonPlan] = useState(null);
   const [modules, setModules] = useState([]);
+  const [isGeneratingSlides, setIsGeneratingSlides] = useState(false);
+  const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
   const { themeStretch } = useSettingsContext();
 
   useEffect(() => {
@@ -67,18 +72,53 @@ export default function LessonPlanView(props) {
     // onCreateUpdateEvent(newEvent);
   };
 
-  const handleGenerateQuiz = () => {
-    const newQuiz = generateQuiz(lessonPlan.id);
-    console.log('Generated Quiz', newQuiz);
+  const handleGenerateQuiz = async () => {
+    try {
+      enqueueSnackbar('Generating your Quiz, it takes around a minute');
+
+      console.log('Start generating quiz');
+      setIsGeneratingQuiz(true);
+      const newQuiz = await generateQuiz(lessonPlan.id);
+      console.log('Generated Quiz', newQuiz);
+      setIsGeneratingQuiz(false);
+    } catch (err) {
+      enqueueSnackbar('Error Generating Quiz', { variant: 'error' });
+    }
   };
 
-  const handleGenerateSlides = () => {
-    const newSlides = generateSlides(lessonPlan.id);
-    console.log('Generated Slides', newSlides);
+  const handleGenerateSlides = async () => {
+    try {
+      enqueueSnackbar('Generating your Slides, it takes around a minute');
+      console.log('Generating slides');
+      setIsGeneratingSlides(true);
+      const newSlides = await generateSlides(lessonPlan.id);
+      console.log('Generated Slides', newSlides);
+    } catch (err) {
+      enqueueSnackbar('Error Generating Slides', { variant: 'error' });
+    }
+
+    setIsGeneratingSlides(false);
+  };
+
+  const handleDownloadQuiz = async () => {
+    if (!lessonPlan.quiz) {
+      enqueueSnackbar('Please generate the quiz first', { variant: 'error' });
+      return;
+    }
+
+    if (typeof window !== 'undefined') {
+      window.open(lessonPlan.quiz.pdf_url, '_blank');
+    } else {
+      enqueueSnackbar('Failed to open link', { variant: 'error' });
+    }
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <LoadingIcon />
+      </div>
+    );
   }
 
   return (
@@ -134,9 +174,37 @@ export default function LessonPlanView(props) {
           <Typography variant="h3">Slides</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Button variant="contained" onClick={handleGenerateSlides}>
-            Generate Slides
-          </Button>
+          {lessonPlan.slide_deck ? (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div>
+                <Button
+                  variant="contained"
+                  onClick={() => window.open(lessonPlan.slide_deck.drive_url, '_blank')}
+                  disabled={isGeneratingSlides}
+                >
+                  Open in Google Slides
+                </Button>
+              </div>
+              <div style={{ height: '16px' }} />
+              <ReactGoogleSlides
+                width="100%"
+                height="640px"
+                slidesLink={lessonPlan.slide_deck.drive_url}
+                slideDuration={5}
+                position={1}
+                showControls
+                loop
+              />
+            </div>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={handleGenerateSlides}
+              disabled={isGeneratingSlides}
+            >
+              Generate Slides
+            </Button>
+          )}
         </AccordionDetails>
       </Accordion>
 
@@ -150,9 +218,25 @@ export default function LessonPlanView(props) {
           <Typography variant="h3">Quiz</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Button variant="contained" onClick={handleGenerateQuiz}>
-            Generate Quiz
-          </Button>
+          {lessonPlan.quiz ? (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div>
+                <Button
+                  variant="contained"
+                  onClick={handleDownloadQuiz}
+                  disabled={isGeneratingQuiz}
+                >
+                  Download PDF
+                </Button>
+              </div>
+              <div style={{ height: '16px' }} />
+              <QuizDisplay quizContent={lessonPlan.quiz.content} />
+            </div>
+          ) : (
+            <Button variant="contained" onClick={handleGenerateQuiz} disabled={isGeneratingQuiz}>
+              Generate Quiz
+            </Button>
+          )}
         </AccordionDetails>
       </Accordion>
     </Container>

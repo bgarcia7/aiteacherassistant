@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
 import { m } from 'framer-motion';
+import { useEffect, useState } from 'react';
 // @mui
-import { alpha, styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
 //
-import Logo from '../logo';
+import LoadingIcon from './LoadingIcon';
 
 // ----------------------------------------------------------------------
 
@@ -34,20 +34,7 @@ export default function LoadingScreen() {
 
   return (
     <StyledRoot>
-      <m.div
-        animate={{
-          scale: [1, 0.9, 0.9, 1, 1],
-          opacity: [1, 0.48, 0.48, 1, 1],
-        }}
-        transition={{
-          duration: 2,
-          ease: 'easeInOut',
-          repeatDelay: 1,
-          repeat: Infinity,
-        }}
-      >
-        <Logo disabledLink sx={{ width: 64, height: 64 }} />
-      </m.div>
+      <LoadingIcon />
 
       <Box
         component={m.div}

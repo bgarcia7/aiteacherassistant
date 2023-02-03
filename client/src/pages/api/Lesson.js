@@ -53,7 +53,7 @@ export const updateModule = async (moduleId, module) => {
 // ====================== Quiz Functions ======================
 
 export const generateQuiz = async (lesson_plan_id) => {
-  const response = await axios.post(`${API_URL}quiz`, { lesson_plan_id });
+  const response = await axios.post(`${API_URL}quiz/`, { lesson_plan_id });
   if (response.status !== 200) {
     throw new Error(response.data.message);
   }
@@ -62,7 +62,7 @@ export const generateQuiz = async (lesson_plan_id) => {
 
 // ====================== Slide Deck Functions ======================
 export const generateSlides = async (lesson_plan_id) => {
-  const response = await axios.post(`${API_URL}slide_deck`, { lesson_plan_id });
+  const response = await axios.post(`${API_URL}slide_deck/`, { lesson_plan_id });
   if (response.status !== 200) {
     throw new Error(response.data.message);
   }

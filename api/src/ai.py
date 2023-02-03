@@ -1,8 +1,8 @@
 import openai
 import re
 from generation_constants import *
-from pdf import create_pdf, upload_pdf_to_s3
 
+from pdf import create_pdf, upload_pdf_to_s3
 import db
 
 # ===============[ INTERNAL FUNCTIONS ]=================
@@ -176,8 +176,11 @@ def generate_quiz(lesson_plan):
     response = get_response(prompt, temperature=0.5)
     print("RAW Response:\n", response)
     quiz = structure_quiz_response(response)
-    pdf_name = create_pdf(lesson_plan['title'], prettify_quiz(quiz))
-    pdf_url = upload_pdf_to_s3(pdf_name)
+
+    pdf_url = "https://aiteacherassistant.s3.us-west-2.amazonaws.com/Introduction_to_the_civil_war.pdf"
+    # pdf_name = create_pdf(lesson_plan['title'], prettify_quiz(quiz))
+    # pdf_url = upload_pdf_to_s3(pdf_name)
+
     return {'content': quiz, 'pdf_url': pdf_url}
 
 

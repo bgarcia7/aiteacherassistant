@@ -119,16 +119,20 @@ export default function ModuleCard({ module, updateModule }) {
             </Box>
           ) : expanded ? (
             <Collapse in={expanded} timeout="auto" unmountOnExit>
-              {module.body.split('\n').map((splitText) => (
-                <Typography paragraph>{splitText}</Typography>
+              {module.body.split('\n').map((splitText, i) => (
+                <Typography paragraph key={i}>
+                  {splitText}
+                </Typography>
               ))}
             </Collapse>
           ) : (
             <>
               {cutText(module.body)
                 .split('\n')
-                .map((splitText) => (
-                  <Typography paragraph>{splitText}</Typography>
+                .map((splitText, i) => (
+                  <Typography paragraph key={i}>
+                    {splitText}
+                  </Typography>
                 ))}
             </>
           )}
